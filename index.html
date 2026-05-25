@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engram · Cohort Training</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@900&family=Geist:wght@300..700&family=Geist+Mono:wght@300..600&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@700,600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --paper:  #F6F4EF;
+    --ink:    #0A0A0A;
+    --orange: #E8623C;
+    --rule:   1.5px;
+
+    --display-machine:   'Doto', monospace;
+    --display-editorial: 'Clash Display', 'Geist', sans-serif;
+    --mono:              'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:              'Geist', 'Inter', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--paper); color: var(--ink); }
+  body {
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 56px 64px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  /* header */
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding-bottom: 36px;
+    border-bottom: var(--rule) solid var(--ink);
+    margin-bottom: 0;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 18px;
+  }
+  .kiss { line-height: 0.78; }
+  .kiss .m {
+    font-family: var(--display-machine);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    font-size: 56px;
+    display: block;
+  }
+  .kiss .e {
+    font-family: var(--display-editorial);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    font-size: 96px;
+    display: block;
+    margin-top: 0;
+  }
+  .kiss .e .o { color: var(--orange); }
+
+  .meta {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+    opacity: 0.75;
+  }
+  .meta .o { color: var(--orange); }
+  .meta strong { font-weight: 500; opacity: 1; color: var(--ink); }
+
+  /* topic grid */
+  .topics {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 28px;
+    margin-bottom: 56px;
+  }
+  .topic {
+    border: 3px solid var(--ink);
+    background: var(--paper);
+    padding: 40px 36px;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+    text-align: left;
+    color: inherit;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    min-height: 280px;
+    position: relative;
+  }
+  .topic:hover { transform: translateY(-2px); background: var(--ink); color: var(--paper); }
+  .topic:hover .count { color: var(--paper); opacity: 0.6; }
+  .topic:hover .name { color: var(--paper); }
+  .topic:hover .name .o { color: var(--orange); }
+  .topic:hover .desc { color: var(--paper); opacity: 0.85; }
+  .topic:hover .status { color: var(--paper); }
+
+  .topic.simulation { background: var(--ink); color: var(--paper); }
+  .topic.simulation .count, .topic.simulation .desc { color: var(--paper); opacity: 0.7; }
+  .topic.simulation .name { color: var(--paper); }
+  .topic.simulation .name .o { color: var(--orange); }
+  .topic.simulation:hover { background: var(--orange); }
+  .topic.simulation:hover .name .o { color: var(--paper); }
+
+  .topic.upcoming { opacity: 0.6; cursor: default; pointer-events: none; }
+  .topic.upcoming:hover { transform: none; background: var(--paper); color: var(--ink); }
+
+  .topic .count {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+  .topic .name {
+    font-family: var(--display-editorial);
+    font-weight: 700;
+    font-size: 44px;
+    letter-spacing: -0.025em;
+    line-height: 0.95;
+  }
+  .topic .name .o { color: var(--orange); }
+  .topic .desc {
+    font-family: var(--sans);
+    font-weight: 400;
+    font-size: 15px;
+    line-height: 1.5;
+    opacity: 0.85;
+  }
+  .topic .status {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-top: auto;
+    color: var(--ink);
+    opacity: 0.6;
+  }
+  .topic .status.live { color: var(--orange); opacity: 1; }
+  .topic .status.live::before { content: '● '; }
+  .topic .status.coming::before { content: '○ '; }
+
+  /* about strip */
+  .about {
+    padding: 36px 0;
+    border-bottom: var(--rule) solid var(--ink);
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 60px;
+    align-items: start;
+    margin-bottom: 56px;
+  }
+  .about-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+  .about p {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 18px;
+    line-height: 1.55;
+    max-width: 720px;
+  }
+  .about p strong { font-weight: 500; }
+
+  /* footer */
+  footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    opacity: 0.65;
+  }
+  .mark-engram { display: inline-flex; align-items: center; gap: 10px; }
+  .mark-engram svg { display: block; height: 24px; }
+
+  @media (max-width: 760px) {
+    body { padding: 32px 20px; }
+    .kiss .m { font-size: 36px; }
+    .kiss .e { font-size: 60px; }
+    .topics { grid-template-columns: 1fr; }
+    .topic .name { font-size: 36px; }
+    .about { grid-template-columns: 1fr; gap: 16px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div>
+      <div class="eyebrow">engram · cohort training · partner network</div>
+      <div class="kiss">
+        <span class="m">claude</span>
+        <span class="e">partner<span class="o">.</span></span>
+      </div>
+    </div>
+    <div class="meta">
+      <strong>5 workshops</strong> · <span class="o">31 verified questions live</span><br/>
+      anthropic skilljar · learning path<br/>
+      build · ship · certify
+    </div>
+  </header>
+
+  <section class="about">
+    <div class="about-label">about</div>
+    <p>Workshops to prepare the Engram cohort for Anthropic's Partner Network certification. <strong>Each topic mirrors one course on the Claude Partner Network learning path.</strong> Pick a topic, run through the questions, compare notes with the team.</p>
+  </section>
+
+  <section class="topics">
+
+    <a class="topic" href="topics/skills/index.html">
+      <div class="count">workshop 01 · 31 questions</div>
+      <div class="name">Skills<span class="o">.</span></div>
+      <div class="desc">SKILL.md anatomy, frontmatter, progressive disclosure, where skills live, model invocation. Plus scenarios and CCAF cert questions.</div>
+      <div class="status live">Live</div>
+    </a>
+
+    <a class="topic upcoming" href="topics/claude-api/index.html">
+      <div class="count">workshop 02 · coming soon</div>
+      <div class="name">Claude API<span class="o">.</span></div>
+      <div class="desc">Messages, tool use, system prompts, context window management, structured outputs, prompt caching, batch API, extended thinking.</div>
+      <div class="status coming">Coming soon</div>
+    </a>
+
+    <a class="topic upcoming" href="topics/mcp/index.html">
+      <div class="count">workshop 03 · coming soon</div>
+      <div class="name">MCP<span class="o">.</span></div>
+      <div class="desc">Model Context Protocol — servers, tools, resources, configuration, the isError flag, when to write an MCP versus a skill.</div>
+      <div class="status coming">Coming soon</div>
+    </a>
+
+    <a class="topic upcoming" href="topics/claude-code/index.html">
+      <div class="count">workshop 04 · coming soon</div>
+      <div class="name">Claude Code<span class="o">.</span></div>
+      <div class="desc">CLAUDE.md hierarchy, subagents, hooks, MCP integration, planning mode, sessions, GitHub Actions, headless mode.</div>
+      <div class="status coming">Coming soon</div>
+    </a>
+
+    <a class="topic simulation upcoming" href="topics/ccaf-simulation/index.html" style="grid-column: 1 / -1;">
+      <div class="count">final · ccaf practical · coming soon</div>
+      <div class="name">CCAF simulation<span class="o">.</span></div>
+      <div class="desc">Full exam-style run. 60 questions across all four scenarios, timed, mixed order. Use this to gauge readiness before sitting the real cert.</div>
+      <div class="status coming">Coming soon</div>
+    </a>
+
+  </section>
+
+  <footer>
+    <div>engram · agentic media. · 2026</div>
+    <div class="mark-engram">
+      <svg viewBox="0 0 242.82 100" aria-label="Engram">
+        <rect x="0" y="0" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="0" y="35.075" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="0" y="70.15" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="124.12" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+        <rect x="165.77" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+        <rect x="207.42" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+      </svg>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

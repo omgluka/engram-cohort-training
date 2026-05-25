@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engram · Skills Knowledge Check</title>
+
+<!-- Engram fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@900&family=Geist:wght@300..700&family=Geist+Mono:wght@300..600&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@700,600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --paper:  #F6F4EF;
+    --ink:    #0A0A0A;
+    --orange: #E8623C;
+    --rule:   1.5px;
+
+    --display-machine:   'Doto', monospace;
+    --display-editorial: 'Clash Display', 'Geist', sans-serif;
+    --mono:              'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:              'Geist', 'Inter', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--paper); color: var(--ink); }
+  body {
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 56px 64px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap { max-width: 1180px; margin: 0 auto; }
+
+  /* ────────── header ────────── */
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding-bottom: 36px;
+    border-bottom: var(--rule) solid var(--ink);
+    margin-bottom: 56px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 18px;
+  }
+  .kiss { line-height: 0.78; }
+  .kiss .m {
+    font-family: var(--display-machine);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    font-size: 56px;
+    display: block;
+  }
+  .kiss .e {
+    font-family: var(--display-editorial);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    font-size: 96px;
+    display: block;
+    margin-top: 0;
+  }
+  .kiss .e .o { color: var(--orange); }
+
+  .meta {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+    opacity: 0.75;
+  }
+  .meta .o { color: var(--orange); }
+  .meta strong { font-weight: 500; opacity: 1; color: var(--ink); }
+
+  /* ────────── picker ────────── */
+  .picker {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 36px;
+  }
+  .pick-card {
+    border: 3px solid var(--ink);
+    background: var(--paper);
+    padding: 36px 32px;
+    cursor: pointer;
+    transition: transform 0.12s ease, background 0.12s ease;
+    text-align: left;
+    font-family: var(--sans);
+    font-size: 16px;
+    letter-spacing: 0;
+    text-transform: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    font-weight: 400;
+  }
+  .pick-card:hover { transform: translateY(-2px); background: var(--ink); color: var(--paper); }
+  .pick-card:hover .count { color: var(--paper); opacity: 0.6; }
+  .pick-card:hover .name { color: var(--paper); }
+  .pick-card:hover .name .o { color: var(--orange); }
+  .pick-card:hover .desc { color: var(--paper); opacity: 0.85; }
+  .pick-card .count {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+  .pick-card .name {
+    font-family: var(--display-editorial);
+    font-weight: 700;
+    font-size: 36px;
+    letter-spacing: -0.025em;
+    line-height: 0.95;
+  }
+  .pick-card .name .o { color: var(--orange); }
+  .pick-card .desc {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 14.5px;
+    line-height: 1.45;
+    opacity: 0.85;
+  }
+
+  /* ────────── progress ────────── */
+  .progress-wrap {
+    border: 1.5px solid var(--ink);
+    height: 14px;
+    margin-bottom: 36px;
+    position: relative;
+  }
+  .progress-bar { height: 100%; background: var(--orange); width: 0%; transition: width 0.3s ease; }
+  .progress-label {
+    position: absolute;
+    right: 0;
+    top: 22px;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    opacity: 0.65;
+  }
+
+  /* ────────── card ────────── */
+  .card {
+    border-top: var(--rule) solid var(--ink);
+    border-bottom: var(--rule) solid var(--ink);
+    padding: 56px 0 64px;
+  }
+  .qmeta {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 24px;
+  }
+  .qmeta .tag { padding: 6px 12px; border: 1.5px solid var(--ink); opacity: 1; }
+  .qmeta .tag.basics { color: var(--ink); }
+  .qmeta .tag.scenario { color: var(--orange); border-color: var(--orange); }
+  .qmeta .tag.anatomy { color: var(--ink); background: var(--ink); color: var(--paper); }
+  .qtext {
+    font-family: var(--display-editorial);
+    font-weight: 600;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+    line-height: 1.18;
+    margin-bottom: 36px;
+  }
+
+  /* ────────── options ────────── */
+  .opts { display: flex; flex-direction: column; gap: 14px; }
+  .opt {
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    align-items: start;
+    padding: 22px 26px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    cursor: pointer;
+    font-family: var(--sans);
+    font-size: 17px;
+    font-weight: 500;
+    letter-spacing: 0;
+    text-transform: none;
+    line-height: 1.45;
+    transition: background 0.1s ease, transform 0.1s ease;
+    text-align: left;
+    color: inherit;
+  }
+  .opt:not(.disabled):hover { background: var(--ink); color: var(--paper); border-color: var(--ink); transform: translateX(2px); }
+  .opt:not(.disabled):hover .key { color: var(--orange); opacity: 1; }
+  .opt .key {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.02em;
+    opacity: 0.55;
+    padding-top: 2px;
+  }
+  .opt.correct {
+    background: #15803d;
+    color: #ffffff;
+    border-color: #15803d;
+  }
+  .opt.correct .key { color: #ffffff; opacity: 0.95; }
+  .opt.wrong {
+    background: #b91c1c;
+    color: #ffffff;
+    border-color: #b91c1c;
+  }
+  .opt.wrong .key { color: #ffffff; opacity: 0.95; }
+  .opt.disabled { cursor: default; }
+  .opt.disabled:hover { transform: none; background: var(--paper); }
+  .opt.correct.disabled:hover { background: #15803d; color: #ffffff; }
+  .opt.wrong.disabled:hover { background: #b91c1c; color: #ffffff; }
+
+  /* ────────── explain ────────── */
+  .explain {
+    margin-top: 28px;
+    padding: 28px 32px;
+    border-left: 4px solid var(--orange);
+    background: #EFEDE7;
+    font-family: var(--sans);
+    font-size: 16px;
+    line-height: 1.55;
+    display: none;
+  }
+  .explain.show { display: block; }
+  .explain .verdict {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 500;
+  }
+  .explain.right { border-left-color: #15803d; }
+  .explain.right .verdict { color: #15803d; }
+  .explain.right .verdict::before { content: '✓ correct · '; color: #15803d; }
+  .explain.miss { border-left-color: #b91c1c; }
+  .explain.miss .verdict { color: #b91c1c; }
+  .explain.miss .verdict::before { content: '✗ not quite · '; color: #b91c1c; }
+
+  /* ────────── controls ────────── */
+  .controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 36px;
+    gap: 16px;
+  }
+  button {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    padding: 18px 30px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    color: var(--ink);
+    cursor: pointer;
+    transition: background 0.12s ease, transform 0.1s ease;
+    font-weight: 500;
+  }
+  button:hover:not(:disabled) { background: var(--ink); color: var(--paper); transform: translateY(-1px); }
+  button:disabled { opacity: 0.3; cursor: not-allowed; }
+  button.primary { background: var(--ink); color: var(--paper); }
+  button.primary:hover:not(:disabled) { background: var(--orange); border-color: var(--orange); color: var(--paper); }
+
+  /* ────────── results ────────── */
+  .results {
+    padding: 56px 0;
+  }
+  .score-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: end;
+    padding-bottom: 36px;
+    border-bottom: var(--rule) solid var(--ink);
+    margin-bottom: 36px;
+  }
+  .score-big {
+    font-family: var(--display-editorial);
+    font-weight: 700;
+    font-size: 160px;
+    letter-spacing: -0.045em;
+    line-height: 0.85;
+  }
+  .score-big .total { color: var(--orange); }
+  .score-pct {
+    font-family: var(--mono);
+    font-size: 18px;
+    letter-spacing: 0.04em;
+    text-align: right;
+    opacity: 0.85;
+  }
+  .score-pct .num {
+    font-family: var(--display-editorial);
+    font-weight: 600;
+    font-size: 48px;
+    letter-spacing: -0.025em;
+    display: block;
+    margin-bottom: 6px;
+    color: var(--ink);
+  }
+  .verdict-line {
+    font-family: var(--display-editorial);
+    font-weight: 600;
+    font-size: 28px;
+    letter-spacing: -0.025em;
+    margin-bottom: 40px;
+    max-width: 720px;
+    line-height: 1.25;
+  }
+  .verdict-line .o { color: var(--orange); }
+
+  .review-head {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 18px;
+  }
+  .review-item {
+    display: grid;
+    grid-template-columns: 56px 1fr 80px;
+    align-items: start;
+    gap: 18px;
+    padding: 18px 0;
+    border-top: 1.5px solid rgba(10,10,10,0.18);
+    font-size: 15px;
+    line-height: 1.4;
+  }
+  .review-item .num {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    opacity: 0.55;
+  }
+  .review-item .mark {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    text-align: right;
+  }
+  .review-item.ok .mark { color: var(--ink); }
+  .review-item.ok .mark::before { content: '✓ '; color: var(--orange); }
+  .review-item.bad .mark { color: var(--orange); }
+  .review-item.bad .mark::before { content: '✗ '; }
+
+  .results-controls { display: flex; gap: 16px; margin-top: 40px; }
+
+  /* ────────── footer ────────── */
+  footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1.5px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    opacity: 0.65;
+  }
+  .mark-engram {
+    display: inline-flex; align-items: center; gap: 10px;
+  }
+  .mark-engram svg { display: block; height: 20px; }
+
+  .hint {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    opacity: 0.5;
+    margin-top: 18px;
+    text-align: center;
+  }
+  kbd {
+    font-family: var(--mono);
+    border: 1px solid var(--ink);
+    padding: 1px 7px;
+    font-size: 11px;
+    opacity: 0.75;
+  }
+
+  /* hidden state */
+  .hidden { display: none !important; }
+
+  /* small screens */
+  @media (max-width: 760px) {
+    body { padding: 32px 20px; }
+    .kiss .m { font-size: 36px; }
+    .kiss .e { font-size: 60px; }
+    .picker { grid-template-columns: 1fr; }
+    .qtext { font-size: 24px; }
+    .score-big { font-size: 96px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a href="../../index.html" style="font-family: var(--mono); font-size: 12px; letter-spacing: 0.18em; text-transform: uppercase; opacity: 0.55; color: var(--ink); text-decoration: none; display: inline-block; margin-bottom: 32px;" onmouseover="this.style.color='var(--orange)';this.style.opacity='1'" onmouseout="this.style.color='var(--ink)';this.style.opacity='0.55'">← all workshops</a>
+
+  <header>
+    <div>
+      <div class="eyebrow">engram · cohort training · workshop 01</div>
+      <div class="kiss">
+        <span class="m">skills</span>
+        <span class="e">knowledge<span class="o">.</span></span>
+      </div>
+    </div>
+    <div class="meta">
+      <strong>31 questions</strong> · <span class="o">3 sets</span><br/>
+      verified from CCAF repo<br/>
+      claude-certified-architect/practical_test_skills_en.html
+    </div>
+  </header>
+
+  <!-- PICKER -->
+  <section id="picker" class="picker">
+    <button class="pick-card" data-mode="basics">
+      <div class="count">set 01 · 10 questions</div>
+      <div class="name">Basics<span class="o">.</span></div>
+      <div class="desc">SKILL.md anatomy, frontmatter, progressive disclosure, discovery roots, slash command vs skill, subagent vs skill.</div>
+    </button>
+    <button class="pick-card" data-mode="scenarios">
+      <div class="count">set 02 · 10 questions</div>
+      <div class="name">Scenarios<span class="o">.</span></div>
+      <div class="desc">Real situations: misfires, false positives, skills vs hooks, structural fixes, shadowing.</div>
+    </button>
+    <button class="pick-card" data-mode="anatomy">
+      <div class="count">set 03 · 11 questions</div>
+      <div class="name">CCAF<span class="o">.</span></div>
+      <div class="desc">From the CCAF practical exam: `context: fork`, `argument-hint`, `.claude/rules/`, project vs user scope, Explore subagent.</div>
+    </button>
+  </section>
+
+  <button class="pick-card" id="pickAll" style="grid-column: 1/-1; width: 100%; margin-bottom: 40px; align-items: center; text-align: center;">
+    <div class="count">all sets · 31 questions, shuffled</div>
+    <div class="name">Workshop mode<span class="o">.</span></div>
+    <div class="desc" style="max-width: 600px; margin: 0 auto;">Go through everything in one run. Keyboard nav: <kbd>1</kbd>–<kbd>4</kbd> to pick, <kbd>→</kbd> next, <kbd>←</kbd> back.</div>
+  </button>
+
+  <!-- QUIZ -->
+  <div id="progressWrap" class="progress-wrap hidden">
+    <div class="progress-bar" id="progressBar"></div>
+    <div class="progress-label" id="progressLabel">0 / 0</div>
+  </div>
+
+  <section id="card" class="card hidden"></section>
+
+  <div class="hint" id="hint">tip · press <kbd>1</kbd>–<kbd>4</kbd> to answer · <kbd>→</kbd> next · <kbd>←</kbd> back · <kbd>R</kbd> restart</div>
+
+  <footer>
+    <div>engram · agentic media. · 2026</div>
+    <div class="mark-engram">
+      <svg viewBox="0 0 242.82 100" aria-label="Engram">
+        <rect x="0" y="0" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="0" y="35.075" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="0" y="70.15" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="124.12" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+        <rect x="165.77" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+        <rect x="207.42" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+      </svg>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+
+/* ════════════════════════════════════════
+   BASICS — 10 verified questions
+   Source: practical_test_skills_en.html (CCAF repo)
+   ════════════════════════════════════════ */
+const BASICS = [
+  {
+    tag: 'basics',
+    q: "What file defines a Claude Code skill, and what is required at the top of it?",
+    opts: [
+      "skill.json with a JSON config block",
+      "SKILL.md with YAML frontmatter containing at minimum a name and description",
+      "Any .md file in the project root, no frontmatter required",
+      "claude.toml with a [skill] section"
+    ],
+    answer: 1,
+    explain: "Skills are authored as SKILL.md files with YAML frontmatter. The name and description fields are required — the description is what Claude uses to decide when the skill applies."
+  },
+  {
+    tag: 'basics',
+    q: "Why is the description field in a skill's frontmatter so important?",
+    opts: [
+      "It is shown in the CLI help output",
+      "It controls the skill's execution order",
+      "Claude reads it to decide whether the skill is relevant to the current task — vague descriptions cause skills to misfire or never trigger",
+      "It is required only for skills published to a registry"
+    ],
+    answer: 2,
+    explain: "The description is the trigger signal. A specific description (with concrete keywords and use cases) leads to accurate triggering; a vague one means the skill either never fires or fires when it shouldn't."
+  },
+  {
+    tag: 'basics',
+    q: "Where can skills live so Claude Code can discover them?",
+    opts: [
+      "Only in ~/.claude/skills/ (user-level)",
+      "Only in .claude/skills/ inside the project",
+      "User-level (~/.claude/skills/), project-level (.claude/skills/), and from installed plugins",
+      "Anywhere on disk, as long as the path is in PATH"
+    ],
+    answer: 2,
+    explain: "Skills can be user-scoped, project-scoped, or come from plugins. Project skills are great for codebase-specific workflows; user skills travel across projects."
+  },
+  {
+    tag: 'basics',
+    q: "A teammate says \"skills are just like slash commands.\" What's the most accurate correction?",
+    opts: [
+      "They're identical — 'skill' is just the new name for slash commands",
+      "Skills are model-invoked based on context (Claude decides when to use them); slash commands are user-invoked by typing /name",
+      "Skills run on the server, slash commands run locally",
+      "Skills can only contain prompts, while slash commands can run tools"
+    ],
+    answer: 1,
+    explain: "The key distinction is who invokes them. Claude decides to invoke a skill when its description matches the task; the user explicitly invokes a slash command. A skill can also be exposed as a slash command, but the trigger model is different."
+  },
+  {
+    tag: 'basics',
+    q: "You're writing a skill to help with database migrations. Which description is best?",
+    opts: [
+      "\"Helps with database stuff\"",
+      "\"A useful skill for developers working on databases\"",
+      "\"Author, review, and run Postgres schema migrations using our Alembic setup. Use when adding/altering tables, writing migration files in alembic/versions/, or troubleshooting failed migrations.\"",
+      "\"Database migration skill v1.0\""
+    ],
+    answer: 2,
+    explain: "Good descriptions are specific: they name the technology, the concrete actions the skill performs, and the trigger conditions ('Use when...'). Vague descriptions like 'helps with database stuff' won't reliably trigger."
+  },
+  {
+    tag: 'basics',
+    q: "What is progressive disclosure in the context of skills, and why does it matter?",
+    opts: [
+      "Skills are revealed to the user one at a time during onboarding",
+      "Only the skill's name and description are loaded into context up front; the body of SKILL.md and any referenced files load only when the skill is actually invoked",
+      "Skills must be enabled progressively in settings.json before they can run",
+      "Long skills are automatically truncated"
+    ],
+    answer: 1,
+    explain: "Progressive disclosure keeps the context window cheap. Claude sees a list of available skills (names + descriptions) but only pulls in the full SKILL.md content when it decides to run the skill. This is why concise descriptions and well-organized skill bodies matter."
+  },
+  {
+    tag: 'basics',
+    q: "Inside a SKILL.md body, you want to include a long reference document and an executable helper script. What's the recommended pattern?",
+    opts: [
+      "Inline everything into SKILL.md so it's always available",
+      "Put supporting files alongside SKILL.md in the skill's folder and reference them by relative path; Claude loads them on demand",
+      "Base64-encode binary helpers into the frontmatter",
+      "Skills cannot reference external files — only the SKILL.md content is used"
+    ],
+    answer: 1,
+    explain: "A skill is a folder. SKILL.md is the entrypoint, but it can reference supporting files (reference docs, scripts, templates) by relative path. Those files are loaded only when the skill is invoked, keeping context lean."
+  },
+  {
+    tag: 'basics',
+    q: "Which of the following is NOT a good fit for a skill?",
+    opts: [
+      "A repeatable workflow with multiple steps that Claude should follow consistently (e.g. 'review a pull request')",
+      "Domain knowledge Claude needs in order to do a class of tasks well (e.g. 'GSAP animation reference')",
+      "A one-off question about a specific function in this conversation",
+      "A procedure that requires specific tools, scripts, or templates the user has standardized on"
+    ],
+    answer: 2,
+    explain: "Skills are for reusable, generalizable capabilities. A one-off question is just a prompt — wrapping it in a skill adds overhead without benefit. Skills shine when the same workflow or knowledge will be needed repeatedly."
+  },
+  {
+    tag: 'basics',
+    q: "Your skill is supposed to trigger when the user works with the Claude API, but it keeps firing on unrelated OpenAI work. What's the most effective fix?",
+    opts: [
+      "Rename the skill to something shorter",
+      "Add a SKIP clause and explicit TRIGGER signals to the description (e.g. 'TRIGGER when: imports anthropic SDK... SKIP when: imports openai')",
+      "Move the skill from project-level to user-level",
+      "Delete the skill and use a slash command instead"
+    ],
+    answer: 1,
+    explain: "When a skill over-triggers, sharpen the description with explicit positive and negative signals. Naming what should NOT trigger the skill (other SDKs, unrelated filenames) is one of the most effective ways to fix misfires."
+  },
+  {
+    tag: 'basics',
+    q: "How does a skill differ from a subagent?",
+    opts: [
+      "They're the same thing with different names",
+      "A skill is instructions/knowledge that Claude pulls into its own context to do a task; a subagent is a separate Claude instance launched with its own context window and tool set",
+      "Skills can use tools but subagents cannot",
+      "Subagents are deprecated and skills replace them"
+    ],
+    answer: 1,
+    explain: "Skills extend the current Claude's behavior in-context. Subagents are independent Claude instances you delegate to — useful for isolating heavy research, parallelizing work, or protecting the main context. They complement each other."
+  }
+];
+
+/* ════════════════════════════════════════
+   SCENARIOS — 10 verified questions
+   Source: practical_test_skills_en.html (CCAF repo)
+   ════════════════════════════════════════ */
+const SCENARIOS = [
+  {
+    tag: 'scenario',
+    q: "Your `pr-review` skill triggers correctly, but on large diffs Claude skips half the checklist items. Engineer A: move the checklist into CLAUDE.md so it's always in context. Engineer B: split into `pr-review-security`, `pr-review-perf`, `pr-review-a11y`, each with its own description. Which is the better default?",
+    opts: [
+      "A — always-on context guarantees every item is seen on every turn",
+      "B — focused sub-skills load when relevant and stay short enough to follow",
+      "Neither — add 'be thorough and complete' to the existing description",
+      "A — CLAUDE.md is the canonical home for procedural checklists"
+    ],
+    answer: 1,
+    explain: "Always-on context is a trap: large bodies loaded every turn degrade attention to any one item. Focused sub-skills load only when relevant and each stays short enough that Claude follows it carefully. 'Be thorough' is wishful tuning, not a structural fix."
+  },
+  {
+    tag: 'scenario',
+    q: "Skill `db-migrate` triggers on 'run a migration' but ALSO on 'migrate the user from team A to team B'. Description currently: 'Run database migrations.' Which change best fixes the false positive without hurting true positives?",
+    opts: [
+      "Lengthen it: 'Run database migrations carefully and correctly with Alembic.'",
+      "Anchor to concrete systems (Alembic, alembic/versions/, DDL) and add a SKIP clause for non-DB senses of 'migrate'",
+      "Rename to `alembic-migrate` so it triggers only on the word 'alembic'",
+      "Lower the skill's priority so it loses ties to other skills"
+    ],
+    answer: 1,
+    explain: "Length alone doesn't help; 'carefully and correctly' is noise. Renaming doesn't change triggering (descriptions do). 'Priority' isn't a real frontmatter field. The robust fix is disambiguation: anchor to the domain AND name lookalike phrases that should NOT trigger."
+  },
+  {
+    tag: 'scenario',
+    q: "You want Claude to ALWAYS run `npm test` after editing any `.ts` file. You write a skill describing exactly that. It works ~70% of the time. Why isn't it 100%?",
+    opts: [
+      "The description needs more emphatic wording like 'ALWAYS' and 'NEVER skip'",
+      "Skills are model-invoked; 'always X after Y' is determinism, which belongs in a hook",
+      "A faster model would push reliability to 100% on the same skill",
+      "The skill is project-scoped; user scope would make triggering deterministic"
+    ],
+    answer: 1,
+    explain: "Skills shape probability; hooks enforce determinism. No amount of emphatic language changes that skills are advisory. 'Always X when Y' is a PostToolUse hook on Edit/Write, not a skill. Pick the right primitive for the requirement."
+  },
+  {
+    tag: 'scenario',
+    q: "You inherit a 1,200-line `release-notes` skill. Half is a procedure, half a reference table of every past release format. It triggers fine but feels slow and Claude sometimes mixes old formats into new notes. Best structural fix?",
+    opts: [
+      "Delete the historical reference table — it isn't needed for new notes",
+      "Keep SKILL.md as a short procedure; move the table to REFERENCE.md, loaded on demand",
+      "Move the skill to user scope so it loads more quickly across projects",
+      "Add 'always use the most recent release format' to the description"
+    ],
+    answer: 1,
+    explain: "Deleting loses real information; user scope is irrelevant to load size. When a skill triggers, its full SKILL.md is read — so a 1,200-line body always loads in full. Bulk reference belongs in sibling files Claude reads only when asked. Progressive disclosure at the file level."
+  },
+  {
+    tag: 'scenario',
+    q: "On a payments bug, Claude often picks `general-bug-fix` over the more specific `payments-bug-fix`. Both descriptions are well-written. Adding 'use this for payments bugs' to the specific skill doesn't help. Most likely root cause?",
+    opts: [
+      "The general skill claims everything by default; add a SKIP clause excluding payments",
+      "Skills with longer descriptions always win; pad the payments description further",
+      "Move `general-bug-fix` to user scope and `payments-bug-fix` to project scope",
+      "Skills cannot disambiguate by domain reliably; merge the two skills"
+    ],
+    answer: 0,
+    explain: "When a specific skill loses to a general one, the issue is rarely the specific skill being too quiet — it's the general skill being too loud. SKIP/exclusion clauses on the general skill are how you carve out specialized territory. Padding is fragile; scope and merging don't address trigger logic."
+  },
+  {
+    tag: 'scenario',
+    q: "A teammate proposes putting your entire 200-page engineering handbook into one skill. What's the sharpest architectural critique?",
+    opts: [
+      "Skills aren't allowed to be that large; the loader will reject the file",
+      "Once it triggers, all 200 pages load; better to split by topic or use an index",
+      "Handbooks belong in CLAUDE.md, not in skills, by convention",
+      "Skills are intended for code workflows; prose handbooks aren't a fit"
+    ],
+    answer: 1,
+    explain: "The trap is using a skill as a dumping ground. Skills are most powerful when narrow: trigger surface and body proportional to one task. A 200-page omni-skill loses progressive disclosure once invoked. Decompose by topic, or use a thin index that points to per-topic files."
+  },
+  {
+    tag: 'scenario',
+    q: "You want a security-review skill that runs ONLY when explicitly requested — never spontaneously on PR reviews or edits. Your description is clear, but it still triggers on adjacent tasks. Most reliable fix?",
+    opts: [
+      "Add an explicit 'do not auto-trigger' instruction to the skill description",
+      "Expose it as a slash command — user-invoked by construction, not advisory",
+      "Move the skill to user scope so it triggers less often across projects",
+      "Remove the description entirely so Claude has no signal to invoke it"
+    ],
+    answer: 1,
+    explain: "Skill triggering is probabilistic; description tuning reduces but doesn't eliminate false positives. 'Never unless the user asks' is a determinism guarantee — match it to a slash command, which is user-invoked by definition. Same logic as skills-vs-hooks, applied in reverse."
+  },
+  {
+    tag: 'scenario',
+    q: "Your `incident-response` skill works on your laptop but never triggers on a teammate's. Same Claude Code version, identical SKILL.md content at `.claude/skills/incident-response/`. Single most plausible remaining cause?",
+    opts: [
+      "A same-named skill at user scope or from a plugin is shadowing the project one",
+      "Different OS — skill discovery has platform-specific path resolution rules",
+      "The teammate's terminal locale is misconfigured for the skill loader",
+      "Skills require network access for discovery and the teammate is offline"
+    ],
+    answer: 0,
+    explain: "When file content and version are identical, the remaining variable is discovery. Same-named skills can exist at user, project, and plugin scope; the one Claude actually sees can differ per machine. Diagnose by listing what's discovered, not by re-reading the file."
+  },
+  {
+    tag: 'scenario',
+    q: "Skill `safe-deploy` orchestrates build → test → stage → smoke → prod. You want prod to require explicit confirmation EVERY time. A: encode 'always confirm before prod' in SKILL.md and trust Claude. B: keep the skill, add a PreToolUse hook on the prod command demanding confirmation. Correct choice?",
+    opts: [
+      "A — a clear instruction in SKILL.md is sufficient with current model alignment",
+      "B — 'every time' is determinism; only a hook makes it a hard, unbypassable gate",
+      "A — hooks add too much latency to be appropriate inside deploy workflows",
+      "Either — for confirmation prompts, skills and hooks are functionally equivalent"
+    ],
+    answer: 1,
+    explain: "Same architectural test as the linter scenario, higher stakes. 'Every time' = deterministic requirement = hook territory. A skill saying 'always confirm' is correct guidance but no guarantee. For destructive prod actions: skill orchestrates, hook enforces."
+  },
+  {
+    tag: 'scenario',
+    q: "A `code-review` skill description lists 30+ trigger phrases ('review this', 'check my PR', 'pls review', 'look this over', etc.). It now triggers on almost any message that mentions review. The author insists 'more phrases = better triggering.' Principled critique?",
+    opts: [
+      "Triggering is semantic, not keyword-based; long synonym lists broaden inferred scope",
+      "Skill descriptions are capped at 200 characters; the list exceeds the limit",
+      "The list is too short; add more synonyms until every phrasing is covered",
+      "User scope reduces over-triggering; move the skill there to fix the problem"
+    ],
+    answer: 0,
+    explain: "The misconception is that triggering matches keywords. It doesn't — Claude reads descriptions semantically, so piling on near-synonyms expands what's inferred as 'in scope' and increases false positives. A tight description plus explicit out-of-scope examples is more selective than an exhaustive synonym list."
+  }
+];
+
+/* ════════════════════════════════════════
+   ANATOMY (CCAF practical) — 11 verified questions
+   Source: practical_test_en.html (CCAF repo), "Code Generation with Claude Code"
+   ════════════════════════════════════════ */
+const ANATOMY = [
+  {
+    tag: 'anatomy',
+    q: "Your CLAUDE.md file has grown to 400+ lines containing coding standards, testing conventions, a detailed PR review checklist, deployment instructions, and database migration procedures. You want Claude to always follow coding standards and testing conventions, but apply PR review, deploy, and migration guidance only when doing those tasks. Which restructuring approach is most effective?",
+    opts: [
+      "Move all guidance into separate Skills files organized by workflow type, leaving only a brief project description in CLAUDE.md.",
+      "Keep everything in CLAUDE.md but use `@import` syntax to organize into separately maintained files by category.",
+      "Split CLAUDE.md into files under `.claude/rules/` with path-bound glob patterns so each rule loads only for the relevant file types.",
+      "Keep universal standards in CLAUDE.md and create Skills for workflow-specific guidance (PR review, deploy, migrations) with trigger keywords."
+    ],
+    answer: 3,
+    explain: "CLAUDE.md is for always-loaded standards. Skills are for on-demand workflows. Keep universal coding standards and testing conventions in CLAUDE.md; move PR review, deploy, and migration into skills triggered on demand."
+  },
+  {
+    tag: 'anatomy',
+    q: "Your team created a `/analyze-codebase` skill that performs deep code analysis — dependency scanning, test coverage counts, and code quality metrics. After running the command, team members report Claude becomes less responsive in the session and loses the context of the original task. How do you most effectively fix this while keeping full analysis capabilities?",
+    opts: [
+      "Add `context: fork` in the skill frontmatter to run the analysis in an isolated subagent context.",
+      "Add `model: haiku` in frontmatter to use a faster, cheaper model for analysis.",
+      "Split the skill into three smaller skills, each producing less output.",
+      "Add instructions to the skill to compress all results into a short summary before displaying them."
+    ],
+    answer: 0,
+    explain: "`context: fork` runs the skill in an isolated subagent so its verbose output stays out of the main session. Only the summary returns to the parent context."
+  },
+  {
+    tag: 'anatomy',
+    q: "Your team uses a `/commit` skill in `.claude/skills/commit/SKILL.md`. A developer wants to customize it for their personal workflow (different commit message format, extra checks) without affecting teammates. What do you recommend?",
+    opts: [
+      "Create a personal version under `~/.claude/skills/` with a different name, e.g., `/my-commit`.",
+      "Add conditional logic based on username in the project skill frontmatter.",
+      "Create a personal version at `~/.claude/skills/commit/SKILL.md` with the same name.",
+      "Set `override: true` in the personal skill frontmatter to prioritize it over the project version."
+    ],
+    answer: 2,
+    explain: "Create the personal version at `~/.claude/skills/commit/SKILL.md` with the same name — user-scope shadows project-scope on the developer's machine without affecting teammates."
+  },
+  {
+    tag: 'anatomy',
+    q: "Your team has used Claude Code for months. Recently, three developers report Claude follows the guidance \"always include comprehensive error handling,\" but a fourth developer who just joined says Claude does not follow it. All four work in the same repo and have up-to-date code. What is the most likely cause and fix?",
+    opts: [
+      "The guidance lives in the original developers' user-level `~/.claude/CLAUDE.md` files, not in the project `.claude/CLAUDE.md`. Move the instruction to the project-level file so all team members receive it.",
+      "The new developer's `~/.claude/CLAUDE.md` contains conflicting instructions overriding project settings; they should delete the conflicting section.",
+      "Claude Code learns per-user preferences over time; the new developer must repeat the requirement until Claude \"remembers\" it.",
+      "Claude Code caches CLAUDE.md after first read; original developers use cached versions. Everyone should clear the Claude Code cache."
+    ],
+    answer: 0,
+    explain: "User-level CLAUDE.md isn't shared with the team. Guidance everyone should follow belongs in project-level `.claude/CLAUDE.md` so it ships with the repo."
+  },
+  {
+    tag: 'anatomy',
+    q: "You find that including 2–3 full endpoint implementation examples as context significantly improves consistency when generating new API endpoints. However, this context is useful only when creating new endpoints — not when debugging, reviewing code, or other work in the API directory. Which configuration approach is most effective?",
+    opts: [
+      "Add endpoint examples and pattern documentation to the project CLAUDE.md so they are always available.",
+      "Manually reference endpoint examples in every generation request by copying code into the prompt.",
+      "Configure path-specific rules in `.claude/rules/api/` that include endpoint examples and activate when working in the API directory.",
+      "Create a skill that references the endpoint examples and contains pattern-following instructions, invoked on demand via a slash command."
+    ],
+    answer: 3,
+    explain: "Skill = on-demand for a specific task. Endpoint examples only matter when creating new endpoints — that's a skill invoked on demand, not always-on CLAUDE.md content."
+  },
+  {
+    tag: 'anatomy',
+    q: "Your team created a `/migration` skill that generates database migration files. It takes the migration name via `$ARGUMENTS`. In production you observe three issues: (1) developers often run the skill without arguments, causing poorly named files, (2) the skill sometimes uses database schema details from unrelated prior conversations, and (3) a developer accidentally ran destructive test cleanup when the skill had broad tool access. Which configuration approach fixes all three problems?",
+    opts: [
+      "Use positional parameters `$1` and `$2` instead of `$ARGUMENTS` to enforce specific inputs, include explicit schema file references via `@` syntax for context control, and add a frontmatter description warning about destructive operations.",
+      "Add `argument-hint` in frontmatter to request required parameters, use `context: fork` to isolate execution, and restrict `allowed-tools` to file-write operations.",
+      "Split into `/migration-create` and `/migration-apply` skills, add validation instructions to request migration name if missing, and use different `allowed-tools` scopes for each.",
+      "Add validation instructions in the skill SKILL.md to ensure `$ARGUMENTS` is a valid name, add prompts to ignore prior conversation context, and list prohibited operations to avoid."
+    ],
+    answer: 1,
+    explain: "`argument-hint` prompts for the missing name; `context: fork` isolates from prior conversation pollution; `allowed-tools` restricts to safe file operations only. All three frontmatter fields address one problem each."
+  },
+  {
+    tag: 'anatomy',
+    q: "Your codebase contains areas with different coding conventions: React components use functional style with hooks, API handlers use async/await with specific error handling, and database models follow the repository pattern. Test files are distributed across the codebase next to the code under test (e.g., `Button.test.tsx` next to `Button.tsx`), and you want all tests to follow the same conventions regardless of location. What is the most supported way to ensure Claude automatically applies the correct conventions when generating code?",
+    opts: [
+      "Put all conventions in the root CLAUDE.md under headings for each area and rely on Claude to infer which section applies.",
+      "Create skills in `.claude/skills/` for each code type, embedding conventions in each SKILL.md.",
+      "Place a separate CLAUDE.md file in each subdirectory containing conventions for that area.",
+      "Create rule files under `.claude/rules/` with YAML frontmatter specifying glob patterns to conditionally apply conventions based on file paths."
+    ],
+    answer: 3,
+    explain: "`.claude/rules/` with glob patterns is the supported way to apply conventions conditionally based on file paths. A React rule applies to `*.tsx`; an API rule applies to `api/**`; the test rule applies to `*.test.*` regardless of directory."
+  },
+  {
+    tag: 'anatomy',
+    q: "You want to create a custom slash command `/review` that runs your team's standard code review checklist. It should be available to every developer when they clone or update the repository. Where should you create the command file?",
+    opts: [
+      "In `~/.claude/commands/` in each developer's home directory.",
+      "In the project repository under `.claude/commands/`.",
+      "In `.claude/config.json` as an array of commands.",
+      "In the root project CLAUDE.md."
+    ],
+    answer: 1,
+    explain: "Project-level commands live in `.claude/commands/` and ship with the repo, so every developer gets them on clone or pull."
+  },
+  {
+    tag: 'anatomy',
+    q: "Your team's CLAUDE.md grew beyond 500 lines mixing TypeScript conventions, testing guidance, API patterns, and deployment procedures. Developers find it hard to locate and update the right sections. What approach does Claude Code support to organize project-level instructions into focused topical modules?",
+    opts: [
+      "Define a `.claude/config.yaml` mapping file patterns to specific sections inside CLAUDE.md.",
+      "Create separate Markdown files in `.claude/rules/`, each covering one topic (e.g., `testing.md`, `api-conventions.md`).",
+      "Split instructions into README.md files in relevant subdirectories that Claude automatically loads as instructions.",
+      "Create multiple files named CLAUDE.md at different levels of the directory tree, each overriding parent instructions."
+    ],
+    answer: 1,
+    explain: "`.claude/rules/` is the supported home for topical instruction modules — separate files per topic, each with frontmatter for scoping."
+  },
+  {
+    tag: 'anatomy',
+    q: "You create a custom skill `/explore-alternatives` that your team uses to brainstorm and evaluate implementation approaches before choosing one. Developers report that after running the skill, subsequent Claude responses are influenced by the alternatives discussion — sometimes referencing rejected approaches or retaining exploration context that interferes with actual implementation. How should you most effectively configure this skill?",
+    opts: [
+      "Use the `!` prefix in the skill to run exploration logic as a bash subprocess.",
+      "Add `context: fork` in the skill frontmatter.",
+      "Split into two skills — `/explore-start` and `/explore-end` — to mark boundaries when exploration context should be discarded.",
+      "Create the skill in `~/.claude/skills/` instead of `.claude/skills/`."
+    ],
+    answer: 1,
+    explain: "`context: fork` isolates the exploration into a subagent. The exploration discussion stays in the fork; only the final recommendation returns to the parent session, so it doesn't contaminate later implementation work."
+  },
+  {
+    tag: 'anatomy',
+    q: "You're adding error-handling wrappers around external API calls across a 120-file codebase. The work has three phases: (1) discover all call sites and patterns, (2) collaboratively design the error-handling approach, and (3) implement wrappers consistently. In Phase 1, Claude generates large output listing hundreds of call sites with context, quickly filling the context window before discovery finishes. Which approach is most effective to complete the task while maintaining implementation consistency?",
+    opts: [
+      "Use an Explore subagent for Phase 1 to isolate verbose discovery output and return a summary, then continue Phases 2–3 in the main conversation.",
+      "Do all phases in the main conversation, periodically using `/compact` to reduce context usage while moving through files.",
+      "Switch to headless mode with `--continue`, passing explicit context summaries between batch calls to maintain continuity.",
+      "Define the error-handling pattern in CLAUDE.md, then process files in batches across multiple sessions relying on the shared memory file for consistency."
+    ],
+    answer: 0,
+    explain: "The Explore subagent isolates verbose discovery output. Phase 1's hundreds of call sites stay in the subagent; only the pattern summary returns to the main session, preserving context window for the collaborative design and implementation phases."
+  }
+];
+
+/* ════════════════════════════════════════
+   ENGINE
+   ════════════════════════════════════════ */
+let QUESTIONS = [];
+let current = 0;
+let answers = [];
+
+const picker = document.getElementById('picker');
+const pickAll = document.getElementById('pickAll');
+const card = document.getElementById('card');
+const progressWrap = document.getElementById('progressWrap');
+const progressBar = document.getElementById('progressBar');
+const progressLabel = document.getElementById('progressLabel');
+const hint = document.getElementById('hint');
+
+function shuffle(arr) {
+  const a = arr.slice();
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function startSet(mode) {
+  if (mode === 'basics') QUESTIONS = BASICS;
+  else if (mode === 'scenarios') QUESTIONS = SCENARIOS;
+  else if (mode === 'anatomy') QUESTIONS = ANATOMY;
+  else QUESTIONS = shuffle(BASICS.concat(SCENARIOS).concat(ANATOMY));
+  current = 0;
+  answers = new Array(QUESTIONS.length).fill(null);
+  picker.classList.add('hidden');
+  pickAll.classList.add('hidden');
+  progressWrap.classList.remove('hidden');
+  card.classList.remove('hidden');
+  renderQuestion();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function showPicker() {
+  picker.classList.remove('hidden');
+  pickAll.classList.remove('hidden');
+  progressWrap.classList.add('hidden');
+  card.classList.add('hidden');
+  current = 0;
+  answers = [];
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function renderQuestion() {
+  const i = current;
+  const item = QUESTIONS[i];
+  const answered = answers[i] !== null;
+  progressBar.style.width = `${((i + (answered ? 1 : 0)) / QUESTIONS.length) * 100}%`;
+  progressLabel.textContent = `${i + 1} / ${QUESTIONS.length}`;
+
+  const tagClass = item.tag === 'scenario' ? 'scenario' : item.tag === 'anatomy' ? 'anatomy' : 'basics';
+  const tagLabel = item.tag === 'scenario' ? 'scenario' : item.tag === 'anatomy' ? 'ccaf · anatomy' : 'basics';
+
+  card.innerHTML = `
+    <div class="qmeta">
+      <span>Question ${i + 1} of ${QUESTIONS.length}</span>
+      <span class="tag ${tagClass}">${tagLabel}</span>
+    </div>
+    <div class="qtext">${item.q}</div>
+    <div class="opts">
+      ${item.opts.map((opt, j) => {
+        let cls = '';
+        if (answered) {
+          if (j === item.answer) cls = 'correct';
+          else if (j === answers[i]) cls = 'wrong';
+        }
+        return `<button class="opt ${cls} ${answered ? 'disabled' : ''}" data-opt="${j}" ${answered ? 'disabled' : ''}>
+          <span class="key">0${j + 1}</span>
+          <span>${opt}</span>
+        </button>`;
+      }).join('')}
+    </div>
+    ${answered ? `
+      <div class="explain show ${answers[i] === item.answer ? 'right' : 'miss'}">
+        <div class="verdict">${answers[i] === item.answer ? 'why' : 'why'}</div>
+        ${item.explain}
+      </div>` : '<div class="explain"></div>'}
+    <div class="controls">
+      <button id="prevBtn" ${i === 0 ? 'disabled' : ''}>← back</button>
+      <button class="primary" id="nextBtn" ${!answered ? 'disabled' : ''}>
+        ${i === QUESTIONS.length - 1 ? 'finish →' : 'next →'}
+      </button>
+    </div>
+  `;
+
+  card.querySelectorAll('.opt').forEach(el => {
+    if (el.classList.contains('disabled')) return;
+    el.addEventListener('click', () => {
+      const j = parseInt(el.dataset.opt, 10);
+      answers[i] = j;
+      renderQuestion();
+    });
+  });
+
+  const prevBtn = document.getElementById('prevBtn');
+  const nextBtn = document.getElementById('nextBtn');
+  prevBtn.onclick = () => { if (current > 0) { current--; renderQuestion(); } };
+  nextBtn.onclick = () => {
+    if (current < QUESTIONS.length - 1) { current++; renderQuestion(); }
+    else renderResults();
+  };
+}
+
+function renderResults() {
+  progressBar.style.width = '100%';
+  progressLabel.textContent = `${QUESTIONS.length} / ${QUESTIONS.length}`;
+  hint.classList.add('hidden');
+  const correct = answers.filter((a, i) => a === QUESTIONS[i].answer).length;
+  const pct = Math.round((correct / QUESTIONS.length) * 100);
+  const verdict = pct === 100 ? "Perfect score. Ready for submission."
+    : pct >= 80 ? "Strong grasp. Worth one review pass on the misses."
+    : pct >= 60 ? "Solid start. Read the misses, then run it again."
+    : "Worth another pass through the material before workshop.";
+
+  card.innerHTML = `
+    <div class="results">
+      <div class="score-line">
+        <div class="score-big">${correct}<span class="total"> / ${QUESTIONS.length}</span></div>
+        <div class="score-pct"><span class="num">${pct}%</span>final score</div>
+      </div>
+
+      <div class="verdict-line">${verdict.replace('.', '<span class="o">.</span>')}</div>
+
+      <div class="review-head">review · what you got</div>
+      ${QUESTIONS.map((item, i) => {
+        const ok = answers[i] === item.answer;
+        return `<div class="review-item ${ok ? 'ok' : 'bad'}">
+          <div class="num">0${(i + 1).toString().padStart(2, '0').slice(-2)}</div>
+          <div>${item.q}</div>
+          <div class="mark">${ok ? 'ok' : 'miss'}</div>
+        </div>`;
+      }).join('')}
+
+      <div class="results-controls">
+        <button id="restartBtn" class="primary">try again</button>
+        <button id="pickerBtn">change set</button>
+      </div>
+    </div>
+  `;
+  document.getElementById('restartBtn').onclick = () => {
+    current = 0;
+    answers = new Array(QUESTIONS.length).fill(null);
+    hint.classList.remove('hidden');
+    renderQuestion();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+  document.getElementById('pickerBtn').onclick = () => {
+    hint.classList.remove('hidden');
+    showPicker();
+  };
+}
+
+/* ════════════════════════════════════════
+   WIRING
+   ════════════════════════════════════════ */
+picker.querySelectorAll('.pick-card').forEach(el => {
+  el.addEventListener('click', () => startSet(el.dataset.mode));
+});
+pickAll.addEventListener('click', () => startSet('all'));
+
+document.addEventListener('keydown', e => {
+  if (card.classList.contains('hidden')) return;
+  // ignore typing in inputs (none here, but defensive)
+  if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+
+  if (e.key >= '1' && e.key <= '4') {
+    const j = parseInt(e.key, 10) - 1;
+    const item = QUESTIONS[current];
+    if (item && answers[current] === null && j < item.opts.length) {
+      answers[current] = j;
+      renderQuestion();
+    }
+  } else if (e.key === 'Enter' || e.key === 'ArrowRight') {
+    const nextBtn = document.getElementById('nextBtn');
+    if (nextBtn && !nextBtn.disabled) nextBtn.click();
+  } else if (e.key === 'ArrowLeft') {
+    const prevBtn = document.getElementById('prevBtn');
+    if (prevBtn && !prevBtn.disabled) prevBtn.click();
+  } else if (e.key === 'r' || e.key === 'R') {
+    showPicker();
+  }
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,11 @@
+{
+  "name": "engram-cohort-training",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Engram cohort training site for the Claude Partner Network certification path.",
+  "homepage": "https://engram.media",
+  "scripts": {
+    "dev": "npx serve .",
+    "build": "echo 'static site — no build step'"
+  }
+}

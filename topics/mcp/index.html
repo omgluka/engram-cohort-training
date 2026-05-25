@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engram · MCP · Coming Soon</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@900&family=Geist:wght@300..700&family=Geist+Mono:wght@300..600&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@700,600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --paper:  #F6F4EF;
+    --ink:    #0A0A0A;
+    --orange: #E8623C;
+    --rule:   1.5px;
+    --display-machine:   'Doto', monospace;
+    --display-editorial: 'Clash Display', 'Geist', sans-serif;
+    --mono:              'Geist Mono', ui-monospace, monospace;
+    --sans:              'Geist', 'Inter', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--paper); color: var(--ink); min-height: 100vh; }
+  body {
+    font-family: var(--sans);
+    line-height: 1.5;
+    padding: 56px 64px;
+    -webkit-font-smoothing: antialiased;
+    display: flex; flex-direction: column;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; width: 100%; flex: 1; display: flex; flex-direction: column; }
+  .back {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    color: var(--ink);
+    text-decoration: none;
+    margin-bottom: 56px;
+  }
+  .back:hover { color: var(--orange); opacity: 1; }
+  .center { flex: 1; display: flex; align-items: center; }
+  .content { max-width: 800px; }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 14px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 36px;
+  }
+  .kiss { line-height: 0.78; margin-bottom: 56px; }
+  .kiss .m {
+    font-family: var(--display-machine);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    font-size: 72px;
+    display: block;
+  }
+  .kiss .e {
+    font-family: var(--display-editorial);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    font-size: 120px;
+    display: block;
+    margin-top: 0;
+  }
+  .kiss .e .o { color: var(--orange); }
+  .lede {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 22px;
+    line-height: 1.5;
+    max-width: 680px;
+    margin-bottom: 40px;
+  }
+  .lede strong { font-weight: 500; }
+  .topics-list {
+    font-family: var(--mono);
+    font-size: 14px;
+    line-height: 2;
+    border-top: 1.5px solid var(--ink);
+    padding-top: 32px;
+    max-width: 680px;
+  }
+  .topics-list .label {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 14px;
+  }
+  .topics-list ul { list-style: none; }
+  .topics-list li { padding-left: 24px; position: relative; }
+  .topics-list li::before {
+    content: '·';
+    position: absolute;
+    left: 0;
+    color: var(--orange);
+    font-weight: 500;
+  }
+  footer {
+    margin-top: 80px;
+    padding-top: 24px;
+    border-top: 1.5px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    opacity: 0.65;
+  }
+  .mark-engram svg { display: block; height: 20px; }
+
+  @media (max-width: 760px) {
+    body { padding: 32px 20px; }
+    .kiss .m { font-size: 44px; }
+    .kiss .e { font-size: 72px; }
+    .lede { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a href="../../index.html" class="back">← all workshops</a>
+
+  <div class="center">
+    <div class="content">
+      <div class="eyebrow">workshop 03 · claude partner network</div>
+      <div class="kiss">
+        <span class="m">model</span>
+        <span class="e">context<span class="o">.</span></span>
+      </div>
+      <p class="lede">Coming soon. <strong>Introduction to Model Context Protocol</strong> covers MCP architecture, server configuration, tools and resources, the isError flag, and the strategic call of when to write an MCP versus when a skill is enough.</p>
+
+      <div class="topics-list">
+        <div class="label">what this workshop will cover</div>
+        <ul>
+          <li>What MCP is and when to reach for it</li>
+          <li>MCP servers: stdio, HTTP, configuration</li>
+          <li>Defining tools and resources</li>
+          <li>The isError flag and error handling</li>
+          <li>MCP vs skill: extend capability vs extend behavior</li>
+          <li>Security and tool scoping</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div>engram · agentic media. · 2026</div>
+    <div class="mark-engram">
+      <svg viewBox="0 0 242.82 100" aria-label="Engram">
+        <rect x="0" y="0" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="0" y="35.075" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="0" y="70.15" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="124.12" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+        <rect x="165.77" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+        <rect x="207.42" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+      </svg>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>
