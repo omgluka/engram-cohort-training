@@ -183,11 +183,16 @@
   }
 
   /* ────────── options ────────── */
-  .opts { display: flex; flex-direction: column; gap: 14px; }
+  .opts {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+  }
   .opt {
     display: grid;
     grid-template-columns: 56px 1fr;
     align-items: start;
+    min-height: 96px;
     padding: 22px 26px;
     border: 1.5px solid var(--ink);
     background: var(--paper);
@@ -410,6 +415,7 @@
     .kiss .m { font-size: 36px; }
     .kiss .e { font-size: 60px; }
     .picker { grid-template-columns: 1fr; }
+    .opts { grid-template-columns: 1fr; }
     .qtext { font-size: 24px; }
     .score-big { font-size: 96px; }
   }
