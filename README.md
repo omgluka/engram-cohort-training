@@ -9,7 +9,7 @@ Five workshops mirroring the Claude Partner Network learning path on Anthropic S
 | # | Workshop | Status | Questions |
 |---|---|---|---|
 | 01 | [Skills](topics/skills/) | Live | 31 verified |
-| 02 | [Claude API](topics/claude-api/) | Coming soon | — |
+| 02 | [Claude API](topics/claude-api/) | Live | 28 verified |
 | 03 | [Model Context Protocol](topics/mcp/) | Coming soon | — |
 | 04 | [Claude Code](topics/claude-code/) | Coming soon | — |
 | — | [CCAF simulation](topics/ccaf-simulation/) | Coming soon | 60 (planned) |

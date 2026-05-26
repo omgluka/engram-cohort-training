@@ -10,3 +10,5 @@ _verify*.mjs
 _extract.mjs
 audit.mjs
 _cite.mjs
+
+.vercel
