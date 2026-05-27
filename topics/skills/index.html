@@ -659,6 +659,7 @@ const BASICS = [
     ],
     answer: 2,
     explain: "Skills are for reusable, generalizable capabilities. A one-off question is just a prompt — wrapping it in a skill adds overhead without benefit. Skills shine when the same workflow or knowledge will be needed repeatedly.",
+    verified: "paul",
   },
   {
     tag: "basics",
@@ -706,6 +707,7 @@ const SCENARIOS = [
     ],
     answer: 1,
     explain: "Always-on context is a trap: large bodies loaded every turn degrade attention to any one item. Focused sub-skills load only when relevant and each stays short enough that Claude follows it carefully. 'Be thorough' is wishful tuning, not a structural fix.",
+    verified: "paul",
   },
   {
     tag: "scenario",
@@ -718,6 +720,7 @@ const SCENARIOS = [
     ],
     answer: 1,
     explain: "Length alone doesn't help; 'carefully and correctly' is noise. Renaming doesn't change triggering (descriptions do). 'Priority' isn't a real frontmatter field. The robust fix is disambiguation: anchor to the domain AND name lookalike phrases that should NOT trigger.",
+    verified: "paul",
   },
   {
     tag: "scenario",
@@ -758,6 +761,7 @@ const SCENARIOS = [
     ],
     answer: 0,
     explain: "When a specific skill loses to a general one, the issue is rarely the specific skill being too quiet — it's the general skill being too loud. SKIP/exclusion clauses on the general skill are how you carve out specialized territory. Padding is fragile; scope and merging don't address trigger logic.",
+    verified: "paul",
   },
   {
     tag: "scenario",
@@ -784,6 +788,7 @@ const SCENARIOS = [
     ],
     answer: 1,
     explain: "Skill triggering is probabilistic; description tuning reduces but doesn't eliminate false positives. 'Never unless the user asks' is a determinism guarantee — match it to a slash command, which is user-invoked by definition. Same logic as skills-vs-hooks, applied in reverse.",
+    verified: "paul",
   },
   {
     tag: "scenario",
@@ -796,6 +801,8 @@ const SCENARIOS = [
     ],
     answer: 0,
     explain: "When file content and version are identical, the remaining variable is discovery. Same-named skills can exist at user, project, and plugin scope; the one Claude actually sees can differ per machine. Diagnose by listing what's discovered, not by re-reading the file.",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/skills",
   },
   {
     tag: "scenario",
@@ -822,6 +829,7 @@ const SCENARIOS = [
     ],
     answer: 0,
     explain: "The misconception is that triggering matches keywords. It doesn't — Claude reads descriptions semantically, so piling on near-synonyms expands what's inferred as 'in scope' and increases false positives. A tight description plus explicit out-of-scope examples is more selective than an exhaustive synonym list.",
+    verified: "paul",
   }
 ];
 
@@ -841,6 +849,7 @@ const ANATOMY = [
     ],
     answer: 3,
     explain: "CLAUDE.md is for always-loaded standards. Skills are for on-demand workflows. Keep universal coding standards and testing conventions in CLAUDE.md; move PR review, deploy, and migration into skills triggered on demand.",
+    verified: "paul",
   },
   {
     tag: "anatomy",
@@ -853,7 +862,8 @@ const ANATOMY = [
     ],
     answer: 0,
     explain: "`context: fork` runs the skill in an isolated subagent so its verbose output stays out of the main session. Only the summary returns to the parent context.",
-    auditNote: "context: fork is not documented in anthropic-facts.md; treating as unverified.",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/skills",
   },
   {
     tag: "anatomy",
@@ -894,6 +904,7 @@ const ANATOMY = [
     ],
     answer: 3,
     explain: "Skill = on-demand for a specific task. Endpoint examples only matter when creating new endpoints — that's a skill invoked on demand, not always-on CLAUDE.md content.",
+    verified: "paul",
   },
   {
     tag: "anatomy",
@@ -906,7 +917,8 @@ const ANATOMY = [
     ],
     answer: 1,
     explain: "`argument-hint` prompts for the missing name; `context: fork` isolates from prior conversation pollution; `allowed-tools` restricts to safe file operations only. All three frontmatter fields address one problem each.",
-    auditNote: "context: fork and argument-hint claims not in anthropic-facts.md reference.",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/skills",
   },
   {
     tag: "anatomy",
@@ -961,7 +973,8 @@ const ANATOMY = [
     ],
     answer: 1,
     explain: "`context: fork` isolates the exploration into a subagent. The exploration discussion stays in the fork; only the final recommendation returns to the parent session, so it doesn't contaminate later implementation work.",
-    auditNote: "context: fork field not in anthropic-facts.md reference.",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/skills",
   },
   {
     tag: "anatomy",

@@ -648,7 +648,8 @@ const CC_CONFIG = [
     answer: 2,
     explain: "<strong>Why C:</strong> `context: fork` in SKILL.md frontmatter spawns a forked subagent context. The skill content becomes the prompt and results return as a summary, keeping the main conversation clean. The other field names are not part of the SKILL.md schema.",
     source: "paullarionov Q5",
-    auditNote: "context: fork is not documented in anthropic-facts.md reference; cannot confirm.",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/skills",
   },
   {
     tag: "config",
@@ -722,7 +723,8 @@ const CC_CONFIG = [
     answer: 1,
     explain: "<strong>Why B:</strong> `allowed-tools` grants permission for the listed tools while the skill is active, using the same `Tool(specifier)` syntax as settings.json. It does not restrict other tools, it only skips the approval prompt for the listed ones. The other field names are not part of the SKILL.md schema.",
     source: "anthropic docs · claude code skills",
-    auditNote: "allowed-tools field not explicitly in anthropic-facts.md reference.",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/skills",
   },
   {
     tag: "config",
@@ -736,6 +738,8 @@ const CC_CONFIG = [
     answer: 1,
     explain: "<strong>Why B:</strong> `argument-hint` is purely a UX hint shown in autocomplete, like `[issue-number]` or `[filename] [format]`. It does not validate, default, or parse. Named positional binding is done with the `arguments` field plus `$name` substitution.",
     source: "anthropic docs · claude code slash commands",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/skills",
   },
   {
     tag: "config",
@@ -749,6 +753,8 @@ const CC_CONFIG = [
     answer: 2,
     explain: "<strong>Why C:</strong> `$ARGUMENTS` expands to the full argument string as typed. `$0`, `$1`, etc. (or `$ARGUMENTS[0]`, `$ARGUMENTS[1]`) access individual shell-quoted arguments by position. `$INPUT` and `{{args}}` are not part of the syntax.",
     source: "anthropic docs · claude code slash commands",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/skills",
   },
   {
     tag: "config",
@@ -762,6 +768,8 @@ const CC_CONFIG = [
     answer: 1,
     explain: "<strong>Why B:</strong> The `env` key in settings.json holds an object of environment variables applied to all sessions. The other keys are not recognized. Common entries here include `CLAUDE_CODE_ENABLE_TELEMETRY`, `ANTHROPIC_MODEL`, and provider routing variables.",
     source: "anthropic docs · claude code settings",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/settings",
   },
   {
     tag: "config",
@@ -955,6 +963,7 @@ const CC_WORKFLOWS = [
     answer: 1,
     explain: "<strong>Why B:</strong> Independent tool calls should be issued in parallel in a single block. This is faster and uses fewer turns. Sequential is appropriate only when later calls depend on earlier results. `cat` loses line numbers and image handling, and Read does not accept multiple paths.",
     source: "anthropic docs · claude code overview",
+    verified: "paul",
   },
   {
     tag: "workflow",
@@ -983,6 +992,8 @@ const CC_WORKFLOWS = [
     answer: 1,
     explain: "<strong>Why B:</strong> The GitHub Actions integration is the supported way to run Claude Code in CI on PR events. It runs headless with `-p` and can post review comments. Long-lived screen sessions and per-developer pre-push hooks are fragile and inconsistent across the team. `/loop` is for interactive recurring tasks, not push-driven CI.",
     source: "anthropic docs · claude code github actions",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/github-actions",
   }
 ];
 
