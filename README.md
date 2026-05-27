@@ -10,8 +10,8 @@ Five workshops mirroring the Claude Partner Network learning path on Anthropic S
 |---|---|---|---|
 | 01 | [Skills](topics/skills/) | Live | 31 verified |
 | 02 | [Claude API](topics/claude-api/) | Live | 28 verified |
-| 03 | [Model Context Protocol](topics/mcp/) | Coming soon | — |
-| 04 | [Claude Code](topics/claude-code/) | Coming soon | — |
+| 03 | [Model Context Protocol](topics/mcp/) | Live | 33 verified |
+| 04 | [Claude Code in Action](topics/claude-code/) | Live | 42 verified |
 | Final | [CCAF simulation](topics/ccaf-simulation/) | Live | 120 verified (60 from paullarionov + 60 from cyberskill, practice + timed exam) |
 
 All questions are sourced verbatim from the [`claude-certified-architect`](https://github.com/paullarionov/claude-certified-architect) repo. Nothing is AI-generated.
