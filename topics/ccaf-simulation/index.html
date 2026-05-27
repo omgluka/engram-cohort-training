@@ -639,6 +639,57 @@
     .score-big { font-size: 96px; }
     #timer { top: 12px; right: 12px; font-size: 14px; padding: 8px 12px; }
   }
+/* === src-badge styles (added by add-badges.js) === */
+  .src-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border: 1px solid var(--ink);
+    margin-left: 10px;
+    background: var(--paper);
+    color: var(--ink);
+    opacity: 0.75;
+  }
+  .src-badge.verified-anthropic {
+    color: #15803D;
+    border-color: #15803D;
+    background: #ECFAF1;
+    opacity: 1;
+  }
+  .src-badge.verified-anthropic::before { content: '✓ '; }
+  .src-badge.verified-cyberskill {
+    color: var(--ink);
+    border-color: var(--ink);
+    opacity: 0.85;
+  }
+  .src-badge.verified-paul {
+    color: var(--ink);
+    border-color: var(--ink);
+    opacity: 0.85;
+  }
+  .src-badge.verified-debated {
+    color: #B47A00;
+    border-color: #B47A00;
+    background: #FFF7E0;
+    opacity: 1;
+  }
+  .src-badge.verified-debated::before { content: '⚠ '; }
+  .docs-link {
+    display: block;
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: #15803D;
+    text-decoration: none;
+    border-bottom: 1px solid #15803D;
+    padding-bottom: 2px;
+  }
+  .docs-link::before { content: '→ anthropic docs: '; opacity: 0.7; }
+  .docs-link:hover { color: var(--orange); border-color: var(--orange); }
+
 </style>
 </head>
 <body>
@@ -764,7 +815,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Structured per-agent reports keep fidelity (the findings, with schema), let the coordinator stay in charge of orchestration, and keep each subagent's context focused. This is the orchestrator + compact artifact pattern.<br/><br/><strong>A:</strong> Fragmented per-agent state breaks coordinator visibility and makes cross-agent reasoning brittle. Each agent reloading unrelated internal state also bloats their context with noise they don't need.<br/><br/><strong>B:</strong> A full conversation log is the highest-fidelity but least context-efficient option. You'd replay everything into each subagent and blow past context budgets.<br/><br/><strong>D:</strong> Semantic retrieval over agent outputs is overkill for resuming a crashed pipeline, it adds a retrieval failure mode and can miss precise state that a structured report preserves exactly.",
-    source: "cyberskill Q1"
+    source: "cyberskill Q1",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -777,7 +829,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. The synthesis gives the narrative; the source index gives the report generator exactly the binding it needs to cite without re-reading 120K tokens of raw content.<br/><br/><strong>A:</strong> Post-hoc matching is fragile, without the mapping the model used, you can't reliably bind claims to the right source. Hallucinated or misattributed citations are the usual failure mode.<br/><br/><strong>C:</strong> Name-only attribution loses URLs and excerpts, so the report generator can't quote or verify, and 'by name only' tends to drift into vague citations.<br/><br/><strong>D:</strong> Maximum completeness but wasteful, 120K+ tokens of raw search content is mostly irrelevant noise at the report-generation stage.",
-    source: "cyberskill Q2"
+    source: "cyberskill Q2",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -790,7 +843,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. Free-text instructions put the semantics in prose, which the model interprets inconsistently. Purpose-specific tools give the model an explicit, well-typed contract to pick between.<br/><br/><strong>B:</strong> Better than free text, but still a single tool with a single output shape. Output still has to be a generic string, and the model can mode-mismatch. Separate tools enforce distinct I/O contracts.<br/><br/><strong>C:</strong> Moves the ambiguity upstream without fixing it. The tool contract is still fuzzy; the coordinator's classification is one more error surface.<br/><br/><strong>D:</strong> Examples help, but tool-use reliability comes first from clear tool boundaries and output schemas, not from heroic prompt engineering on one generic tool.",
-    source: "cyberskill Q3"
+    source: "cyberskill Q3",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -803,7 +857,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. In an orchestrator-worker pattern the coordinator is the hub. It collects each subagent's output and explicitly forwards the relevant parts into the next subagent's prompt.<br/><br/><strong>A:</strong> Event buses aren't part of the Claude subagent model. Subagents don't publish/subscribe to each other directly.<br/><br/><strong>B:</strong> Subagents are isolated, they can't directly call sibling subagents. That would also tightly couple them and defeat the orchestrator pattern.<br/><br/><strong>D:</strong> A shared store can be layered in as an optimization, but it's not how subagents typically communicate, and it introduces stale-read and consistency problems.",
-    source: "cyberskill Q4"
+    source: "cyberskill Q4",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -816,7 +871,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Letting the coordinator LLM reason about each query and pick only the subagents it needs adapts naturally to an evolving, diverse query distribution, this is the strength of the orchestrator pattern.<br/><br/><strong>A:</strong> Pattern routing calcifies as the query distribution evolves, new intents break the patterns and silently land on the wrong pipeline.<br/><br/><strong>B:</strong> A binary fast-path fixes the worst case but wastes the full pipeline on every moderately complex query that could have used a subset.<br/><br/><strong>D:</strong> A trained classifier needs labels, retraining, and drift monitoring. That's over-engineered when the coordinator can make the same call at runtime from the query itself.",
-    source: "cyberskill Q5"
+    source: "cyberskill Q5",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -829,7 +885,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. The synthesis agent misreads the data because it never sees the dates. Making each data point carry its own timestamp in the structured output lets synthesis reason about trends instead of contradictions.<br/><br/><strong>B:</strong> Silently discarding older data destroys trend information, the very thing the question is asking about.<br/><br/><strong>C:</strong> Shrinking the window throws away historical context and doesn't fix the architectural gap that metadata isn't being passed to synthesis.<br/><br/><strong>D:</strong> Prompt instructions alone are unreliable and still hide temporal reasoning behind a rule. Structuring the data with dates is the systematic fix.",
-    source: "cyberskill Q6"
+    source: "cyberskill Q6",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -842,7 +899,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. Structured content + separate source metadata preserves the mapping end-to-end, so the report generator receives both what was said and where it came from.<br/><br/><strong>B:</strong> Re-querying is slow, lossy, and invites misattribution, the web search agent doesn't know which claim came from which source.<br/><br/><strong>C:</strong> Inline citations in free text drift and get dropped during later summarization. Structured metadata survives transformations better.<br/><br/><strong>D:</strong> You'd blow the context budget and make the report generator's job harder. Summarization is useful; losing metadata during summarization is the actual bug.",
-    source: "cyberskill Q7"
+    source: "cyberskill Q7",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -855,7 +913,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Report structure that keeps methodological context and separates settled vs. contested claims is how you get nuance without over-hedging.<br/><br/><strong>A:</strong> Filtering throws away useful-but-uncertain evidence. It doesn't help the synthesis agent reason about conflicts, it just hides them.<br/><br/><strong>B:</strong> Collapsing peer-reviewed CIs and analyst estimates into a single averaged number destroys the methodological difference that's the whole point.<br/><br/><strong>D:</strong> Two-source minimums drop legitimate single-source findings and don't resolve genuinely conflicting estimates with different methodologies.",
-    source: "cyberskill Q8"
+    source: "cyberskill Q8",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -868,7 +927,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. Explicit claim-source mappings are a first-class output the synthesis agent can merge deterministically, no attribution gets dropped during summarization.<br/><br/><strong>A:</strong> Post-hoc log analysis is fragile and expensive, and still loses bindings when synthesis merges points from multiple sources.<br/><br/><strong>C:</strong> Similarity search can attribute the wrong source when two sources say similar things. You want the model's original mapping, not a reconstruction.<br/><br/><strong>D:</strong> Prefix tokens inside prose get dropped, paraphrased, or hallucinated. Structured mappings outside the prose are more robust.",
-    source: "cyberskill Q9"
+    source: "cyberskill Q9",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -881,7 +941,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. Subagent invocations are isolated, nothing flows between them unless the coordinator explicitly puts it in the prompt. The message 'no findings provided' is exactly what you'd see.<br/><br/><strong>A:</strong> A context-window overflow typically surfaces as a truncation or API error, not as the agent saying 'no findings provided.'<br/><br/><strong>C:</strong> There's no 'automatic context sharing' over a shared connection. Context isolation is by design.<br/><br/><strong>D:</strong> Cross-agent history fetching isn't a standard capability and isn't the right fix, the coordinator should be forwarding findings explicitly.",
-    source: "cyberskill Q10"
+    source: "cyberskill Q10",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -894,7 +955,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Executive briefings need mixed rendering: tables for numbers, prose for narrative. Asking synthesis to preserve the native format of each input is the right abstraction.<br/><br/><strong>A:</strong> Flattening structured financial data into prose loses the comparability you want in an executive briefing.<br/><br/><strong>B:</strong> A single IR usually ends up too lossy, either it keeps structure (news suffers) or it keeps prose (tables suffer). The fix is type-aware rendering, not uniformity.<br/><br/><strong>D:</strong> Forcing prose-heavy news into a claim/evidence schema strips the narrative flow executives actually read.",
-    source: "cyberskill Q11"
+    source: "cyberskill Q11",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -907,7 +969,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. Delegate intent and quality bars, not procedures. The subagent can then choose queries, follow promising tangents, and recover from dead ends on its own.<br/><br/><strong>A:</strong> Too far in the other direction, 'research X thoroughly' loses the guardrails (source quality, recency) that make delegation reliable.<br/><br/><strong>B:</strong> Patches one failure mode but keeps the agent locked into procedural thinking, still brittle for emerging topics and tangential sources.<br/><br/><strong>C:</strong> A classifier with two buckets is fragile, and you're still shipping rigid instructions in the well-defined branch.",
-    source: "cyberskill Q12"
+    source: "cyberskill Q12",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -920,7 +983,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. If the coordinator already has the findings, spawning a subagent to re-ingest 80K tokens is pure overhead. Let the coordinator answer simple follow-ups itself.<br/><br/><strong>A:</strong> Speculative generation wastes tokens for summaries the user may never ask for, and cache granularities never quite match what's asked.<br/><br/><strong>C:</strong> Prompt caching trims cost on the repeated prefix but the architectural waste, spawning an entire subagent for a summary, remains.<br/><br/><strong>D:</strong> Adds round-trips and complexity for the same result the coordinator could produce directly.",
-    source: "cyberskill Q13"
+    source: "cyberskill Q13",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -933,7 +997,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Coordinator-managed parallelism fans out the work, keeps each subagent's scope tight, and preserves a single hub for monitoring and aggregation.<br/><br/><strong>A:</strong> External queues complicate observability, the coordinator loses direct visibility into which tasks succeeded and what they produced.<br/><br/><strong>B:</strong> Recursion adds levels of indirection that make debugging and monitoring harder, for no real speedup beyond the first fan-out.<br/><br/><strong>D:</strong> Nested spawning hides execution inside subagents and makes the coordinator's debug view incomplete.",
-    source: "cyberskill Q14"
+    source: "cyberskill Q14",
+    verified: "cyberskill",
   },
   {
     tag: "research",
@@ -946,7 +1011,8 @@ const CYBER_RESEARCH = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Without the Task tool in allowedTools, the coordinator can talk about delegating but has no way to actually call a subagent, which matches the 'reasons about it, no execution, no errors' symptom.<br/><br/><strong>A:</strong> A truncation would show up in logs and usually leave partial <code>tool_use</code> blocks, not silent no-ops.<br/><br/><strong>B:</strong> Tool/agent schemas are surfaced to the model automatically, you don't need to re-list them in the system prompt for the model to see them.<br/><br/><strong>D:</strong> Context isolation is real, but it affects what the subagent sees once spawned, not whether the coordinator can spawn it at all.",
-    source: "cyberskill Q15"
+    source: "cyberskill Q15",
+    verified: "cyberskill",
   }
 ];
 
@@ -962,7 +1028,8 @@ const CYBER_CODE = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. Tool selection is driven by the descriptions the model sees. A one-line description like 'Analyzes dependency graph' loses against Grep's rich description. Beef up the MCP tool's description.<br/><br/><strong>A:</strong> Crippling a general tool to force adoption of a specialized one punishes other legitimate Grep use cases.<br/><br/><strong>B:</strong> Prompt-level routing can help, but the root cause is that the MCP tool's description is thinner than Grep's. Fix the tool descriptions first.<br/><br/><strong>C:</strong> Splitting is sometimes right, but here the sibling tools would still have weak descriptions. The same selection bug would reappear.",
-    source: "cyberskill Q16"
+    source: "cyberskill Q16",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -975,7 +1042,8 @@ const CYBER_CODE = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. You have to enumerate every name the function is exposed under, otherwise renamed wrappers hide callers. Read the relevant modules, gather all aliases, then grep for each.<br/><br/><strong>B:</strong> Misses dynamic imports, re-exports, and indirect call chains. Also scales poorly.<br/><br/><strong>C:</strong> The original name won't appear anywhere a wrapper has renamed it, you'd miss a significant class of callers.<br/><br/><strong>D:</strong> Docs are incomplete and often stale. You can't safely remove a function based on documentation-level evidence.",
-    source: "cyberskill Q17"
+    source: "cyberskill Q17",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -988,7 +1056,8 @@ const CYBER_CODE = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. A scratchpad offloads findings to durable storage the agent can re-read on demand, giving it a stable 'memory' independent of how crowded the context window gets.<br/><br/><strong>B:</strong> A bigger window delays the problem but doesn't solve attention degradation over long, noisy contexts.<br/><br/><strong>C:</strong> Wholesale clearing throws away valid findings, exactly the state engineers complain about having to re-establish.<br/><br/><strong>D:</strong> Pre-summaries lose the detail that makes code exploration useful and often misrepresent files the engineer cares about most.",
-    source: "cyberskill Q18"
+    source: "cyberskill Q18",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -1001,7 +1070,9 @@ const CYBER_CODE = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. <code>--resume</code> with the session name is designed for exactly this: pick a specific prior session out of many, by the name you gave it.<br/><br/><strong>A:</strong> Wastes the two hours of accumulated context from yesterday.<br/><br/><strong>B:</strong> Possible but cumbersome, she'd have to hunt for the UUID when she already has the session name.<br/><br/><strong>C:</strong> <code>--continue</code> resumes the most recent session in this repo. She's worked on three other codebases since then, so the most recent is not auth-deep-dive.",
-    source: "cyberskill Q19"
+    source: "cyberskill Q19",
+    verified: "cyberskill",
+    auditNote: "Question relies on --resume accepting a session name; docs only document --resume with session ID. Treating as unverified rather than flipping since options force a choice.",
   },
   {
     tag: "code",
@@ -1014,7 +1085,8 @@ const CYBER_CODE = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Condense what you've learned about rendering into a compact summary, then give a fresh subagent that summary plus the physics task, you preserve the important signal and escape the degraded context.<br/><br/><strong>A:</strong> Manual synthesis in the main conversation pushes even more into an already-degrading context.<br/><br/><strong>B:</strong> The agent is already losing specificity ('typical patterns' instead of VulkanPipeline). Pushing harder on the same degraded context doesn't restore it.<br/><br/><strong>D:</strong> /clear nukes the rendering findings you actually need for the cross-cut question about collision debug overlays.",
-    source: "cyberskill Q20"
+    source: "cyberskill Q20",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -1027,7 +1099,8 @@ const CYBER_CODE = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Keeps the expensive context you already built, while telling the agent exactly which 3 files to re-read, minimum waste, maximum accuracy.<br/><br/><strong>A:</strong> Silent resume leaves the agent reasoning on stale content for 3 of 12 files, exactly the source of bad recommendations.<br/><br/><strong>B:</strong> Throws away an hour of valid context about 9 files that didn't change.<br/><br/><strong>D:</strong> Unnecessary for the 9 unchanged files. Just adds tokens without improving accuracy.",
-    source: "cyberskill Q21"
+    source: "cyberskill Q21",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -1040,7 +1113,9 @@ const CYBER_CODE = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. Forking from yesterday's session gives each approach its own independent context starting from the same analysis baseline, clean, parallel, no contamination.<br/><br/><strong>A:</strong> Manual recreation is error-prone and loses the exact working state of yesterday's analysis.<br/><br/><strong>B:</strong> Redoes work and risks the two sessions diverging from the same baseline you established yesterday.<br/><br/><strong>C:</strong> Sequential exploration in one thread lets each approach contaminate the other's context.",
-    source: "cyberskill Q22"
+    source: "cyberskill Q22",
+    verified: "cyberskill",
+    auditNote: "fork_session is not in anthropic-facts.md reference.",
   },
   {
     tag: "code",
@@ -1053,7 +1128,8 @@ const CYBER_CODE = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. Start from the architectural root (the interface), then navigate only the specific implementations that matter for invalidation, focused reading, low context cost.<br/><br/><strong>A:</strong> Loading 8,000 lines without structure floods the context and buries the invalidation logic in unrelated code.<br/><br/><strong>C:</strong> Keyword-only reading strips the class/method context that tells you what the invalidation actually guards.<br/><br/><strong>D:</strong> Size is a poor proxy for importance. You'd waste context on big utility files and miss the small strategic ones.",
-    source: "cyberskill Q23"
+    source: "cyberskill Q23",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -1066,7 +1142,8 @@ const CYBER_CODE = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. Delegate well-scoped investigations to subagents with fresh context, while the main agent keeps the architectural overview. This is the pattern for scaling exploration beyond a single context window.<br/><br/><strong>A:</strong> A single report becomes the only source of truth and tends to compress away the specific code patterns you'd need later.<br/><br/><strong>C:</strong> Scratchpads help, but clearing + re-reading discards the understanding you already built across 8 files.<br/><br/><strong>D:</strong> You can't identify untested paths just by grepping names, you need to read enough of each path to know what branches the tests don't cover.",
-    source: "cyberskill Q24"
+    source: "cyberskill Q24",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -1079,7 +1156,8 @@ const CYBER_CODE = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. Debugging is adaptive by nature, each file you read changes the most useful next step. Let the agent follow the evidence.<br/><br/><strong>A:</strong> You can't build a correct plan for an unknown error without any exploration. Planning blind wastes time and misses the actual failure path.<br/><br/><strong>C:</strong> A fixed pipeline wastes work on layers that aren't involved and can lock the agent out of the actual root cause path.<br/><br/><strong>D:</strong> Fan-out is useful once you have well-scoped subtasks. Here, you don't, you'd pay 4× the cost to look in three layers that aren't the problem.",
-    source: "cyberskill Q25"
+    source: "cyberskill Q25",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -1092,7 +1170,8 @@ const CYBER_CODE = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. Keep the accumulated understanding, and give it a targeted delta about the renames so it can update its mental model, minimum waste, maximum accuracy.<br/><br/><strong>A:</strong> Silently resuming lets the agent keep referencing the old function names in its recommendations.<br/><br/><strong>B:</strong> Loading 30 minutes of transcript into a new subagent's prompt is wasteful and pollutes its starting context.<br/><br/><strong>C:</strong> Re-summarization throws away the fine-grained data flows the agent was already tracking across 47 files.",
-    source: "cyberskill Q26"
+    source: "cyberskill Q26",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -1105,7 +1184,8 @@ const CYBER_CODE = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. Tool selection is driven by the descriptions Claude sees. When the MCP tools say 'extracts a function from code' and Write/sed come with rich documentation, Claude picks Write/sed. Beef up the descriptions.<br/><br/><strong>A:</strong> A pre-classifier is a separate system to maintain and can misroute. The cheaper fix is to make the tool descriptions strong enough that the agent picks them on its own.<br/><br/><strong>B:</strong> Stripping general tools forces adoption by subtraction, and breaks legitimate Write use cases.<br/><br/><strong>C:</strong> Capitulating defeats the purpose of integrating refactoring tools. The integration is fine, the descriptions are the problem.",
-    source: "cyberskill Q27"
+    source: "cyberskill Q27",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -1118,7 +1198,8 @@ const CYBER_CODE = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. Forking gives each strategy its own independent context starting from the exact analysis baseline, no cross-contamination, no re-analysis.<br/><br/><strong>A:</strong> An exported summary is lossier than the live session state the agent built up while reading 23 files.<br/><br/><strong>C:</strong> Burns tokens redoing work the original session already did, and risks each fresh session reaching different conclusions from the same code.<br/><br/><strong>D:</strong> Sequential development in one thread lets the first strategy's implementation bias reasoning about the second.",
-    source: "cyberskill Q28"
+    source: "cyberskill Q28",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -1131,7 +1212,8 @@ const CYBER_CODE = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. When Edit's unique-match contract can't be satisfied in a repetitive file, fall back to Read → modify in memory at the intended line → Write the full file back.<br/><br/><strong>A:</strong> Long, brittle match strings frequently miss due to whitespace or minor edits and produce confusing failures.<br/><br/><strong>B:</strong> <code>replace_all</code> would mutate every occurrence of the pattern, corrupting the whole file.<br/><br/><strong>C:</strong> Appending puts the function at the wrong location. The requirement is to insert between two existing functions.",
-    source: "cyberskill Q29"
+    source: "cyberskill Q29",
+    verified: "cyberskill",
   },
   {
     tag: "code",
@@ -1144,7 +1226,8 @@ const CYBER_CODE = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Start at entry points (login, token verify, middleware), then trace outward following real code edges. Incremental, grounded, fits within context limits.<br/><br/><strong>A:</strong> The engineer just joined, they probably don't know which files matter. That's exactly what the agent is supposed to help with.<br/><br/><strong>B:</strong> Without knowing where auth lives, fan-out explores too broadly and subagents duplicate and miss cross-service flows.<br/><br/><strong>D:</strong> Those keywords hit a huge amount of unrelated code across 800+ files and drown context in noise.",
-    source: "cyberskill Q30"
+    source: "cyberskill Q30",
+    verified: "cyberskill",
   }
 ];
 
@@ -1160,7 +1243,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. A clean session with a summary keeps the narrative continuity while guaranteeing the agent isn't reasoning over stale tool results.<br/><br/><strong>A:</strong> Stripping <code>tool_results</code> from the middle of a conversation can leave assistant messages referencing nonexistent results, the transcript becomes internally inconsistent.<br/><br/><strong>C:</strong> Prompt instructions are suggestions. You observed that exact failure mode in testing, the model still references old results.<br/><br/><strong>D:</strong> Blanket re-calling is wasteful, slow, and still leaves the old results sitting in context to confuse the model.",
-    source: "cyberskill Q31"
+    source: "cyberskill Q31",
+    verified: "cyberskill",
   },
   {
     tag: "support",
@@ -1173,7 +1257,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. Escalation decisions are judgment calls about intent and progress, exactly what LLMs are good at. Clear criteria in natural language outperform rigid rules for the long tail.<br/><br/><strong>B:</strong> A hard retry count fires both too early (legitimate retries) and too late (obvious policy issues on the first call).<br/><br/><strong>C:</strong> Sentiment can catch frustration but misses calm customers who simply need a human for a policy exception, and over-escalates on stylistic language.<br/><br/><strong>D:</strong> Rules engines break on the cases they weren't designed for, and customer support is full of those.",
-    source: "cyberskill Q32"
+    source: "cyberskill Q32",
+    verified: "cyberskill",
   },
   {
     tag: "support",
@@ -1186,7 +1271,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. A structured handoff with identifiers, cause, amount, and recommended action is what a human agent needs to pick up the case instantly without re-investigating.<br/><br/><strong>A:</strong> Raw artifacts without synthesis force the human to re-do the 25 turns of investigation you just finished.<br/><br/><strong>C:</strong> Dumping the whole transcript forces the human to wade through 25 turns instead of reading a one-screen brief.<br/><br/><strong>D:</strong> Missing customer identifiers and recommended action, the human can't act without them.",
-    source: "cyberskill Q33"
+    source: "cyberskill Q33",
+    verified: "cyberskill",
   },
   {
     tag: "support",
@@ -1199,7 +1285,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Compliance-grade rules belong outside the model, a deterministic hook on the tool call is guaranteed to fire every time, independent of model behavior.<br/><br/><strong>A:</strong> This helps, but depends on the agent interpreting the error correctly and escalating, still model discretion at the decision point.<br/><br/><strong>B:</strong> Few-shots shift the distribution but don't remove the 3% failure. Compliance says the rule can't be left to model discretion.<br/><br/><strong>D:</strong> Emphatic prompts reduce but don't eliminate misuse. 'Cannot be left to model discretion' rules out any prompt-only solution.",
-    source: "cyberskill Q34"
+    source: "cyberskill Q34",
+    verified: "cyberskill",
   },
   {
     tag: "support",
@@ -1212,7 +1299,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Deliver the partial value you can (explanation + eligibility), be honest about the failure, and let the customer choose between human escalation or a retry. Classic graceful degradation.<br/><br/><strong>A:</strong> Punts a transient backend issue to a human when the agent could still explain the situation and offer options.<br/><br/><strong>B:</strong> Forcing the customer to wait on indefinite retries is poor UX and may never succeed if the outage is long-lived.<br/><br/><strong>D:</strong> Committing to an outcome that didn't happen is misleading the customer, a bigger failure than the timeout.",
-    source: "cyberskill Q35"
+    source: "cyberskill Q35",
+    verified: "cyberskill",
   },
   {
     tag: "support",
@@ -1225,7 +1313,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. Honor the feeling, give them the fast resolution path in writing, and preserve their choice. That's the customer-respect move that still leverages the agent's capability.<br/><br/><strong>B:</strong> Unnecessary queueing when the issue is one tool call away. Frustrates the customer further by adding waiting to an already-simple case.<br/><br/><strong>C:</strong> Takes unilateral action after the customer explicitly asked to speak to someone, overrides their stated preference.<br/><br/><strong>D:</strong> Interrogating a frustrated customer about past failures is the opposite of what they asked for.",
-    source: "cyberskill Q36"
+    source: "cyberskill Q36",
+    verified: "cyberskill",
   },
   {
     tag: "support",
@@ -1238,7 +1327,9 @@ const CYBER_SUPPORT = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. The API is stateless. Each request must include the full messages array. If you only send the latest turn, the model has no memory of earlier ones, exactly the 'ask for the name again' symptom.<br/><br/><strong>A:</strong> Tools don't clear agent state, conversation state lives in the messages array you send.<br/><br/><strong>B:</strong> Memory across turns isn't achieved by an instruction, it comes from passing the prior turns into the next request.<br/><br/><strong>D:</strong> No such default limit exists. Context is bounded by the window, and history length is under your control.",
-    source: "cyberskill Q37"
+    source: "cyberskill Q37",
+    verified: "anthropic",
+    docsLink: "https://platform.claude.com/docs/en/api/messages",
   },
   {
     tag: "support",
@@ -1251,7 +1342,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. Give the agent the information it needs to make the right decision: category, retryability, and a human-readable cause. That replaces guessing with deterministic policy.<br/><br/><strong>B:</strong> Adds an extra round-trip for something the original tool already knows. Put the metadata in the original response.<br/><br/><strong>C:</strong> Blanket retries hurt on permanent errors (order not found) and hide useful distinctions from the agent.<br/><br/><strong>D:</strong> If the tool returns 'Operation failed' for every failure, no amount of few-shots can extract category info that isn't there.",
-    source: "cyberskill Q38"
+    source: "cyberskill Q38",
+    verified: "cyberskill",
   },
   {
     tag: "support",
@@ -1264,7 +1356,9 @@ const CYBER_SUPPORT = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. The agentic loop works by appending <code>tool_result</code> messages to the conversation and letting the model decide the next step on each turn. That's how 45 days → refund vs. escalate gets resolved.<br/><br/><strong>A:</strong> There's no implicit orchestration layer picking tools from a field. The model drives tool selection.<br/><br/><strong>B:</strong> Agentic loops are model-driven, not decision-tree-driven. Hardcoded trees are the opposite of what the agent pattern is for.<br/><br/><strong>D:</strong> There's no upfront, committed plan, the agent chooses each next step based on the latest context.",
-    source: "cyberskill Q39"
+    source: "cyberskill Q39",
+    verified: "anthropic",
+    docsLink: "https://platform.claude.com/docs/en/api/messages",
   },
   {
     tag: "support",
@@ -1277,7 +1371,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. The customer has said 'twice' but you have no context yet. One acknowledging, focused question gives you a shot at first-contact resolution without dismissing the frustration or delaying a potential handoff.<br/><br/><strong>B:</strong> Launching into capability-listing at a frustrated customer who asked for a human reads as dismissive.<br/><br/><strong>C:</strong> Escalating with zero tool context creates a cold handoff where the human also starts from scratch.<br/><br/><strong>D:</strong> Investigating without asking adds latency and doesn't respect the customer's request. A single acknowledging question is faster and more respectful.",
-    source: "cyberskill Q40"
+    source: "cyberskill Q40",
+    verified: "cyberskill",
   },
   {
     tag: "support",
@@ -1290,7 +1385,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. A structured brief (who, what order, what issue, why it exceeds auth) lets the human agent pick up instantly. That's the mid-process escalation pattern.<br/><br/><strong>A:</strong> Drops the tool-derived context the agent just gathered, forcing the human to re-do the investigation.<br/><br/><strong>C:</strong> Knowingly exceeding authorization is a policy violation, not something to try and hope the system catches.<br/><br/><strong>D:</strong> Adds infrastructure and an extra lookup step when an inline structured brief is simpler and faster.",
-    source: "cyberskill Q41"
+    source: "cyberskill Q41",
+    verified: "cyberskill",
   },
   {
     tag: "support",
@@ -1303,7 +1399,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Progressive summarization compresses stable resolved topics while keeping the active thread verbatim, the classic pattern for long multi-issue conversations near the context limit.<br/><br/><strong>A:</strong> A sidecar context layer adds engineering and doesn't naturally preserve the conversational narrative the customer expects.<br/><br/><strong>B:</strong> Re-fetching is fine for freshness, but it doesn't solve the context-length problem, and you lose what was said between the customer and the agent.<br/><br/><strong>D:</strong> A pure sliding window silently drops the refund issue (turns 1-15) from context, which is exactly what the customer is asking about.",
-    source: "cyberskill Q42"
+    source: "cyberskill Q42",
+    verified: "cyberskill",
   },
   {
     tag: "support",
@@ -1316,7 +1413,9 @@ const CYBER_SUPPORT = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. MCP's designed pattern: put the error text in the content field and mark isError=true. Claude sees both the failure flag and a readable message to reason about.<br/><br/><strong>A:</strong> Returning empty successes makes the agent think no data exists, rather than that something went wrong, a different and worse confusion.<br/><br/><strong>C:</strong> Uncaught exceptions break the tool protocol and don't give the model anything to reason with.<br/><br/><strong>D:</strong> Ad-hoc 'status' fields vary across tools and the model has no standard way to interpret them. isError is the standard.",
-    source: "cyberskill Q43"
+    source: "cyberskill Q43",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/tools",
   },
   {
     tag: "support",
@@ -1329,7 +1428,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. A retryable flag tells Claude deterministically 'don't retry,' and a ready-made customer-friendly message improves the outgoing reply. Fixes both problems at once.<br/><br/><strong>B:</strong> Relying on the model to text-parse error strings is fragile and exactly the instability you see today.<br/><br/><strong>C:</strong> Useful in principle but adds a round-trip to every refund to guard against 12% of cases, and doesn't help when <code>process_refund</code> still fails for other business reasons.<br/><br/><strong>D:</strong> Hiding transient retries inside the tool can mask latency and takes the model out of the loop on recovery decisions. Business errors also still arrive as a plain string, so the customer-facing response doesn't improve.",
-    source: "cyberskill Q44"
+    source: "cyberskill Q44",
+    verified: "cyberskill",
   },
   {
     tag: "support",
@@ -1342,7 +1442,8 @@ const CYBER_SUPPORT = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. Keep the fields that matter for the task and drop the rest. This directly addresses the context-bloat problem before you add two more lookups.<br/><br/><strong>B:</strong> Prose summaries lose precision for fields the model may need later (exact dates, amounts). Structured pruning is better than paraphrasing.<br/><br/><strong>C:</strong> A vector DB is heavy infrastructure for what is essentially a pruning problem.<br/><br/><strong>D:</strong> Does nothing about the bloat, you're heading for context exhaustion.",
-    source: "cyberskill Q45"
+    source: "cyberskill Q45",
+    verified: "cyberskill",
   }
 ];
 
@@ -1358,7 +1459,9 @@ const CYBER_EXTRACT = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. Match latency profile to document urgency: batch for the bulk (cheap), real-time for the latency-sensitive exceptions (fast). Minimizes cost while meeting SLA.<br/><br/><strong>A:</strong> Consistent but expensive. Standard monthly reports don't need real-time latency and shouldn't pay for it.<br/><br/><strong>B:</strong> Batch has up to a 24-hour window, 30-minute alerting SLAs on exception reports can't be met by routing them through batch.<br/><br/><strong>C:</strong> Hourly batches still ride the batch SLO and don't guarantee the 30-minute alert window for exceptions.",
-    source: "cyberskill Q46"
+    source: "cyberskill Q46",
+    verified: "anthropic",
+    docsLink: "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
   },
   {
     tag: "extract",
@@ -1371,7 +1474,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. All three issues are about the model's interpretation of what counts as 'a skill.' Few-shot examples teach the pattern concretely, split vs. not-split, mentioned vs. inferred, appropriate granularity.<br/><br/><strong>B:</strong> Hard count caps are arbitrary and can force the model to drop real skills or invent filler to hit the range.<br/><br/><strong>C:</strong> Post-processing can't fix inferred-but-not-mentioned skills or choose the right split for 'Python and SQL', that decision has to be made at extraction time.<br/><br/><strong>D:</strong> Useful signal, but doesn't address the underlying inconsistency in how skills are parsed in the first place.",
-    source: "cyberskill Q47"
+    source: "cyberskill Q47",
+    verified: "cyberskill",
   },
   {
     tag: "extract",
@@ -1384,7 +1488,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. Aggregate accuracy hides segment failures, one document type could be 70% while others are 99%. Auto-routing by overall number alone risks systemic errors in the weak segments.<br/><br/><strong>B:</strong> Threshold tuning is worth doing, but only after you know the accuracy holds uniformly across segments, otherwise you're optimizing a number that lies.<br/><br/><strong>C:</strong> A pilot is good practice, but it's downstream of the segment analysis, if a segment is systematically wrong, you'll learn it by harming users.<br/><br/><strong>D:</strong> An important product question, but it assumes the 97% holds everywhere, again, that's what segment analysis verifies first.",
-    source: "cyberskill Q48"
+    source: "cyberskill Q48",
+    verified: "cyberskill",
   },
   {
     tag: "extract",
@@ -1397,7 +1502,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. Amendments are structurally about versioned values. A schema with value + source location + effective date models the domain correctly and stops forcing the model to pick one.<br/><br/><strong>B:</strong> Downstream consumers sometimes need the original too (e.g., for dispute resolution). Hard-coding 'most recent wins' throws that away.<br/><br/><strong>C:</strong> Deleting sections with a classifier can accidentally strip content that's still legally effective, amendments often modify subsets of clauses.<br/><br/><strong>D:</strong> Routes every amended contract to a human, expensive, and still doesn't give downstream systems a structured answer.",
-    source: "cyberskill Q49"
+    source: "cyberskill Q49",
+    verified: "cyberskill",
   },
   {
     tag: "extract",
@@ -1410,7 +1516,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. No amount of retrying teaches the model information that isn't in the input. Retry-with-error-feedback only fixes mistakes the model could have gotten right from the source.<br/><br/><strong>A:</strong> A structural mismatch the model can definitely correct given feedback about the expected shape.<br/><br/><strong>B:</strong> The required number is present in the document, the model just needs to stop formatting it. Easy for feedback-retry to fix.<br/><br/><strong>C:</strong> Pure formatting fix, the underlying value is correct and the model can trim the time portion on retry.",
-    source: "cyberskill Q50"
+    source: "cyberskill Q50",
+    verified: "cyberskill",
   },
   {
     tag: "extract",
@@ -1423,7 +1530,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. Strict schema + explicit normalization rules ('prices as decimal with two places', 'dietary as enumerated tags') lets the model both extract and normalize in one pass.<br/><br/><strong>A:</strong> Multiple calls per menu multiplies cost and latency and loses cross-field context (e.g., which dietary icons sit next to which item).<br/><br/><strong>B:</strong> Post-processing a raw blob is brittle, deterministic code has to handle every format permutation. Better to let the model normalize at extraction time.<br/><br/><strong>C:</strong> Ensemble voting is expensive and can still pick a wrong-format majority.",
-    source: "cyberskill Q51"
+    source: "cyberskill Q51",
+    verified: "cyberskill",
   },
   {
     tag: "extract",
@@ -1436,7 +1544,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. The fields are already nullable; the model just needs an explicit instruction to prefer null over a plausible guess. This is the standard fix for schema-aware hallucination.<br/><br/><strong>A:</strong> Expensive second pass for a behavior you can correct at the source, tell the model to return null when the field isn't stated.<br/><br/><strong>C:</strong> Required fields force the model to invent values when information is missing, the opposite of what you want.<br/><br/><strong>D:</strong> Adds cost and still doesn't tell the model your policy, returning null instead of inventing.",
-    source: "cyberskill Q52"
+    source: "cyberskill Q52",
+    verified: "cyberskill",
   },
   {
     tag: "extract",
@@ -1449,7 +1558,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. The failure mode is the model not recognizing varied formats. Concrete examples across the format distribution directly raise recall on the 5%.<br/><br/><strong>A:</strong> Retry on the same prompt won't suddenly teach the model to recognize methodology embedded in an intro. The extraction capability is the gap.<br/><br/><strong>B:</strong> Regex over prose is brittle, misses the nuanced cases (intro-embedded methodology), and ships silently wrong data.<br/><br/><strong>C:</strong> Papers over the symptom. The fields really are required downstream, routing them to humans trades one problem for reviewer workload.",
-    source: "cyberskill Q53"
+    source: "cyberskill Q53",
+    verified: "cyberskill",
   },
   {
     tag: "extract",
@@ -1462,7 +1572,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. Capturing both values makes the discrepancy a first-class signal, you catch OCR errors and extraction mistakes uniformly, and you can route only the mismatched 18% to humans.<br/><br/><strong>B:</strong> A reconciliation model can mask OCR errors by silently picking one number over another, the accounting system still gets wrong data without a flag.<br/><br/><strong>C:</strong> Can nudge the model toward consistency, but when the source itself is internally inconsistent (OCR errors), the model has to choose one 'wrong'.<br/><br/><strong>D:</strong> Silent financial data rewrites are dangerous, you'd be fabricating line items for a downstream accounting system.",
-    source: "cyberskill Q54"
+    source: "cyberskill Q54",
+    verified: "cyberskill",
   },
   {
     tag: "extract",
@@ -1475,7 +1586,9 @@ const CYBER_EXTRACT = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. <code>tool_choice</code>=specific-tool deterministically forces <code>extract_metadata</code> on the first turn. Then you hand control back to 'auto' to let the model use citations/DOI enrichment with the metadata in context.<br/><br/><strong>A:</strong> 'any' forces a tool call but doesn't force the right one. You'd still see <code>lookup_citations</code> picked first.<br/><br/><strong>B:</strong> There's no documented ordering preference to rely on; this assumes behavior that isn't contractual.<br/><br/><strong>D:</strong> Pinning <code>extract_metadata</code> on every call prevents the enrichment tools from ever being used.",
-    source: "cyberskill Q55"
+    source: "cyberskill Q55",
+    verified: "anthropic",
+    docsLink: "https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview",
   },
   {
     tag: "extract",
@@ -1488,7 +1601,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. Keeps the strong enum for the common cases (clean downstream joins) while giving a well-typed escape hatch that preserves detail. Stable long-term.<br/><br/><strong>A:</strong> Whack-a-mole enum maintenance, every new listing style risks another validation failure.<br/><br/><strong>C:</strong> Loses the validation guarantee entirely and pushes the normalization problem downstream with no canonical vocabulary.<br/><br/><strong>D:</strong> Forcing 'tiny house' into 'house' drops real distinctions downstream, you're silently lossy.",
-    source: "cyberskill Q56"
+    source: "cyberskill Q56",
+    verified: "cyberskill",
   },
   {
     tag: "extract",
@@ -1501,7 +1615,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Correct. Few-shot examples demonstrate the exact canonical format you want ('cotton/polyester' as a normalized list), and they also raise recall on material info that was being skipped.<br/><br/><strong>A:</strong> Required-ness doesn't solve format inconsistency, and it can force invented values when material info is genuinely missing.<br/><br/><strong>B:</strong> Costly, and doesn't address the actual cause, the model doesn't know the canonical output format you want.<br/><br/><strong>C:</strong> Determinism doesn't define the right format; it just makes the wrong-format answers consistent.",
-    source: "cyberskill Q57"
+    source: "cyberskill Q57",
+    verified: "cyberskill",
   },
   {
     tag: "extract",
@@ -1514,7 +1629,9 @@ const CYBER_EXTRACT = [
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Correct. Max 4-hour wait + up to 24-hour batch SLO = 28-hour worst case, leaving a 2-hour cushion under the 30-hour SLA to absorb batch variance and hit 99.9%.<br/><br/><strong>A:</strong> Worst-case a document waits 6 hours to be batched and then up to 24 hours to process = 30 hours exactly. No safety margin for a 99.9% reliability target.<br/><br/><strong>B:</strong> A doc arriving just after morning startup waits all day to be batched plus up to 24 hours to process, well over 30 hours.<br/><br/><strong>D:</strong> Meets SLA trivially but throws away the 50% cost saving the question asks you to capture.",
-    source: "cyberskill Q58"
+    source: "cyberskill Q58",
+    verified: "anthropic",
+    docsLink: "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
   },
   {
     tag: "extract",
@@ -1527,7 +1644,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Correct. Field-level confidence lets you route the low-confidence 20%, which is where the 12% semantic errors concentrate, to humans. Calibration makes the threshold choice data-driven.<br/><br/><strong>B:</strong> Great for measurement, poor for coverage, random sampling only catches 20% of the 12% errors (~2.4% total). Confidence-based routing finds far more.<br/><br/><strong>C:</strong> Empty fields are a narrow error mode. The 12% problem is wrong values in populated fields, which this filter misses.<br/><br/><strong>D:</strong> A useful heuristic, but formatting anomaly doesn't reliably predict where fields got confused with each other.",
-    source: "cyberskill Q59"
+    source: "cyberskill Q59",
+    verified: "cyberskill",
   },
   {
     tag: "extract",
@@ -1540,7 +1658,8 @@ const CYBER_EXTRACT = [
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Correct. Targeted, and it addresses the actual cause (input too long). Chunk the oversized docs, extract per chunk, then merge, minimum tokens, fixes the specific failure mode.<br/><br/><strong>A:</strong> Re-running 10,000 successful documents to solve 300 failures is wasteful regardless of caching savings. And caching doesn't fix the length-exceeded error.<br/><br/><strong>C:</strong> Expensive (reprocessing 9,700 successes) and may still fail on truly outsized documents.<br/><br/><strong>D:</strong> <code>max_tokens</code> controls output length, not input length. It doesn't solve <code>context_length_exceeded</code>, which is about the combined input-plus-output budget.",
-    source: "cyberskill Q60"
+    source: "cyberskill Q60",
+    verified: "cyberskill",
   }
 ];
 
@@ -1552,11 +1671,12 @@ const PAUL_RESEARCH = [
       "Apply credibility heuristics to pick the most likely correct number, finish analysis with that value, and add a footnote mentioning the discrepancy.",
       "Include both numbers in the analysis output without marking them as conflicting, letting the synthesis agent decide which to use based on broader context.",
       "Stop analysis and immediately escalate to the coordinator, asking it to decide which source is more authoritative before continuing.",
-      "Complete analysis with both numbers, explicitly annotate the conflict with source attribution, and let the coordinator decide how to reconcile the data before passing to synthesis."
+      "Complete analysis with both numbers, explicitly annotate the conflict with source attribution, and let the coordinator decide how to reconcile the data before passing to synthesis.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> This approach preserves separation of responsibilities: the analysis agent completes its core work without blocking, preserves both conflicting values with clear attribution, and correctly passes reconciliation to the coordinator, which has broader context.",
-    source: "paullarionov Q1 (sec2)"
+    source: "paullarionov Q1 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1565,11 +1685,12 @@ const PAUL_RESEARCH = [
       "Each agent sends its results directly to the report-writing agent, bypassing the coordinator.",
       "The document analysis agent requests web-search results and merges them internally.",
       "The coordinator passes both sets of results to the synthesis agent for a unified integration.",
-      "The coordinator concatenates the raw outputs from both agents and returns them as the final result."
+      "The coordinator concatenates the raw outputs from both agents and returns them as the final result.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> In a coordinator, subagent architecture, the coordinator forwards both result sets to the synthesis agent for centralized integration, preserving control and ensuring high-quality merging.",
-    source: "paullarionov Q2 (sec2)"
+    source: "paullarionov Q2 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1578,11 +1699,12 @@ const PAUL_RESEARCH = [
       "Create a dedicated error-handling agent that monitors all failures via a shared queue and decides recovery actions, sending restart commands directly to subagents.",
       "Configure the subagent to always return partial results with a success status, embedding error details in metadata; the coordinator treats all responses as successful.",
       "Make the coordinator validate all documents before sending them to the subagent, rejecting documents that might cause failures.",
-      "Implement local recovery in the subagent for transient failures and escalate to the coordinator only errors it cannot resolve, including attempted steps and partial results."
+      "Implement local recovery in the subagent for transient failures and escalate to the coordinator only errors it cannot resolve, including attempted steps and partial results.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Handle errors at the lowest level capable of resolving them. Local recovery reduces coordinator workload while still escalating truly unrecoverable issues with full context and partial progress.",
-    source: "paullarionov Q3 (sec2)"
+    source: "paullarionov Q3 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1591,11 +1713,12 @@ const PAUL_RESEARCH = [
       "The synthesis agent lacks instructions to detect coverage gaps.",
       "The document analysis agent filters out non-visual sources due to overly strict relevance criteria.",
       "The coordinator's task decomposition is too narrow, assigning subagents work that does not cover all relevant areas.",
-      "The web-search agent's queries are insufficient and should be broadened to cover more sectors."
+      "The web-search agent's queries are insufficient and should be broadened to cover more sectors.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> The coordinator decomposed a broad topic only into visual-art subtasks, missing music, literature, and film entirely. Since subagents executed their assignments correctly, the narrow decomposition is the obvious root cause.",
-    source: "paullarionov Q4 (sec2)"
+    source: "paullarionov Q4 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1604,11 +1727,12 @@ const PAUL_RESEARCH = [
       "Continue synthesis using only successful sources and produce an output without mentioning which data was unavailable.",
       "The synthesis subagent returns an error to the coordinator, triggering a full retry or task failure due to incomplete data.",
       "The synthesis subagent asks the coordinator to retry timed-out sources with a longer timeout before starting synthesis.",
-      "Structure the synthesis output with coverage annotations that indicate which conclusions are well-supported and where gaps exist due to unavailable sources."
+      "Structure the synthesis output with coverage annotations that indicate which conclusions are well-supported and where gaps exist due to unavailable sources.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Coverage annotations implement graceful degradation with transparency, preserving value from completed work while propagating uncertainty to enable informed decisions about confidence.",
-    source: "paullarionov Q5 (sec2)"
+    source: "paullarionov Q5 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1617,11 +1741,12 @@ const PAUL_RESEARCH = [
       "Return an error with context to the coordinator agent, allowing it to decide how to proceed.",
       "Silently skip the corrupted document and continue processing the remaining files to avoid interrupting the workflow.",
       "Automatically retry parsing the document three times with exponential backoff before reporting a failure.",
-      "Throw an exception that terminates the entire research workflow."
+      "Throw an exception that terminates the entire research workflow.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Returning an error with context to the coordinator is the most effective approach because it lets the coordinator make an informed decision, skip the file, try an alternative parsing method, or notify the user, while maintaining visibility into the failure.",
-    source: "paullarionov Q6 (sec2)"
+    source: "paullarionov Q6 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1630,11 +1755,12 @@ const PAUL_RESEARCH = [
       "Add a pre-routing classifier that detects whether the user refers to uploaded files or web content before the coordinator decides on delegation.",
       "Rename the web-search tool to `extract_web_results` and update its description to 'processes and returns information retrieved from web search and URLs.'",
       "Add few-shot examples to the coordinator prompt showing correct routing: 'User uploads a quarterly report, document analysis agent' and 'User asks about a web page, web-search agent.'",
-      "Expand the document analysis tool description with usage examples like 'Use for uploaded PDFs, Word docs, and spreadsheets,' leaving the web-search tool unchanged."
+      "Expand the document analysis tool description with usage examples like 'Use for uploaded PDFs, Word docs, and spreadsheets,' leaving the web-search tool unchanged.",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Renaming the web-search tool to `extract_web_results` and updating its description to explicitly reference web search and URLs directly removes the root cause by eliminating semantic overlap between the two tool names and descriptions. This makes each tool's purpose unambiguous, enabling the coordinator to reliably distinguish document analysis from web search.",
-    source: "paullarionov Q7 (sec2)"
+    source: "paullarionov Q7 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1643,11 +1769,12 @@ const PAUL_RESEARCH = [
       "The coordinator can observe all interactions, handle errors uniformly, and decide what information each subagent should receive.",
       "The coordinator batches multiple requests to subagents, reducing total API calls and overall latency.",
       "Routing through the coordinator enables automatic retry logic that direct inter-agent calls cannot support.",
-      "Subagents use isolated memory, and direct communication would require complex serialization that only the coordinator can perform."
+      "Subagents use isolated memory, and direct communication would require complex serialization that only the coordinator can perform.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> The coordinator pattern provides centralized visibility into all interactions, uniform error handling across the system, and fine-grained control over what information each subagent receives, these are the primary advantages of a star-shaped communication topology.",
-    source: "paullarionov Q8 (sec2)"
+    source: "paullarionov Q8 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1656,11 +1783,12 @@ const PAUL_RESEARCH = [
       "Return structured error context to the coordinator including the failure type, the query executed, any partial results, and potential alternative approaches.",
       "Catch the timeout within the subagent and return an empty result set marked as successful.",
       "Implement automatic exponential-backoff retries inside the subagent, only returning a generic 'search unavailable' status after exhausting retries.",
-      "Propagate the timeout exception directly to the top-level handler, terminating the entire research workflow."
+      "Propagate the timeout exception directly to the top-level handler, terminating the entire research workflow.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Returning structured error context, including failure type, executed query, partial results, and alternative approaches, gives the coordinator everything needed to make intelligent recovery decisions (e.g., retry with a modified query or continue with partial results). It preserves maximum context for informed coordination-level decision-making.",
-    source: "paullarionov Q9 (sec2)"
+    source: "paullarionov Q9 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1669,11 +1797,12 @@ const PAUL_RESEARCH = [
       "Replace `fetch_url` with a `load_document` tool that validates that URLs point to document formats.",
       "Remove `fetch_url` from the document analysis agent and route all URL fetching through the coordinator to the web-search agent.",
       "Implement filtering that blocks `fetch_url` calls to known search engine domains while allowing other URLs.",
-      "Add instructions to the document analysis agent prompt that `fetch_url` should only be used to download document URLs, not to search."
+      "Add instructions to the document analysis agent prompt that `fetch_url` should only be used to download document URLs, not to search.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Replacing a general-purpose tool with a document-specific tool that validates URLs against document formats fixes the root cause by constraining capability at the interface level. This follows the principle of least privilege, making undesired search behavior impossible rather than merely discouraged.",
-    source: "paullarionov Q10 (sec2)"
+    source: "paullarionov Q10 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1682,11 +1811,12 @@ const PAUL_RESEARCH = [
       "Allow both agents to finish in parallel, then have the coordinator deduplicate overlapping results before passing them to the synthesis agent.",
       "The coordinator explicitly partitions the research space before delegating, assigning each agent distinct subtopics or source types.",
       "Implement a shared-state mechanism where agents log their current focus area so other agents can dynamically avoid duplication during execution.",
-      "Switch to sequential execution where document analysis runs only after web search completes, using web-search results as context to avoid duplication."
+      "Switch to sequential execution where document analysis runs only after web search completes, using web-search results as context to avoid duplication.",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Having the coordinator explicitly partition the research space before delegating is most effective because it addresses the root cause, unclear task boundaries, before any work begins. It preserves parallelism while preventing duplicated effort and wasted tokens.",
-    source: "paullarionov Q11 (sec2)"
+    source: "paullarionov Q11 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1695,11 +1825,12 @@ const PAUL_RESEARCH = [
       "Aggregate the results into a single success-percentage metric (e.g., '67% source coverage') with detailed logs available on demand.",
       "Report both 'timeout' and '0 results' as failures requiring coordinator intervention.",
       "Retry transient failures internally and report only persistent errors.",
-      "Distinguish access failures (timeout) that require a retry decision from valid empty results ('0 results') that represent successful queries."
+      "Distinguish access failures (timeout) that require a retry decision from valid empty results ('0 results') that represent successful queries.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> A timeout (access failure) and '0 results' (valid empty result) are semantically different outcomes requiring different responses. Distinguishing them allows the coordinator to retry the patent database while accepting the industry reports '0 results' as a valid, informative finding.",
-    source: "paullarionov Q12 (sec2)"
+    source: "paullarionov Q12 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1708,11 +1839,12 @@ const PAUL_RESEARCH = [
       "Summarize all subagent outputs to under 20K tokens before aggregation to keep content within the model's reliable processing range.",
       "Stream subagent results to the synthesis agent incrementally, processing web-search results first to completion, then adding document analysis results.",
       "Place a key-findings summary at the start of the aggregated input and organize detailed results with explicit section headings for easier navigation.",
-      "Implement rotation that alternates which subagent's results appear first across research tasks to ensure both sources get equal top positioning over time."
+      "Implement rotation that alternates which subagent's results appear first across research tasks to ensure both sources get equal top positioning over time.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Putting a key-findings summary at the start leverages primacy effects so critical information sits in the most reliably processed position. Adding explicit section headings throughout helps the model navigate and attend to mid-input content, directly mitigating the 'lost in the middle' phenomenon.",
-    source: "paullarionov Q13 (sec2)"
+    source: "paullarionov Q13 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1721,11 +1853,12 @@ const PAUL_RESEARCH = [
       "Modify upstream agents to return structured data (key facts, quotes, relevance scores) instead of verbose content and reasoning.",
       "Add an intermediate summarization agent that condenses findings before passing them to synthesis.",
       "Have the synthesis agent process findings in sequential batches, maintaining state between calls.",
-      "Store findings in a vector database and give the synthesis agent search tools to query during its work."
+      "Store findings in a vector database and give the synthesis agent search tools to query during its work.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Modifying upstream agents to return structured data fixes the root cause by reducing token volume at the source while preserving essential information. It avoids passing bulky page content and reasoning traces that inflate tokens without improving the synthesis step.",
-    source: "paullarionov Q14 (sec2)"
+    source: "paullarionov Q14 (sec2)",
+    verified: "paul",
   },
   {
     tag: "research",
@@ -1734,11 +1867,12 @@ const PAUL_RESEARCH = [
       "Give the synthesis agent access to all web-search tools so it can handle any verification need directly without coordinator loops.",
       "Have the synthesis agent accumulate all verification needs and return them as a batch to the coordinator at the end, which then sends them all to the web-search agent at once.",
       "Have the web-search agent proactively cache extra context around each source during initial research in anticipation of synthesis needing verification.",
-      "Give the synthesis agent a limited-scope `verify_fact` tool for simple checks, while routing complex verifications through the coordinator to the web-search agent."
+      "Give the synthesis agent a limited-scope `verify_fact` tool for simple checks, while routing complex verifications through the coordinator to the web-search agent.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> A limited-scope fact-verification tool lets the synthesis agent handle 85% of simple checks directly, eliminating most loops, while preserving the coordinator delegation path for the 15% of complex verifications. This applies least privilege while significantly reducing latency.",
-    source: "paullarionov Q15 (sec2)"
+    source: "paullarionov Q15 (sec2)",
+    verified: "paul",
   }
 ];
 
@@ -1750,11 +1884,13 @@ const PAUL_CODE = [
       "Add an 'Output Format for Review' section to CLAUDE.md with examples of structured findings so Claude learns the expected format from project context.",
       "Use the CLI flags `--output-format json` and `--json-schema` to enforce structured findings, then parse the output to post inline comments via the GitHub API.",
       "Include explicit formatting instructions in the review prompt requiring each finding to follow a parseable template like `[FILE:path] [LINE:n] [SEVERITY:level] ...`.",
-      "Keep narrative review format but add a summarization step that uses Claude to generate a structured JSON summary of findings."
+      "Keep narrative review format but add a summarization step that uses Claude to generate a structured JSON summary of findings.",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Using `--output-format json` with `--json-schema` enforces structured output at the CLI level, guaranteeing well-formed JSON with the required fields (file path, line number, severity, suggested fix) that can be reliably parsed and posted as inline PR comments via the GitHub API. It leverages built-in CLI capabilities designed specifically for structured output.",
-    source: "paullarionov Q16"
+    source: "paullarionov Q16",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/sdk",
   },
   {
     tag: "code",
@@ -1763,11 +1899,12 @@ const PAUL_CODE = [
       "Run a second independent instance of Claude Code to review the changes without access to the generator's reasoning.",
       "Enable extended thinking mode for the generation stage to allow more thorough deliberation before producing suggestions.",
       "Add explicit self-review instructions to the generation prompt asking Claude to critique its own suggestions before finalizing output.",
-      "Include full test files and documentation in prompt context so Claude better understands expected behavior during generation."
+      "Include full test files and documentation in prompt context so Claude better understands expected behavior during generation.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> A second independent Claude Code instance without access to the generator's reasoning directly addresses the root cause by avoiding confirmation bias. This 'fresh eyes' perspective mirrors human peer review, where another reviewer catches issues the author rationalized.",
-    source: "paullarionov Q17"
+    source: "paullarionov Q17",
+    verified: "paul",
   },
   {
     tag: "code",
@@ -1776,11 +1913,13 @@ const PAUL_CODE = [
       "Batch processing does not include correlation IDs to map outputs back to input requests.",
       "The asynchronous model cannot execute tools mid-request and return results for Claude to continue analysis.",
       "The Batch API does not support tool definitions in request parameters.",
-      "The batch processing latency of up to 24 hours is too slow for pull request feedback, although the workflow would otherwise function."
+      "The batch processing latency of up to 24 hours is too slow for pull request feedback, although the workflow would otherwise function.",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> A 'fire-and-forget' asynchronous Batch API model has no mechanism to intercept a tool call during a request, execute the tool, and return results for Claude to continue analysis. This is fundamentally incompatible with iterative tool-calling workflows that require multiple tool request/response rounds within a single logical interaction.",
-    source: "paullarionov Q18"
+    source: "paullarionov Q18",
+    verified: "anthropic",
+    docsLink: "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
   },
   {
     tag: "code",
@@ -1789,11 +1928,13 @@ const PAUL_CODE = [
       "Use the Message Batches API for all three tasks to maximize 50% savings, configuring the pipeline to poll for batch completion.",
       "Use synchronous calls for PR style checks; use the Message Batches API for weekly security audits and nightly test generation.",
       "Use synchronous calls for all three tasks for consistent response times, relying on prompt caching to reduce costs across workloads.",
-      "Use synchronous calls for PR style checks and nightly test generation; use the Message Batches API only for weekly security audits."
+      "Use synchronous calls for PR style checks and nightly test generation; use the Message Batches API only for weekly security audits.",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> PR style checks block developers and require immediate responses via synchronous calls, while weekly security audits and nightly test generation are scheduled tasks with flexible deadlines that can tolerate up to a 24-hour batch window, capturing 50% savings for both.",
-    source: "paullarionov Q19"
+    source: "paullarionov Q19",
+    verified: "anthropic",
+    docsLink: "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
   },
   {
     tag: "code",
@@ -1802,11 +1943,12 @@ const PAUL_CODE = [
       "Further refine instructions with more explicit requirements for each part of the feedback format (location, issue, severity, proposed fix).",
       "Expand the context window to include more surrounding codebase so the model has enough information to propose concrete fixes.",
       "Implement a two-pass approach where one prompt identifies issues and a second generates fixes, allowing specialization.",
-      "Add 3-4 few-shot examples showing the exact required format: identified issue, location in code, concrete fix suggestion."
+      "Add 3-4 few-shot examples showing the exact required format: identified issue, location in code, concrete fix suggestion.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Few-shot examples are the most effective technique for achieving consistent output format when instructions alone produce variable results. Providing 3-4 examples that show the exact desired structure (issue, location, concrete fix) gives the model a concrete pattern to follow, which is more reliable than abstract instructions.",
-    source: "paullarionov Q20"
+    source: "paullarionov Q20",
+    verified: "paul",
   },
   {
     tag: "code",
@@ -1815,11 +1957,12 @@ const PAUL_CODE = [
       "Include `git blame` data so Claude can identify comments that predate recent code changes.",
       "Add few-shot examples of misleading comments to help the model recognize similar patterns in the codebase.",
       "Filter TODO, FIXME, and descriptive comment patterns before analysis to reduce noise.",
-      "Specify explicit criteria: flag comments only when the behavior they claim contradicts the code's actual behavior."
+      "Specify explicit criteria: flag comments only when the behavior they claim contradicts the code's actual behavior.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Explicit criteria, flagging comments only when claimed behavior contradicts actual code behavior, directly addresses the root cause by replacing a vague instruction with a precise definition of what constitutes a problem. This reduces false positives on acceptable patterns and misses of truly misleading comments.",
-    source: "paullarionov Q22"
+    source: "paullarionov Q22",
+    verified: "paul",
   },
   {
     tag: "code",
@@ -1828,11 +1971,12 @@ const PAUL_CODE = [
       "Temporarily disable high-false-positive categories (style, naming, documentation) and keep only high-precision categories while improving prompts.",
       "Keep all categories enabled but display confidence scores with each finding so developers can decide what to investigate.",
       "Keep all categories enabled and add few-shot examples to improve accuracy for each category over the next few weeks.",
-      "Apply a uniform strictness reduction across all categories to bring the overall false-positive rate down."
+      "Apply a uniform strictness reduction across all categories to bring the overall false-positive rate down.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Temporarily disabling high-false-positive categories immediately stops trust erosion by removing noisy findings that cause developers to dismiss everything, while preserving value from high-precision categories like security and correctness. It also creates space to improve prompts for problematic categories before re-enabling them.",
-    source: "paullarionov Q23"
+    source: "paullarionov Q23",
+    verified: "paul",
   },
   {
     tag: "code",
@@ -1841,11 +1985,12 @@ const PAUL_CODE = [
       "Run review only when the PR is created and in the final pre-merge state, skipping intermediate commits.",
       "Add a post-processing filter that removes findings that match previous ones by file paths and issue descriptions before posting comments.",
       "Restrict review scope to files changed in the most recent push, excluding files from earlier commits.",
-      "Include previous review findings in context and instruct Claude to report only new or still-unresolved issues."
+      "Include previous review findings in context and instruct Claude to report only new or still-unresolved issues.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Including prior review findings in context lets Claude distinguish new problems from those already addressed in recent commits. This preserves review thoroughness while using Claude's reasoning to avoid redundant feedback on fixed code.",
-    source: "paullarionov Q25"
+    source: "paullarionov Q25",
+    verified: "paul",
   },
   {
     tag: "code",
@@ -1854,11 +1999,13 @@ const PAUL_CODE = [
       "Add a `--batch` flag: `claude --batch 'Analyze this pull request for security issues'`.",
       "Add the `-p` flag: `claude -p 'Analyze this pull request for security issues'`.",
       "Redirect stdin from `/dev/null`: `claude 'Analyze this pull request for security issues' < /dev/null`.",
-      "Set the environment variable `CLAUDE_HEADLESS=true` before running the command."
+      "Set the environment variable `CLAUDE_HEADLESS=true` before running the command.",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> The `-p` (or `--print`) flag is the documented way to run Claude Code non-interactively. It processes the prompt, prints the result to stdout, and exits without waiting for user input, ideal for CI/CD pipelines.",
-    source: "paullarionov Q26"
+    source: "paullarionov Q26",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/sdk",
   },
   {
     tag: "code",
@@ -1867,11 +2014,12 @@ const PAUL_CODE = [
       "Write a JSON schema describing the expected output structure and validate Claude's output against it after each iteration.",
       "Provide 2-3 concrete input-output examples showing the expected transformation for representative API responses.",
       "Rewrite requirements with more technical precision, specifying exact field mappings, nesting rules, and timestamp format strings.",
-      "Ask Claude to explain its current understanding of the requirements to identify where interpretations diverge."
+      "Ask Claude to explain its current understanding of the requirements to identify where interpretations diverge.",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Concrete input-output examples remove ambiguity inherent in prose descriptions by showing Claude the exact expected transformation results. This directly addresses the root cause, misinterpretation of textual requirements, by providing unambiguous patterns for field nesting and timestamp formatting.",
-    source: "paullarionov Q31"
+    source: "paullarionov Q31",
+    verified: "paul",
   },
   {
     tag: "code",
@@ -1880,11 +2028,12 @@ const PAUL_CODE = [
       "Move all guidance into separate Skills files organized by workflow type, leaving only a brief project description in CLAUDE.md.",
       "Keep everything in CLAUDE.md but use `@import` syntax to organize into separately maintained files by category.",
       "Split CLAUDE.md into files under `.claude/rules/` with path-bound glob patterns so each rule loads only for the relevant file types.",
-      "Keep universal standards in CLAUDE.md and create Skills for workflow-specific guidance (PR review, deploy, migrations) with trigger keywords."
+      "Keep universal standards in CLAUDE.md and create Skills for workflow-specific guidance (PR review, deploy, migrations) with trigger keywords.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> CLAUDE.md content loads in every session, ensuring coding standards and testing conventions always apply, while Skills are invoked on demand when Claude detects trigger keywords, ideal for workflow-specific guidance like PR review, deployment, and migrations.",
-    source: "paullarionov Q33"
+    source: "paullarionov Q33",
+    verified: "paul",
   },
   {
     tag: "code",
@@ -1893,11 +2042,12 @@ const PAUL_CODE = [
       "Add `context: fork` in the skill frontmatter to run the analysis in an isolated subagent context.",
       "Add `model: haiku` in frontmatter to use a faster, cheaper model for analysis.",
       "Split the skill into three smaller skills, each producing less output.",
-      "Add instructions to the skill to compress all results into a short summary before displaying them."
+      "Add instructions to the skill to compress all results into a short summary before displaying them.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> `context: fork` runs the analysis in an isolated subagent context so the large output does not pollute the main session's context window and Claude does not lose track of the original task. It preserves full analysis capability while keeping the main session responsive.",
-    source: "paullarionov Q35"
+    source: "paullarionov Q35",
+    verified: "paul",
   },
   {
     tag: "code",
@@ -1906,11 +2056,13 @@ const PAUL_CODE = [
       "Define a `.claude/config.yaml` mapping file patterns to specific sections inside CLAUDE.md.",
       "Create separate Markdown files in `.claude/rules/`, each covering one topic (e.g., `testing.md`, `api-conventions.md`).",
       "Split instructions into README.md files in relevant subdirectories that Claude automatically loads as instructions.",
-      "Create multiple files named CLAUDE.md at different levels of the directory tree, each overriding parent instructions."
+      "Create multiple files named CLAUDE.md at different levels of the directory tree, each overriding parent instructions.",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Claude Code supports a `.claude/rules/` directory where you can create separate Markdown files for topical guidance (e.g., `testing.md`, `api-conventions.md`), allowing teams to organize large instruction sets into focused, maintainable modules.",
-    source: "paullarionov Q42"
+    source: "paullarionov Q42",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/memory",
   },
   {
     tag: "code",
@@ -1919,11 +2071,13 @@ const PAUL_CODE = [
       "Have each developer add the server in user scope via `claude mcp add --scope user`.",
       "Create an MCP server wrapper that reads tokens from a `.env` file and proxies GitHub API calls, then add the wrapper to the project `.mcp.json`.",
       "Add the server to the project `.mcp.json` using environment variable substitution (`${GITHUB_TOKEN}`) for auth and document the required environment variable in the project README.",
-      "Configure the server in project scope with a placeholder token, then tell developers to override it in their local config."
+      "Configure the server in project scope with a placeholder token, then tell developers to override it in their local config.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> A project `.mcp.json` with environment variable substitution is idiomatic: it provides a single version-controlled source of truth for MCP configuration while letting each developer supply credentials via environment variables. Documenting the variable makes onboarding easy without committing secrets.",
-    source: "paullarionov Q44"
+    source: "paullarionov Q44",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "code",
@@ -1932,11 +2086,12 @@ const PAUL_CODE = [
       "Use an Explore subagent for Phase 1 to isolate verbose discovery output and return a summary, then continue Phases 2-3 in the main conversation.",
       "Do all phases in the main conversation, periodically using `/compact` to reduce context usage while moving through files.",
       "Switch to headless mode with `--continue`, passing explicit context summaries between batch calls to maintain continuity.",
-      "Define the error-handling pattern in CLAUDE.md, then process files in batches across multiple sessions relying on the shared memory file for consistency."
+      "Define the error-handling pattern in CLAUDE.md, then process files in batches across multiple sessions relying on the shared memory file for consistency.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> An Explore subagent isolates the verbose discovery output in a separate context and returns only a concise summary to the main conversation. This preserves the main context window for the collaborative design and consistent implementation phases where retained context is most valuable.",
-    source: "paullarionov Q45"
+    source: "paullarionov Q45",
+    verified: "paul",
   }
 ];
 
@@ -1948,11 +2103,12 @@ const PAUL_SUPPORT = [
       "Add a programmatic precondition that blocks `lookup_order` and `process_refund` until an ID is obtained from `get_customer`",
       "Improve the system prompt",
       "Add few-shot examples",
-      "Implement a routing classifier"
+      "Implement a routing classifier",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> When critical business logic requires a specific tool sequence, software provides <strong>deterministic guarantees</strong> that prompt-based approaches (B, C) cannot. D addresses availability, not tool ordering.",
-    source: "paullarionov Q1 (sec1)"
+    source: "paullarionov Q1 (sec1)",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -1961,11 +2117,12 @@ const PAUL_SUPPORT = [
       "Few-shot examples",
       "Expand each tool's description with input formats, examples, and boundaries",
       "Add a routing layer",
-      "Merge the tools"
+      "Merge the tools",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Tool descriptions are the model's primary selection mechanism. This is the lowest-effort, highest-impact fix. A adds tokens without addressing the root cause. C is overengineering. D requires more effort than justified.",
-    source: "paullarionov Q2 (sec1)"
+    source: "paullarionov Q2 (sec1)",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -1974,11 +2131,12 @@ const PAUL_SUPPORT = [
       "Add explicit escalation criteria with few-shot examples",
       "Self-rated confidence (1-10) with automatic escalation",
       "A separate classifier trained on historical data",
-      "Sentiment analysis"
+      "Sentiment analysis",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> It directly addresses the root cause, unclear decision boundaries. B is unreliable (the model can be confidently wrong). C is overengineering. D solves a different problem (mood != complexity).",
-    source: "paullarionov Q3 (sec1)"
+    source: "paullarionov Q3 (sec1)",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -1987,11 +2145,12 @@ const PAUL_SUPPORT = [
       "Implement a preprocessing layer that uses a separate model call to decompose multi-issue messages into separate requests, handle each independently, and merge results.",
       "Combine related tools into fewer universal tools.",
       "Add few-shot examples to the prompt demonstrating correct reasoning and tool sequencing for multi-issue requests.",
-      "Implement response validation that detects incomplete answers and automatically reprompts the agent to resolve missed issues."
+      "Implement response validation that detects incomplete answers and automatically reprompts the agent to resolve missed issues.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Few-shot examples that demonstrate correct reasoning and tool sequencing for multi-issue requests are most effective because the agent already performs well on single issues, what it needs is guidance on the pattern for decomposing and routing multiple issues and keeping parameters separated.",
-    source: "paullarionov Q47"
+    source: "paullarionov Q47",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -2000,11 +2159,12 @@ const PAUL_SUPPORT = [
       "Add explicit verification checkpoints between stages, requiring the agent to record progress after resolving each issue before moving to the next.",
       "Reduce the number of tools by combining `get_customer`, `lookup_order`, and billing-related tools into a single `investigate_issue` tool.",
       "Decompose the request into separate issues, then investigate each in parallel using shared customer context before synthesizing a final resolution.",
-      "Add few-shot examples to the system prompt demonstrating ideal tool-call sequences for various multi-faceted billing scenarios."
+      "Add few-shot examples to the system prompt demonstrating ideal tool-call sequences for various multi-faceted billing scenarios.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Decomposing into separate issues and investigating in parallel with shared customer context fixes both key problems: it eliminates redundant data retrieval by reusing shared context across issues and reduces total tool-call loops by parallelizing investigation before synthesizing a single resolution.",
-    source: "paullarionov Q48"
+    source: "paullarionov Q48",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -2013,11 +2173,12 @@ const PAUL_SUPPORT = [
       "A customer wants to cancel an order shipped yesterday and arriving tomorrow. The agent should escalate because the customer might change their mind after receiving the package.",
       "A customer claims they didn't receive an order, but tracking shows it was delivered and signed for at their address three days ago. The agent should escalate because presenting contradictory evidence could harm the customer relationship.",
       "A customer requests competitor price matching. Your policies allow price adjustments for price drops on your own site within 14 days, but say nothing about competitor prices. The agent should escalate for policy interpretation.",
-      "A customer message contains both a billing question and a product return. The agent should escalate so a human can coordinate both issues in one interaction."
+      "A customer message contains both a billing question and a product return. The agent should escalate so a human can coordinate both issues in one interaction.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> This is a genuine policy gap: company rules cover price drops on your own site but do not address competitor price matching. The agent must not invent policy and should escalate for human judgment on how to interpret or extend existing rules.",
-    source: "paullarionov Q50"
+    source: "paullarionov Q50",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -2026,11 +2187,12 @@ const PAUL_SUPPORT = [
       "Add a self-critique stage where the agent evaluates a draft response for completeness, ensuring it resolves the customer's issue, includes relevant context, and anticipates follow-up questions.",
       "Add a confirmation stage where the agent asks 'Does this fully resolve your issue?' before closing, allowing customers to request additional information if needed.",
       "Upgrade the model from Haiku to Sonnet for complex cases, routing based on a defined complexity metric.",
-      "Implement few-shot examples in the system prompt showing complete explanations for five common complex case types, demonstrating how to include policy context, timelines, and next steps."
+      "Implement few-shot examples in the system prompt showing complete explanations for five common complex case types, demonstrating how to include policy context, timelines, and next steps.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> A self-critique stage (the evaluator-optimizer pattern) directly addresses inconsistent explanation completeness by forcing the agent to assess its own draft against concrete criteria, such as policy context, timelines, and next steps, before presenting it. This catches case-specific gaps without human oversight.",
-    source: "paullarionov Q52"
+    source: "paullarionov Q52",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -2039,11 +2201,12 @@ const PAUL_SUPPORT = [
       "Implement speculative execution that automatically calls likely-needed tools in parallel with any requested tool and returns all results regardless of what was requested.",
       "Increase `max_tokens` to give Claude more room to plan and naturally combine tool requests.",
       "Create composite tools like `get_customer_with_orders` that bundle common lookup combinations into single calls.",
-      "Instruct Claude in the prompt to bundle tool requests into one turn and return all results together before the next API call."
+      "Instruct Claude in the prompt to bundle tool requests into one turn and return all results together before the next API call.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Prompting Claude to bundle related tool requests into a single turn leverages its native ability to request multiple tools at once. It directly fixes the sequential-call pattern with minimal architectural change.",
-    source: "paullarionov Q53"
+    source: "paullarionov Q53",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -2052,11 +2215,12 @@ const PAUL_SUPPORT = [
       "Increase the summarization threshold from 70% to 85% so conversations have more room before summarization triggers.",
       "Store full conversation history in external storage and implement retrieval when the agent detects references like 'as I mentioned.'",
       "Extract transactional facts (amounts, dates, order numbers) into a persistent 'case facts' block included in every prompt outside the summarized history.",
-      "Revise the summarization prompt to explicitly preserve all numbers, percentages, dates, and customer-stated expectations verbatim."
+      "Revise the summarization prompt to explicitly preserve all numbers, percentages, dates, and customer-stated expectations verbatim.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Summarization inherently loses precise details. Extracting transactional facts into a structured 'case facts' block outside the summarized history preserves critical information so it's reliably available in every prompt regardless of how many turns have been summarized.",
-    source: "paullarionov Q54"
+    source: "paullarionov Q54",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -2065,11 +2229,12 @@ const PAUL_SUPPORT = [
       "Implement a confidence scoring system that acts autonomously above 85% confidence and requests clarification below the threshold.",
       "Instruct Claude to request an additional identifier (email, phone, or order number) when `get_customer` returns multiple matches before taking any customer-specific action.",
       "Modify `get_customer` to return only a single most-likely match based on a ranking algorithm, eliminating ambiguity.",
-      "Add few-shot examples to the prompt demonstrating correct reasoning and tool sequencing for ambiguous matches."
+      "Add few-shot examples to the prompt demonstrating correct reasoning and tool sequencing for ambiguous matches.",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Asking the user for an additional identifier is the most reliable way to resolve ambiguity because the user has definitive knowledge of their identity. One extra conversational turn is a small price to pay to eliminate a 15% error rate caused by choosing the wrong account.",
-    source: "paullarionov Q55"
+    source: "paullarionov Q55",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -2078,11 +2243,12 @@ const PAUL_SUPPORT = [
       "The system prompt contains keyword-sensitive instructions that steer behavior based on terms like 'account,' creating unintended tool-selection patterns.",
       "The model's base training creates associations between 'account' terminology and customer-related operations that override tool descriptions.",
       "The model needs more training data on multi-concept messages and should be fine-tuned on examples containing both account and order terminology.",
-      "Tool descriptions need additional negative examples specifying when NOT to use each tool to prevent this keyword-induced confusion."
+      "Tool descriptions need additional negative examples specifying when NOT to use each tool to prevent this keyword-induced confusion.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> The systematic keyword-driven pattern (78% vs 93%) strongly indicates explicit routing logic in the system prompt reacting to the word 'account' and steering the agent toward customer-related tools. Since tool descriptions are already clear, the discrepancy points to prompt-level instructions creating unintended behavioral steering.",
-    source: "paullarionov Q56"
+    source: "paullarionov Q56",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -2091,11 +2257,13 @@ const PAUL_SUPPORT = [
       "Check the `stop_reason` field in Claude's response, continue if it is `tool_use` and stop if it is `end_turn`.",
       "Parse Claude's text for phrases like 'I'm done' or 'Can I help with anything else?', natural language signals indicate task completion.",
       "Set a maximum iteration count (e.g., 10 calls) and stop when reached, regardless of whether Claude indicates more work is needed.",
-      "Check whether the response contains assistant text content, if Claude generated explanatory text, the loop should terminate."
+      "Check whether the response contains assistant text content, if Claude generated explanatory text, the loop should terminate.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> `stop_reason` is Claude's explicit structured signal for loop control: `tool_use` indicates Claude wants to run a tool and receive results back, while `end_turn` indicates Claude has completed its response and the loop should end.",
-    source: "paullarionov Q58"
+    source: "paullarionov Q58",
+    verified: "anthropic",
+    docsLink: "https://platform.claude.com/docs/en/api/messages",
   },
   {
     tag: "support",
@@ -2104,11 +2272,12 @@ const PAUL_SUPPORT = [
       "Use a PostToolUse hook to intercept tool outputs and apply formatting transformations before the agent processes them.",
       "Modify tools you control to return human-readable formats and create wrappers for third-party tools.",
       "Create a `normalize_data` tool that the agent calls after every data retrieval to transform values.",
-      "Add detailed format documentation to the system prompt explaining each tool's data conventions."
+      "Add detailed format documentation to the system prompt explaining each tool's data conventions.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> A PostToolUse hook provides a centralized, deterministic point to intercept and normalize all tool outputs, including third-party MCP server data, before the agent processes them. It's more maintainable because transformations live in code and apply uniformly, rather than relying on LLM interpretation.",
-    source: "paullarionov Q59"
+    source: "paullarionov Q59",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -2117,11 +2286,12 @@ const PAUL_SUPPORT = [
       "Add explicit 'use when' and 'don't use when' guidance in each tool description covering ambiguous cases.",
       "Add examples grouped by tool, all `get_customer` scenarios together, then all `lookup_order` scenarios.",
       "Add 4-6 examples targeted at ambiguous scenarios, each with rationale for why one tool was chosen over plausible alternatives.",
-      "Add 10-15 examples of clear, unambiguous requests demonstrating correct tool choice for typical scenarios for each tool."
+      "Add 10-15 examples of clear, unambiguous requests demonstrating correct tool choice for typical scenarios for each tool.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Targeting few-shot examples at the specific ambiguous scenarios where errors occur, with explicit rationale for why one tool is preferable to alternatives, teaches the model the comparative decision process needed for edge cases. This is more effective than generic examples or declarative rules.",
-    source: "paullarionov Q60"
+    source: "paullarionov Q60",
+    verified: "paul",
   },
   {
     tag: "support",
@@ -2130,11 +2300,12 @@ const PAUL_SUPPORT = [
       "Add few-shot examples showing that the agent always calls `get_customer` first, even when customers voluntarily provide order details.",
       "Implement a routing classifier that analyzes each request and enables only a subset of tools appropriate for that request type.",
       "Add a programmatic precondition that blocks `lookup_order` and `process_refund` until `get_customer` returns a verified customer identifier.",
-      "Strengthen the system prompt stating that customer verification via `get_customer` is mandatory before any order operations."
+      "Strengthen the system prompt stating that customer verification via `get_customer` is mandatory before any order operations.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> A programmatic precondition provides a deterministic guarantee that required sequencing is followed. It's the most effective approach because it eliminates the possibility of skipping verification, regardless of LLM behavior.",
-    source: "paullarionov Q51"
+    source: "paullarionov Q51",
+    verified: "paul",
   }
 ];
 
@@ -2146,11 +2317,12 @@ const PAUL_EXTRACT = [
       "Add server-side validation that permits `dry_run=false` only when a `dry_run=true` call with identical parameters occurred within the past 60 seconds.",
       "Annotate the tool as requiring confirmation and configure the orchestration layer to prompt the user for approval before forwarding any calls to annotated tools.",
       "Add detailed instructions and few-shot examples to the tool description requiring the agent to always call with `dry_run=true` first and wait for user confirmation before calling again.",
-      "Replace with two tools: `preview_remove_member` returns impact details and a single-use confirmation token; `execute_remove_member` requires that token, binding execution to the preview."
+      "Replace with two tools: `preview_remove_member` returns impact details and a single-use confirmation token; `execute_remove_member` requires that token, binding execution to the preview.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> The two-tool token-binding approach makes it architecturally impossible to execute without a prior preview, the execute tool literally requires a token that only the preview tool can generate. This is the only approach that enforces the constraint at the code level rather than relying on LLM compliance with instructions (C), timing heuristics (A), or orchestration infrastructure (B).",
-    source: "paullarionov Q61"
+    source: "paullarionov Q61",
+    verified: "paul",
   },
   {
     tag: "extract",
@@ -2159,11 +2331,12 @@ const PAUL_EXTRACT = [
       "Add few-shot examples to your system prompt demonstrating how to distinguish network errors from syntax errors.",
       "Apply exponential backoff retry logic to all errors uniformly.",
       "Implement automatic retry with backoff for network timeouts inside the tool; return syntax errors immediately with parameter validation details.",
-      "Return all errors with a `retryable` boolean flag and error type details."
+      "Return all errors with a `retryable` boolean flag and error type details.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Handling retries at the tool level for transient errors is the correct abstraction boundary, the tool has definitive knowledge of the error type and can implement deterministic retry logic without relying on the agent to interpret a flag (D) or follow prompt-level instructions (A). Uniform backoff (B) wastes time on syntax errors that will never succeed.",
-    source: "paullarionov Q62"
+    source: "paullarionov Q62",
+    verified: "paul",
   },
   {
     tag: "extract",
@@ -2172,11 +2345,12 @@ const PAUL_EXTRACT = [
       "Surface the contradiction and ask the user to clarify which matters more.",
       "Provide separate recommendations for both scenarios.",
       "Proceed with the most recently stated preference.",
-      "Recommend a balanced portfolio without addressing the conflict."
+      "Recommend a balanced portfolio without addressing the conflict.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> When user preferences directly contradict each other, surfacing the conflict and asking for clarification is the only way to guarantee the recommendation aligns with the user's true intent. Any other approach involves making an assumption that may be wrong, maximizing returns and low risk tolerance are fundamentally incompatible goals that require a human decision.",
-    source: "paullarionov Q63"
+    source: "paullarionov Q63",
+    verified: "paul",
   },
   {
     tag: "extract",
@@ -2185,11 +2359,13 @@ const PAUL_EXTRACT = [
       "Claude requires a vector database connection to maintain conversation memory.",
       "The model's context window has been exceeded.",
       "The Claude API requires a `session_id` parameter.",
-      "Your application isn't including prior messages in the `messages` array."
+      "Your application isn't including prior messages in the `messages` array.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Claude has no server-side memory, every API call is stateless. Without including the full conversation history in the `messages` array of each request, Claude has no knowledge of prior turns. Vector databases (A) and `session_id` (C) are not part of Claude's architecture; context window overflow (B) is impossible for two-message exchanges.",
-    source: "paullarionov Q64"
+    source: "paullarionov Q64",
+    verified: "anthropic",
+    docsLink: "https://platform.claude.com/docs/en/api/messages",
   },
   {
     tag: "extract",
@@ -2198,11 +2374,12 @@ const PAUL_EXTRACT = [
       "Summarize the entire conversation history.",
       "Keep only the most recent 20,000 tokens.",
       "Extract critical structured data (allergies, quantities, preferences), summarize general discussion, and keep recent exchanges verbatim.",
-      "Store the full conversation externally and retrieve relevant parts via semantic search."
+      "Store the full conversation externally and retrieve relevant parts via semantic search.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> The hybrid approach preserves the highest-value information at the lowest cost. Critical facts like allergies and recipe quantities are extracted into a compact structured block (preventing the precision loss that occurs during summarization), general discussion is summarized, and recent exchanges are kept verbatim for conversational coherence. Options A and B risk losing critical dietary information; D is architectural overkill for a single cooking session.",
-    source: "paullarionov Q65"
+    source: "paullarionov Q65",
+    verified: "paul",
   },
   {
     tag: "extract",
@@ -2211,11 +2388,12 @@ const PAUL_EXTRACT = [
       "Hybrid approach: summarize older messages while keeping recent ones verbatim.",
       "Vector similarity search over the full conversation history.",
       "Increase the window to 50 message pairs.",
-      "Summarize dropped messages every turn and prepend the running summary."
+      "Summarize dropped messages every turn and prepend the running summary.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> The hybrid approach addresses both dimensions of the problem: retaining exact recent context (critical for conversational coherence) while maintaining a compressed representation of earlier preferences (preventing total loss when pairs are dropped). Increasing the window (C) simply delays the same problem. Vector search (B) may miss important context that isn't semantically similar to the current query. Full per-turn summarization (D) adds overhead and accumulates summarization errors.",
-    source: "paullarionov Q66"
+    source: "paullarionov Q66",
+    verified: "paul",
   },
   {
     tag: "extract",
@@ -2224,11 +2402,13 @@ const PAUL_EXTRACT = [
       "The entire conversation history is included with each API request.",
       "The model generates progressively longer responses.",
       "Database operations slow down as history grows.",
-      "The model builds an internal user profile requiring more processing."
+      "The model builds an internal user profile requiring more processing.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Claude's API is fully stateless, every request must include the complete conversation history in the `messages` array. As conversations grow, each request carries more tokens, which directly increases both processing latency and cost. The model does not maintain any internal state between calls (D is false), and response length is not inherently tied to conversation length (B).",
-    source: "paullarionov Q67"
+    source: "paullarionov Q67",
+    verified: "anthropic",
+    docsLink: "https://platform.claude.com/docs/en/api/messages",
   },
   {
     tag: "extract",
@@ -2237,11 +2417,12 @@ const PAUL_EXTRACT = [
       "Rolling window truncation.",
       "Progressive summarization capturing key conclusions.",
       "Semantic embeddings with retrieval of relevant exchanges.",
-      "Add structured XML tags marking discussion conclusions."
+      "Add structured XML tags marking discussion conclusions.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Semantic search over conversation history is the only approach that scales to three months of discussion while being able to surface specific relevant exchanges on demand. Rolling window (A) would discard most of the history. Progressive summarization (B) compresses discussions into abstractions that lose the specific conclusions users are asking about. XML tags (D) require restructuring all past content and don't solve the retrieval problem at this scale.",
-    source: "paullarionov Q68"
+    source: "paullarionov Q68",
+    verified: "paul",
   },
   {
     tag: "extract",
@@ -2250,11 +2431,12 @@ const PAUL_EXTRACT = [
       "Move behavioral guidelines into the first user message.",
       "Start a new conversation after 20 turns.",
       "Insert user-role messages reinforcing guidelines at conversation breakpoints.",
-      "Use post-response validation to regenerate non-compliant responses."
+      "Use post-response validation to regenerate non-compliant responses.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Periodic injection of behavioral reminders directly combats instruction drift by re-establishing constraints at regular intervals as conversation history accumulates. Moving guidelines to the first user message (A) reduces their authority. Starting a new conversation (B) destroys context. Post-response validation (D) is corrective rather than preventive and adds significant latency.",
-    source: "paullarionov Q69"
+    source: "paullarionov Q69",
+    verified: "paul",
   },
   {
     tag: "extract",
@@ -2263,11 +2445,12 @@ const PAUL_EXTRACT = [
       "Inject reminders every 4-5 turns.",
       "Replace verbose rules with few-shot examples demonstrating proficiency-level adaptation.",
       "Place critical rules at the end of the system prompt.",
-      "Evaluate responses and regenerate if difficulty level mismatches."
+      "Evaluate responses and regenerate if difficulty level mismatches.",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> A 2,800-token system prompt with declarative rules is vulnerable to drift because abstract rules require the model to reason about them on every turn. Replacing verbose rules with concrete few-shot examples that demonstrate correct proficiency-level adaptation gives the model clear behavioral patterns to match, this is more reliably followed across many turns than abstract instructions. Reminder injection (A) helps but addresses symptoms; end-placement (C) helps initially but not with turn-level drift; regeneration (D) is expensive and corrective.",
-    source: "paullarionov Q70"
+    source: "paullarionov Q70",
+    verified: "paul",
   },
   {
     tag: "extract",
@@ -2276,11 +2459,13 @@ const PAUL_EXTRACT = [
       "Prepended to each user message.",
       "In the system prompt.",
       "In the first assistant message.",
-      "In environment variables."
+      "In environment variables.",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> The system prompt is specifically designed for persistent behavioral constraints and guidelines that apply throughout the entire conversation. Prepending to each user message (A) is redundant overhead. The first assistant message (C) is unreliable because the model can deviate from its own prior statements. Environment variables (D) have no effect on model behavior.",
-    source: "paullarionov Q71"
+    source: "paullarionov Q71",
+    verified: "anthropic",
+    docsLink: "https://platform.claude.com/docs/en/api/messages",
   },
   {
     tag: "extract",
@@ -2289,11 +2474,12 @@ const PAUL_EXTRACT = [
       "Append a partial assistant message with a direct response opening.",
       "Lower the temperature setting.",
       "Post-process responses to remove greetings.",
-      "Add system prompt instructions to avoid those phrases."
+      "Add system prompt instructions to avoid those phrases.",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Prefilling the assistant's response with the beginning of a direct answer prevents greeting patterns at the generation level, the model continues from the prefill rather than generating new opening phrases. System prompt instructions (D) can help but are less reliable since the model may still produce variants. Post-processing (C) is a fragile workaround. Temperature (B) controls randomness, not specific phrase patterns.",
-    source: "paullarionov Q72"
+    source: "paullarionov Q72",
+    verified: "paul",
   },
   {
     tag: "extract",
@@ -2302,11 +2488,12 @@ const PAUL_EXTRACT = [
       "Add shipping status to the system prompt.",
       "Send an immediate synthetic user message.",
       "Force the assistant to call a status tool on each turn.",
-      "Append the status update as a prefix to the next user message."
+      "Append the status update as a prefix to the next user message.",
     ],
     answer: 3,
     explain: "<strong>Why D:</strong> Prefixing the status update to the next user message injects real-time context at a natural conversation boundary without disrupting the flow. Modifying the system prompt (A) requires rebuilding the session or is architecturally cumbersome. A synthetic user message (B) can break the natural dialogue flow and confuse attribution. Forcing a tool call each turn (C) is wasteful when events are rare.",
-    source: "paullarionov Q73"
+    source: "paullarionov Q73",
+    verified: "paul",
   },
   {
     tag: "extract",
@@ -2315,11 +2502,12 @@ const PAUL_EXTRACT = [
       "Proceed with hidden defaults.",
       "Ask all clarifying questions in one compound message.",
       "State assumptions explicitly and proceed while inviting corrections.",
-      "Use a structured intake form."
+      "Use a structured intake form.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Stating assumptions explicitly and proceeding gives the user an immediate, useful response while preserving their ability to correct wrong assumptions. Hidden defaults (A) leave the user unaware of what was assumed. A compound question list (B) still demands upfront effort from the user. A structured form (D) adds more friction, not less, contradicting the goal of reducing abandonment.",
-    source: "paullarionov Q74"
+    source: "paullarionov Q74",
+    verified: "paul",
   },
   {
     tag: "extract",
@@ -2328,11 +2516,12 @@ const PAUL_EXTRACT = [
       "System prompts only establish initial behavior.",
       "Model attention weakens as turns accumulate.",
       "Accumulated assistant responses dilute system prompt influence.",
-      "The system prompt is only sent once."
+      "The system prompt is only sent once.",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> As assistant responses accumulate in the conversation history, the proportion of text reflecting the system prompt's behavioral constraints decreases relative to the growing body of assistant-generated content. The model increasingly pattern-matches to its own prior outputs rather than the system prompt, compounding drift even at short token lengths. The system prompt is included in every API call (D is false as a standalone explanation), and model attention degradation (B) doesn't operate at 2,500 tokens.",
-    source: "paullarionov Q75"
+    source: "paullarionov Q75",
+    verified: "paul",
   }
 ];
 
@@ -2517,7 +2706,8 @@ function renderQuestion() {
     explainHtml = `<div class="explain show ${state.answers[i] === item.answer ? 'right' : 'miss'}">
       <div class="verdict">why</div>
       ${item.explain}
-      <div class="src">source &middot; ${item.source}</div>
+      ${item.docsLink ? `<a class="docs-link" href="${item.docsLink}" target="_blank" rel="noopener">${item.docsLink}</a>` : ''} /* render: docs-link */
+        <div class="src">source &middot; ${item.source}</div>
     </div>`;
   } else {
     explainHtml = '<div class="explain"></div>';
@@ -2535,6 +2725,7 @@ function renderQuestion() {
     <div class="qmeta">
       <span>Question ${i + 1} of ${state.questions.length}</span>
       <span class="tag ${item.tag}">${tagLabel}</span>
+      ${item.verified ? `<span class="src-badge verified-${item.verified}">${item.verified === 'anthropic-corrected' ? 'anthropic *' : item.verified === 'debated' ? 'community-debated' : item.verified === 'paul' ? 'paullarionov' : item.verified}</span>` : ''} /* render: src-badge */
     </div>
     <div class="qtext">${item.q}</div>
     <div class="opts">${optsHtml}</div>

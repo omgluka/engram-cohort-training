@@ -447,6 +447,57 @@
     .qtext { font-size: 22px; }
     .score-big { font-size: 96px; }
   }
+/* === src-badge styles (added by add-badges.js) === */
+  .src-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border: 1px solid var(--ink);
+    margin-left: 10px;
+    background: var(--paper);
+    color: var(--ink);
+    opacity: 0.75;
+  }
+  .src-badge.verified-anthropic {
+    color: #15803D;
+    border-color: #15803D;
+    background: #ECFAF1;
+    opacity: 1;
+  }
+  .src-badge.verified-anthropic::before { content: '✓ '; }
+  .src-badge.verified-cyberskill {
+    color: var(--ink);
+    border-color: var(--ink);
+    opacity: 0.85;
+  }
+  .src-badge.verified-paul {
+    color: var(--ink);
+    border-color: var(--ink);
+    opacity: 0.85;
+  }
+  .src-badge.verified-debated {
+    color: #B47A00;
+    border-color: #B47A00;
+    background: #FFF7E0;
+    opacity: 1;
+  }
+  .src-badge.verified-debated::before { content: '⚠ '; }
+  .docs-link {
+    display: block;
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: #15803D;
+    text-decoration: none;
+    border-bottom: 1px solid #15803D;
+    padding-bottom: 2px;
+  }
+  .docs-link::before { content: '→ anthropic docs: '; opacity: 0.7; }
+  .docs-link:hover { color: var(--orange); border-color: var(--orange); }
+
 </style>
 </head>
 <body>
@@ -532,11 +583,13 @@ const CC_CONFIG = [
       "In `~/.claude/CLAUDE.md` on the original author's machine, which is user-scoped and not in version control",
       "In `./CLAUDE.md` at the project root, which is automatically loaded",
       "In `./.claude/CLAUDE.md`, which the team shares via git",
-      "In `.claude/rules/standards.md` with a `paths` glob"
+      "In `.claude/rules/standards.md` with a `paths` glob",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> `~/.claude/CLAUDE.md` is user-level. It applies to all of one user's projects and never ships through version control, so a cloned teammate cannot see it. Project standards belong in `./CLAUDE.md` or `./.claude/CLAUDE.md`, both of which are committed to git. The other answers describe correct shared locations and would not cause this symptom.",
-    source: "paullarionov Q1"
+    source: "paullarionov Q1",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/memory",
   },
   {
     tag: "config",
@@ -545,11 +598,13 @@ const CC_CONFIG = [
       "`!include ./docs/testing.md`",
       "`@./docs/testing.md`",
       "`<import src=\"./docs/testing.md\" />`",
-      "`require('./docs/testing.md')`"
+      "`require('./docs/testing.md')`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Claude Code's memory system uses the `@path/to/file` syntax to import another markdown file. Relative paths resolve relative to the file containing the import, and imports can recurse up to four hops. The other forms are invented and do nothing in a CLAUDE.md.",
-    source: "paullarionov Q2"
+    source: "paullarionov Q2",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/memory",
   },
   {
     tag: "config",
@@ -558,11 +613,13 @@ const CC_CONFIG = [
       "Append them to `~/.claude/CLAUDE.md` so they always load",
       "Create `.claude/rules/testing.md` with frontmatter `paths: [\"**/*.test.ts\"]`",
       "Create a `.claude/commands/test.md` slash command",
-      "Add them to `.claude/settings.json` under a `testing` key"
+      "Add them to `.claude/settings.json` under a `testing` key",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> `.claude/rules/` supports YAML frontmatter with a `paths` glob field. The rule only activates when Claude reads files matching the pattern, which keeps unrelated context out of every session. Putting it in CLAUDE.md loads it every session whether or not tests are involved. Slash commands are user-invoked, not path-triggered. There is no `testing` key in settings.json.",
-    source: "paullarionov Q3"
+    source: "paullarionov Q3",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/memory",
   },
   {
     tag: "config",
@@ -571,11 +628,13 @@ const CC_CONFIG = [
       "Both live in `~/.claude/commands/` and are tagged with frontmatter `scope`",
       "Project: `.claude/commands/` in the repo. Personal: `~/.claude/commands/`",
       "Project: `.claude/skills/commands/`. Personal: `~/.claude/skills/commands/`",
-      "Project: `.mcp.json` `commands` field. Personal: `~/.claude.json` `commands` field"
+      "Project: `.mcp.json` `commands` field. Personal: `~/.claude.json` `commands` field",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Project commands ship with the repo under `.claude/commands/`, so the whole team gets them when they clone. Personal commands live in `~/.claude/commands/` and are only available to one user across all projects. The other answers conflate skills, MCP config, and global config files.",
-    source: "paullarionov Q4"
+    source: "paullarionov Q4",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/slash-commands",
   },
   {
     tag: "config",
@@ -584,11 +643,12 @@ const CC_CONFIG = [
       "`isolate: true`",
       "`subagent: true`",
       "`context: fork`",
-      "`scope: subprocess`"
+      "`scope: subprocess`",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> `context: fork` in SKILL.md frontmatter spawns a forked subagent context. The skill content becomes the prompt and results return as a summary, keeping the main conversation clean. The other field names are not part of the SKILL.md schema.",
-    source: "paullarionov Q5"
+    source: "paullarionov Q5",
+    auditNote: "context: fork is not documented in anthropic-facts.md reference; cannot confirm.",
   },
   {
     tag: "config",
@@ -597,11 +657,13 @@ const CC_CONFIG = [
       "`allow`",
       "`ask`",
       "`deny`",
-      "`additionalDirectories`"
+      "`additionalDirectories`",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Permission evaluation order is `deny`, then `ask`, then `allow`. The first matching rule wins, so a deny rule for `Bash(curl *)` blocks the command even if an allow rule would have matched it. `additionalDirectories` is not a rule list, it grants file access.",
-    source: "anthropic docs · claude code settings"
+    source: "anthropic docs · claude code settings",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/settings",
   },
   {
     tag: "config",
@@ -610,11 +672,13 @@ const CC_CONFIG = [
       "`.claude/settings.json`",
       "`.claude/settings.local.json`",
       "`~/.claude/settings.json`",
-      "`.claude/CLAUDE.local.md`"
+      "`.claude/CLAUDE.local.md`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> `.claude/settings.local.json` lives in the project but is intended to be gitignored, so per-developer overrides like personal permission rules stay local. `.claude/settings.json` is the shared project file and is committed. `~/.claude/settings.json` is user-level for all projects. `CLAUDE.local.md` is a memory file, not a settings file.",
-    source: "anthropic docs · claude code settings"
+    source: "anthropic docs · claude code settings",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/settings",
   },
   {
     tag: "config",
@@ -623,11 +687,13 @@ const CC_CONFIG = [
       "`\"allow\": [\"Bash(npm *)\"]`",
       "`\"allow\": [\"Bash(npm run lint)\", \"Bash(npm run test *)\"]`",
       "`\"allow\": [\"npm run lint\", \"npm run test\"]`",
-      "`\"allow\": [\"Bash:npm:run:lint\", \"Bash:npm:run:test:*\"]`"
+      "`\"allow\": [\"Bash:npm:run:lint\", \"Bash:npm:run:test:*\"]`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Permission rules use the `Tool(specifier)` format. `Bash(npm run lint)` matches that exact command, and `Bash(npm run test *)` uses a trailing wildcard to allow test arguments. Option A is too broad and lets any npm subcommand through. The other forms do not match the documented syntax.",
-    source: "anthropic docs · claude code settings"
+    source: "anthropic docs · claude code settings",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/settings",
   },
   {
     tag: "config",
@@ -636,11 +702,13 @@ const CC_CONFIG = [
       "`.claude/settings.json` under `mcpServers`",
       "`~/.claude.json` under the current project's entry",
       "`.mcp.json` at the project root",
-      "`.claude/mcp/servers.json`"
+      "`.claude/mcp/servers.json`",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Project-scoped MCP servers live in `.mcp.json` at the project root and are designed to be checked into version control. Local-scope servers added with `claude mcp add` (without `--scope project`) go into `~/.claude.json` and stay private. There is no `mcpServers` key in `.claude/settings.json`.",
-    source: "anthropic docs · claude code mcp"
+    source: "anthropic docs · claude code mcp",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "config",
@@ -649,11 +717,12 @@ const CC_CONFIG = [
       "`tools`",
       "`allowed-tools`",
       "`permissions`",
-      "`pre-approve`"
+      "`pre-approve`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> `allowed-tools` grants permission for the listed tools while the skill is active, using the same `Tool(specifier)` syntax as settings.json. It does not restrict other tools, it only skips the approval prompt for the listed ones. The other field names are not part of the SKILL.md schema.",
-    source: "anthropic docs · claude code skills"
+    source: "anthropic docs · claude code skills",
+    auditNote: "allowed-tools field not explicitly in anthropic-facts.md reference.",
   },
   {
     tag: "config",
@@ -662,11 +731,11 @@ const CC_CONFIG = [
       "Validates the argument types and rejects invalid input",
       "Shows a hint during autocomplete to indicate what arguments are expected",
       "Sets default values for missing arguments",
-      "Parses arguments into a named map for the skill body"
+      "Parses arguments into a named map for the skill body",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> `argument-hint` is purely a UX hint shown in autocomplete, like `[issue-number]` or `[filename] [format]`. It does not validate, default, or parse. Named positional binding is done with the `arguments` field plus `$name` substitution.",
-    source: "anthropic docs · claude code slash commands"
+    source: "anthropic docs · claude code slash commands",
   },
   {
     tag: "config",
@@ -675,11 +744,11 @@ const CC_CONFIG = [
       "`$1`",
       "`$INPUT`",
       "`$ARGUMENTS`",
-      "`{{args}}`"
+      "`{{args}}`",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> `$ARGUMENTS` expands to the full argument string as typed. `$0`, `$1`, etc. (or `$ARGUMENTS[0]`, `$ARGUMENTS[1]`) access individual shell-quoted arguments by position. `$INPUT` and `{{args}}` are not part of the syntax.",
-    source: "anthropic docs · claude code slash commands"
+    source: "anthropic docs · claude code slash commands",
   },
   {
     tag: "config",
@@ -688,11 +757,11 @@ const CC_CONFIG = [
       "`\"environment\": { \"NODE_ENV\": \"development\" }`",
       "`\"env\": { \"NODE_ENV\": \"development\" }`",
       "`\"vars\": { \"NODE_ENV\": \"development\" }`",
-      "`\"export\": { \"NODE_ENV\": \"development\" }`"
+      "`\"export\": { \"NODE_ENV\": \"development\" }`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> The `env` key in settings.json holds an object of environment variables applied to all sessions. The other keys are not recognized. Common entries here include `CLAUDE_CODE_ENABLE_TELEMETRY`, `ANTHROPIC_MODEL`, and provider routing variables.",
-    source: "anthropic docs · claude code settings"
+    source: "anthropic docs · claude code settings",
   },
   {
     tag: "config",
@@ -701,11 +770,13 @@ const CC_CONFIG = [
       "A bullet point in `CLAUDE.md` that says 'always run lint before commit'",
       "A skill in `.claude/skills/commit/SKILL.md`",
       "A `PreToolUse` hook in `.claude/settings.json` matching `Bash(git commit *)`",
-      "A `paths`-scoped rule in `.claude/rules/git.md`"
+      "A `paths`-scoped rule in `.claude/rules/git.md`",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> CLAUDE.md and rules are context, not enforcement. Claude reads them but can still skip them. To deterministically run something at a lifecycle point, use a hook. A `PreToolUse` hook with the right matcher fires every time, regardless of what the model decides. Skills are invoked, not auto-triggered before commits.",
-    source: "anthropic docs · claude code hooks"
+    source: "anthropic docs · claude code hooks",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/hooks",
   }
 ];
 
@@ -721,11 +792,12 @@ const CC_WORKFLOWS = [
       "Ask Claude to start editing files and follow up with corrections as you go",
       "Enter plan mode so Claude explores the codebase and proposes an approach before editing",
       "Use `claude -p` headless mode so the work runs without interactive prompts",
-      "Open one large `/compact` session and let it run overnight"
+      "Open one large `/compact` session and let it run overnight",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Plan mode is the right tool when the task is large and there are multiple viable approaches. Claude explores, reads, and proposes a plan you can approve before any edits land. Jumping into edits invites rework. Headless mode is for CI and non-interactive scripting. `/compact` is for context management, not planning.",
-    source: "paullarionov Q6"
+    source: "paullarionov Q6",
+    verified: "paul",
   },
   {
     tag: "workflow",
@@ -734,11 +806,13 @@ const CC_WORKFLOWS = [
       "Add `--timeout 60` to the command",
       "Switch to `claude -p \"Review this PR\"` for non-interactive headless mode",
       "Wrap the command in `nohup`",
-      "Set `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`"
+      "Set `CLAUDE_CODE_DISABLE_AUTO_MEMORY=1`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Without `-p` (or `--print`), the CLI starts an interactive session and waits for input, which never comes in CI. `-p` runs in headless mode: it processes the prompt, writes the response, and exits. Timeouts and `nohup` do not change the interactive vs headless behavior. Disabling auto memory is unrelated.",
-    source: "paullarionov Q7"
+    source: "paullarionov Q7",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/sdk",
   },
   {
     tag: "workflow",
@@ -747,11 +821,13 @@ const CC_WORKFLOWS = [
       "`--format markdown` and pipe through a custom parser",
       "`--output-format json` together with `--json-schema` so the output is validated",
       "`--continue` and screen-scrape the transcript",
-      "`--resume` with `--quiet`"
+      "`--resume` with `--quiet`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> `--output-format json` gives a structured response that can be parsed programmatically, and `--json-schema` enforces it conforms to your schema. Markdown plus regex is brittle. `--continue` and `--resume` are for session continuation, not output formatting.",
-    source: "paullarionov Q8"
+    source: "paullarionov Q8",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/sdk",
   },
   {
     tag: "workflow",
@@ -760,11 +836,13 @@ const CC_WORKFLOWS = [
       "`claude --continue`, which always continues the most recent session",
       "`claude --resume <session-id>`, which lets you pick a specific past session",
       "`claude --restore`, which reloads CLAUDE.md only",
-      "`claude --replay`, which re-runs the prior turns"
+      "`claude --replay`, which re-runs the prior turns",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> `--resume` accepts a session identifier and reopens that specific session. `--continue` is the right answer if you only want the most recent one, but the question specifies a specific session. `--restore` and `--replay` are not Claude Code flags.",
-    source: "anthropic docs · claude code sdk"
+    source: "anthropic docs · claude code sdk",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/sdk",
   },
   {
     tag: "workflow",
@@ -773,11 +851,12 @@ const CC_WORKFLOWS = [
       "Because the model loses access to its tools after generation",
       "Because the generation context biases the model toward defending its own choices, hiding subtle issues",
       "Because settings.json forbids review and generation in the same session",
-      "Because `/compact` will erase the review otherwise"
+      "Because `/compact` will erase the review otherwise",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Reviewing in the same session means the model retains the reasoning it used to write the code, which leads to shallow self-confirmation. An independent reviewer (a fresh session or a subagent without the generation history) is more likely to find subtle bugs. None of the other answers describe real constraints.",
-    source: "paullarionov Q9"
+    source: "paullarionov Q9",
+    verified: "paul",
   },
   {
     tag: "workflow",
@@ -786,11 +865,12 @@ const CC_WORKFLOWS = [
       "It deletes the session. The risk is permanent data loss",
       "It summarizes the prior conversation to free context. The risk is that specific exact values, like numbers or quoted strings, can be lost in the summary",
       "It restarts the model with a fresh CLAUDE.md. The risk is losing settings.json",
-      "It increases the model's context window for one turn. The risk is higher cost"
+      "It increases the model's context window for one turn. The risk is higher cost",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> `/compact` summarizes the conversation so far to reduce token usage. Project-root CLAUDE.md is re-injected after compaction, but specific values can be lost during summarization, which is the documented risk. None of the other answers describe what `/compact` does.",
-    source: "paullarionov Q10"
+    source: "paullarionov Q10",
+    verified: "paul",
   },
   {
     tag: "workflow",
@@ -799,11 +879,12 @@ const CC_WORKFLOWS = [
       "Bash, with `find . -name '*.test.tsx'`",
       "Grep, with the pattern `*.test.tsx`",
       "Glob, which is designed for matching file paths by name pattern",
-      "Read, in a loop over directories"
+      "Read, in a loop over directories",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Glob is the built-in tool for finding files by name pattern. It is faster and more correct than spawning `find`, especially on Windows. Grep searches contents, not paths. Read is for opening known files. Best practice is to prefer Glob over shell-based file search.",
-    source: "paullarionov Q11"
+    source: "paullarionov Q11",
+    verified: "paul",
   },
   {
     tag: "workflow",
@@ -812,11 +893,12 @@ const CC_WORKFLOWS = [
       "Glob with pattern `processPayment*`",
       "Grep, which searches inside file contents",
       "Bash with `grep -r`, since Bash is more flexible",
-      "Read each file and scan for the symbol"
+      "Read each file and scan for the symbol",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Grep is the built-in content-search tool, built on ripgrep, optimized for correct permissions and access. It is the right choice for finding function calls, imports, error messages, etc. Glob matches file names, not contents. Shelling out to grep is slower and less consistent.",
-    source: "paullarionov Q12"
+    source: "paullarionov Q12",
+    verified: "paul",
   },
   {
     tag: "workflow",
@@ -825,11 +907,12 @@ const CC_WORKFLOWS = [
       "Run Edit again with `force: true`",
       "Read the file, modify the content programmatically, then Write the whole file",
       "Delete the file with Bash and recreate it",
-      "Use Grep to find the line number, then call Edit with `line: <n>`"
+      "Use Grep to find the line number, then call Edit with `line: <n>`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> When Edit's `old_string` is non-unique, the documented fallback is Read then Write. You can also widen the `old_string` to include enough surrounding context to make it unique, or use `replace_all` if every match should change. There is no `force` flag and no `line` parameter on Edit.",
-    source: "paullarionov Q14"
+    source: "paullarionov Q14",
+    verified: "paul",
   },
   {
     tag: "workflow",
@@ -838,11 +921,12 @@ const CC_WORKFLOWS = [
       "Read the whole file into context, then use Write to rewrite it with the new test added",
       "Use Grep to locate the exact function, Read enough context around it, then Edit with a unique anchor string in `old_string`",
       "Use Bash `sed -i` to insert the test inline",
-      "Ask Claude to regenerate the file from scratch"
+      "Ask Claude to regenerate the file from scratch",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Grep narrows the location, Read loads enough context to write a unique anchor, and Edit makes a surgical change. Rewriting a 3000-line file with Write risks losing unrelated content and burns tokens. `sed` on Windows is unreliable. Regenerating from scratch is reckless.",
-    source: "paullarionov Q15"
+    source: "paullarionov Q15",
+    verified: "paul",
   },
   {
     tag: "workflow",
@@ -851,11 +935,13 @@ const CC_WORKFLOWS = [
       "Whenever Claude needs to write more than ten lines of code",
       "When the side task would flood your main context with search results, logs, or files you will not reference again",
       "Only when you want a different model (the main thread is locked to one)",
-      "Subagents are deprecated; always use the main thread"
+      "Subagents are deprecated; always use the main thread",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Subagents preserve main-thread context by doing exploratory or noisy work in their own context window and returning a summary. They are the right tool when intermediate output would clutter the main conversation. Subagents are not deprecated, and the main thread can switch models with `/model`.",
-    source: "anthropic docs · claude code sub-agents"
+    source: "anthropic docs · claude code sub-agents",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/sub-agents",
   },
   {
     tag: "workflow",
@@ -864,11 +950,11 @@ const CC_WORKFLOWS = [
       "Issue each Read sequentially so you can react to errors one at a time",
       "Issue all three Read calls in parallel in a single tool-use block",
       "Combine them into one Bash `cat` call",
-      "Use Glob, then a single Read with multiple paths"
+      "Use Glob, then a single Read with multiple paths",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Independent tool calls should be issued in parallel in a single block. This is faster and uses fewer turns. Sequential is appropriate only when later calls depend on earlier results. `cat` loses line numbers and image handling, and Read does not accept multiple paths.",
-    source: "anthropic docs · claude code overview"
+    source: "anthropic docs · claude code overview",
   },
   {
     tag: "workflow",
@@ -877,11 +963,13 @@ const CC_WORKFLOWS = [
       "Append to the conversation as plain chat so the model remembers",
       "Write a scratchpad markdown file in the repo and update it with Edit as you make progress",
       "Add them to `~/.claude/settings.json` under a `notes` key",
-      "Store them in environment variables"
+      "Store them in environment variables",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> A scratchpad file is durable: it survives compaction, restarts, and resumes, and Claude can re-read it on demand. Chat content is exactly what `/compact` summarizes away. settings.json has no `notes` key. Env vars are not designed for prose notes.",
-    source: "anthropic docs · claude code memory"
+    source: "anthropic docs · claude code memory",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/memory",
   },
   {
     tag: "workflow",
@@ -890,11 +978,11 @@ const CC_WORKFLOWS = [
       "Run `claude` in a long-lived screen session on a shared VM",
       "Use the official GitHub Actions integration, which runs Claude Code with `-p` and posts a review comment",
       "Install Claude Code on every developer's pre-push git hook",
-      "Schedule `/loop` to scan the repo every hour"
+      "Schedule `/loop` to scan the repo every hour",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> The GitHub Actions integration is the supported way to run Claude Code in CI on PR events. It runs headless with `-p` and can post review comments. Long-lived screen sessions and per-developer pre-push hooks are fragile and inconsistent across the team. `/loop` is for interactive recurring tasks, not push-driven CI.",
-    source: "anthropic docs · claude code github actions"
+    source: "anthropic docs · claude code github actions",
   }
 ];
 
@@ -910,11 +998,13 @@ const CC_ADVANCED = [
       "`PreToolUse`",
       "`UserPromptSubmit`",
       "`SessionStart`",
-      "`Stop`"
+      "`Stop`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> `UserPromptSubmit` fires before prompt processing and can validate or block the prompt. `PreToolUse` fires before a tool call. `SessionStart` fires once per session. `Stop` fires when Claude finishes a turn.",
-    source: "anthropic docs · claude code hooks"
+    source: "anthropic docs · claude code hooks",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/hooks",
   },
   {
     tag: "advanced",
@@ -923,11 +1013,13 @@ const CC_ADVANCED = [
       "Exit 0 with empty stdout",
       "Exit 1",
       "Exit 2",
-      "Exit 127"
+      "Exit 127",
     ],
     answer: 2,
     explain: "<strong>Why C:</strong> Exit code 2 is the documented blocking error: Claude Code prevents the action. Exit 0 means success and Claude parses any JSON output. Exit 1 (and other non-zero codes) is a non-blocking error shown in the transcript. Exit 127 is shell 'command not found' and not part of the hook contract.",
-    source: "anthropic docs · claude code hooks"
+    source: "anthropic docs · claude code hooks",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/hooks",
   },
   {
     tag: "advanced",
@@ -936,11 +1028,13 @@ const CC_ADVANCED = [
       "`{\"block\": true, \"message\": \"...\"}`",
       "`{\"decision\": \"block\", \"reason\": \"...\"}`",
       "`{\"allow\": false, \"why\": \"...\"}`",
-      "`{\"status\": \"deny\"}`"
+      "`{\"status\": \"deny\"}`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> The hook JSON schema uses `decision: \"block\"` with a `reason` string, plus an optional `hookSpecificOutput` object for per-event extras like `permissionDecision`. The other shapes are not part of the documented protocol.",
-    source: "anthropic docs · claude code hooks"
+    source: "anthropic docs · claude code hooks",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/hooks",
   },
   {
     tag: "advanced",
@@ -949,11 +1043,13 @@ const CC_ADVANCED = [
       "`\"mcp:memory\"`",
       "`\"mcp__memory__.*\"`",
       "`\"MCP(memory)\"`",
-      "`\"memory/*\"`"
+      "`\"memory/*\"`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Hook matchers accept regex, and MCP tools are exposed under names like `mcp__<server>__<tool>`. So `mcp__memory__.*` matches every tool from the `memory` server. `MCP(memory)` is permission-rule syntax, not hook matcher syntax. The other forms do not match the documented patterns.",
-    source: "anthropic docs · claude code hooks"
+    source: "anthropic docs · claude code hooks",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/hooks",
   },
   {
     tag: "advanced",
@@ -962,11 +1058,13 @@ const CC_ADVANCED = [
       "Subagents share the main thread's context window but with read-only access",
       "Each subagent runs in its own context window with its own system prompt and tool permissions, returning only a summary to the parent",
       "Subagents inherit the parent's full transcript and append to it",
-      "Subagents share context only if `context: inherit` is set"
+      "Subagents share context only if `context: inherit` is set",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Subagents are designed for context preservation: each has an independent context, a focused system prompt, and restricted tool access. They return a summary, not their full transcript, which is the entire point. None of the other options match the documented behavior.",
-    source: "anthropic docs · claude code sub-agents"
+    source: "anthropic docs · claude code sub-agents",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/sub-agents",
   },
   {
     tag: "advanced",
@@ -975,11 +1073,13 @@ const CC_ADVANCED = [
       "`Bash` with `claude -p`",
       "`Task`, the built-in tool for spawning subagents",
       "`Glob` with `recurse: true`",
-      "`Read` with multiple paths"
+      "`Read` with multiple paths",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> The `Task` tool spawns a subagent (typically Explore or general-purpose) inside the same session. It is the documented way to delegate searches and multi-step investigations. Spawning a new `claude -p` via Bash starts an unrelated process. Glob and Read do not delegate.",
-    source: "anthropic docs · claude code sub-agents"
+    source: "anthropic docs · claude code sub-agents",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/sub-agents",
   },
   {
     tag: "advanced",
@@ -988,11 +1088,13 @@ const CC_ADVANCED = [
       "`.claude/agents/<name>.md`",
       "`.claude/subagents.json`",
       "`.claude/commands/<name>.md`",
-      "`~/.claude.json` under `agents`"
+      "`~/.claude.json` under `agents`",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Project subagents are markdown files under `.claude/agents/` with frontmatter (`name`, `description`, `tools`, `model`). User-level subagents live in `~/.claude/agents/`. Slash commands are not subagents. `~/.claude.json` is for MCP local-scope and global config, not agent definitions.",
-    source: "anthropic docs · claude code sub-agents"
+    source: "anthropic docs · claude code sub-agents",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/sub-agents",
   },
   {
     tag: "advanced",
@@ -1001,11 +1103,13 @@ const CC_ADVANCED = [
       "Slash commands and skills are different mechanisms with incompatible files",
       "A file at `.claude/commands/deploy.md` and a skill at `.claude/skills/deploy/SKILL.md` both create `/deploy` and work the same way; skills add features like supporting files and auto-invocation",
       "Subagents replace slash commands; you should migrate all commands to `.claude/agents/`",
-      "Skills can only be invoked automatically by Claude, never with `/name`"
+      "Skills can only be invoked automatically by Claude, never with `/name`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Custom commands have been merged into skills. Both layouts create the same `/deploy` command, with skills adding optional features like a directory for supporting files and frontmatter to control auto-invocation. Subagents are a separate concept and do not replace commands.",
-    source: "anthropic docs · claude code skills"
+    source: "anthropic docs · claude code skills",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/skills",
   },
   {
     tag: "advanced",
@@ -1014,11 +1118,13 @@ const CC_ADVANCED = [
       "`PWD`",
       "`CLAUDE_PROJECT_DIR`",
       "`CLAUDE_CWD`",
-      "`PROJECT_ROOT`"
+      "`PROJECT_ROOT`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Claude Code sets `CLAUDE_PROJECT_DIR` in the spawned MCP server's environment, pointing to the project root. The same variable is also passed to hook scripts. `PWD` reflects the current working directory of whatever launched the process, which is not reliable. The other names are not part of the contract.",
-    source: "anthropic docs · claude code mcp"
+    source: "anthropic docs · claude code mcp",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "advanced",
@@ -1027,11 +1133,13 @@ const CC_ADVANCED = [
       "It limits you to five MCP servers per session",
       "Tool search is enabled by default, so tool schemas are deferred and discovered on demand via a `ToolSearch` call",
       "It silently drops MCP tools that have not been used in 24 hours",
-      "It requires `alwaysLoad: false` for every server"
+      "It requires `alwaysLoad: false` for every server",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Tool search defers MCP tool schemas until Claude needs them, using a `ToolSearch` call to pull in only the relevant ones. You can override with `ENABLE_TOOL_SEARCH=false` or exempt a server with `alwaysLoad: true`. There is no five-server cap and no 24-hour drop.",
-    source: "anthropic docs · claude code mcp"
+    source: "anthropic docs · claude code mcp",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "advanced",
@@ -1040,11 +1148,13 @@ const CC_ADVANCED = [
       "Sublime Text",
       "VS Code (and Cursor, via the same extension)",
       "Emacs",
-      "Vim, via a built-in plugin"
+      "Vim, via a built-in plugin",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> Claude Code ships an official VS Code extension (which also installs into Cursor) with inline diffs, @-mentions, plan review, and conversation history. JetBrains has a separate plugin. Sublime, Emacs, and Vim do not have official first-party extensions; Vim users can opt into vim keybindings via `editorMode`.",
-    source: "anthropic docs · claude code overview"
+    source: "anthropic docs · claude code overview",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/overview",
   },
   {
     tag: "advanced",
@@ -1053,11 +1163,13 @@ const CC_ADVANCED = [
       "Shell out to `claude -p` and parse stdout, since there is no SDK",
       "The Agent SDK (formerly Claude Code SDK), which exposes the same tools and orchestration programmatically",
       "Fork the Claude Code CLI and import it as a library",
-      "Connect to a running `claude` process over its REST API on localhost"
+      "Connect to a running `claude` process over its REST API on localhost",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> The Agent SDK lets you build custom agents powered by Claude Code's tools and capabilities, with full control over orchestration, tool access, and permissions. Shelling out to `-p` works for simple cases but is not the documented embedding path. There is no localhost REST API.",
-    source: "anthropic docs · claude code sdk"
+    source: "anthropic docs · claude code sdk",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/agent-sdk/overview",
   },
   {
     tag: "advanced",
@@ -1066,11 +1178,13 @@ const CC_ADVANCED = [
       "Restart your terminal and clear all environment variables",
       "Run `/memory` to confirm the file is actually loaded, and check for conflicting instructions in nested CLAUDE.md files",
       "Delete `~/.claude/settings.json` to reset settings",
-      "Run `claude --reset`"
+      "Run `claude --reset`",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> `/memory` lists every CLAUDE.md, CLAUDE.local.md, and rules file loaded in the current session. If the file is not listed, Claude cannot see it. Conflicting instructions across nested files are another common cause. Wiping settings or running `--reset` is destructive and rarely the right first step.",
-    source: "anthropic docs · claude code memory"
+    source: "anthropic docs · claude code memory",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/memory",
   },
   {
     tag: "advanced",
@@ -1079,11 +1193,13 @@ const CC_ADVANCED = [
       "All tools run with full system privileges by default; permissions are advisory",
       "Tools are evaluated against `deny`, then `ask`, then `allow` rules; unmatched calls fall back to a confirmation prompt, and the user can switch between auto-accept, plan, and bypass modes",
       "Every tool call is auto-approved unless `defaultMode: \"strict\"` is set",
-      "Bash is sandboxed by default on every platform with no opt-out"
+      "Bash is sandboxed by default on every platform with no opt-out",
     ],
     answer: 1,
     explain: "<strong>Why B:</strong> The permission model uses the deny/ask/allow precedence with prompt-on-unmatched-call as the safe default. Users choose a permission mode (default, acceptEdits, plan, bypass) per session. Sandboxing is available but opt-in via `sandbox.enabled`, not default everywhere. Permissions are enforced by the client, not advisory.",
-    source: "anthropic docs · claude code settings"
+    source: "anthropic docs · claude code settings",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/settings",
   }
 ];
 
@@ -1150,6 +1266,7 @@ function renderQuestion() {
     <div class="qmeta">
       <span>Question ${i + 1} of ${QUESTIONS.length}</span>
       <span class="tag ${tagClass}">${tagLabel}</span>
+      ${item.verified ? `<span class="src-badge verified-${item.verified}">${item.verified === 'anthropic-corrected' ? 'anthropic *' : item.verified === 'debated' ? 'community-debated' : item.verified === 'paul' ? 'paullarionov' : item.verified}</span>` : ''} /* render: src-badge */
     </div>
     <div class="qtext">${item.q}</div>
     <div class="opts">
@@ -1169,6 +1286,7 @@ function renderQuestion() {
       <div class="explain show ${answers[i] === item.answer ? 'right' : 'miss'}">
         <div class="verdict">why</div>
         ${item.explain}
+        ${item.docsLink ? `<a class="docs-link" href="${item.docsLink}" target="_blank" rel="noopener">${item.docsLink}</a>` : ''} /* render: docs-link */
         <div class="src">source · ${item.source}</div>
       </div>` : '<div class="explain"></div>'}
     <div class="controls">

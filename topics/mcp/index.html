@@ -447,6 +447,57 @@
     .qtext { font-size: 22px; }
     .score-big { font-size: 96px; }
   }
+/* === src-badge styles (added by add-badges.js) === */
+  .src-badge {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    padding: 5px 10px;
+    border: 1px solid var(--ink);
+    margin-left: 10px;
+    background: var(--paper);
+    color: var(--ink);
+    opacity: 0.75;
+  }
+  .src-badge.verified-anthropic {
+    color: #15803D;
+    border-color: #15803D;
+    background: #ECFAF1;
+    opacity: 1;
+  }
+  .src-badge.verified-anthropic::before { content: '✓ '; }
+  .src-badge.verified-cyberskill {
+    color: var(--ink);
+    border-color: var(--ink);
+    opacity: 0.85;
+  }
+  .src-badge.verified-paul {
+    color: var(--ink);
+    border-color: var(--ink);
+    opacity: 0.85;
+  }
+  .src-badge.verified-debated {
+    color: #B47A00;
+    border-color: #B47A00;
+    background: #FFF7E0;
+    opacity: 1;
+  }
+  .src-badge.verified-debated::before { content: '⚠ '; }
+  .docs-link {
+    display: block;
+    margin-top: 14px;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    color: #15803D;
+    text-decoration: none;
+    border-bottom: 1px solid #15803D;
+    padding-bottom: 2px;
+  }
+  .docs-link::before { content: '→ anthropic docs: '; opacity: 0.7; }
+  .docs-link:hover { color: var(--orange); border-color: var(--orange); }
+
 </style>
 </head>
 <body>
@@ -532,11 +583,13 @@ const MCP_BASICS = [
       "A way for AI applications (hosts) to connect to external data sources, tools, and workflow templates",
       "A binary wire format for streaming model weights between GPUs",
       "A registry of approved LLM providers that Anthropic certifies",
-      "A prompt-engineering DSL that compiles to system prompts"
+      "A prompt-engineering DSL that compiles to system prompts",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> MCP is an open-source standard for connecting AI applications to external systems (data, tools, workflows). It is often described as a USB-C port for AI apps. It is not a wire format for weights, not a provider registry, and not a prompt DSL.",
-    source: "anthropic docs · modelcontextprotocol.io introduction"
+    source: "anthropic docs · modelcontextprotocol.io introduction",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/introduction",
   },
   {
     tag: "basics",
@@ -545,11 +598,13 @@ const MCP_BASICS = [
       "Tools, Resources, and Prompts",
       "Functions, Files, and Roles",
       "Actions, Schemas, and Embeddings",
-      "Commands, Triggers, and Workflows"
+      "Commands, Triggers, and Workflows",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> The MCP specification defines exactly three server-side primitives: Tools (functions the model can call), Resources (data the model can read for context), and Prompts (templated messages and workflows). The other labels are paraphrases that do not match the spec.",
-    source: "paullarionov Q · MCP chapter 4.1"
+    source: "paullarionov Q · MCP chapter 4.1",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/architecture",
   },
   {
     tag: "basics",
@@ -558,11 +613,13 @@ const MCP_BASICS = [
       "The LLM application that initiates connections and contains one or more clients",
       "The cloud server that runs the LLM weights",
       "The user's operating system",
-      "Any process that exposes tools and resources"
+      "Any process that exposes tools and resources",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> The spec defines three roles: Hosts (LLM apps that initiate connections), Clients (connectors inside the host), and Servers (services that provide context and capabilities). A process that exposes tools is a Server, not a Host.",
-    source: "anthropic docs · modelcontextprotocol.io specification"
+    source: "anthropic docs · modelcontextprotocol.io specification",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/architecture",
   },
   {
     tag: "basics",
@@ -571,11 +628,13 @@ const MCP_BASICS = [
       "JSON-RPC 2.0",
       "gRPC with Protocol Buffers",
       "GraphQL over WebSocket",
-      "Plain REST with JSON bodies"
+      "Plain REST with JSON bodies",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> MCP uses JSON-RPC 2.0 messages over stateful connections, with capability negotiation between client and server. It is not gRPC, GraphQL, or REST.",
-    source: "anthropic docs · modelcontextprotocol.io specification"
+    source: "anthropic docs · modelcontextprotocol.io specification",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/transports",
   },
   {
     tag: "basics",
@@ -584,11 +643,13 @@ const MCP_BASICS = [
       "stdio for local servers and Streamable HTTP for remote servers",
       "Only WebSocket connections",
       "Only stdio, remote servers are out of scope",
-      "Bluetooth and Zeroconf mDNS"
+      "Bluetooth and Zeroconf mDNS",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> MCP defines stdio (local subprocess) and Streamable HTTP (the newer remote transport that supersedes the older SSE transport) as standard. WebSocket-only and stdio-only are both wrong, and Bluetooth/mDNS are not MCP transports.",
-    source: "anthropic docs · modelcontextprotocol.io transports"
+    source: "anthropic docs · modelcontextprotocol.io transports",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/transports",
   },
   {
     tag: "basics",
@@ -597,11 +658,13 @@ const MCP_BASICS = [
       "To let one server be reused across many AI clients (Claude, ChatGPT, Cursor, VS Code) without N times M custom integrations",
       "To force every tool to run inside Anthropic's cloud for safety",
       "To replace JSON Schema with a stricter type system",
-      "To remove the need for human approval on tool calls"
+      "To remove the need for human approval on tool calls",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> MCP exists to solve the N times M integration problem: any MCP server works with any MCP-compatible client. It is not about hosting (servers run anywhere), it still uses JSON Schema for tool inputs, and human-in-the-loop approval is explicitly recommended by the spec.",
-    source: "anthropic docs · modelcontextprotocol.io introduction"
+    source: "anthropic docs · modelcontextprotocol.io introduction",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/introduction",
   },
   {
     tag: "basics",
@@ -610,11 +673,13 @@ const MCP_BASICS = [
       "Client and server declare which optional features (tools, resources, prompts, sampling, roots, elicitation) they support, so neither side calls methods the other cannot handle",
       "The client uploads its API key to the server",
       "The server picks which LLM model the host must use",
-      "The client downloads the server's source code for verification"
+      "The client downloads the server's source code for verification",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Capability negotiation lets each side advertise the optional features it implements (for example a server that only offers tools, or a client that supports sampling). The other options describe things MCP explicitly does not do.",
-    source: "anthropic docs · modelcontextprotocol.io specification"
+    source: "anthropic docs · modelcontextprotocol.io specification",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/architecture",
   },
   {
     tag: "basics",
@@ -623,11 +688,13 @@ const MCP_BASICS = [
       "The client offers these to the server, so a server can request LLM completions, ask about filesystem boundaries, or prompt the user for input",
       "The server offers these to the client",
       "Only the host process, never the client",
-      "Sampling and elicitation are not part of the MCP spec"
+      "Sampling and elicitation are not part of the MCP spec",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Tools, resources, and prompts flow from server to client. Sampling, roots, and elicitation flow the other way: clients expose them so servers can request LLM calls, ask about allowed paths, or elicit structured input from the user.",
-    source: "anthropic docs · modelcontextprotocol.io specification client features"
+    source: "anthropic docs · modelcontextprotocol.io specification client features",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/architecture",
   },
   {
     tag: "basics",
@@ -636,11 +703,13 @@ const MCP_BASICS = [
       "By sending a `tools/list` JSON-RPC request after the initialize handshake",
       "By scanning the server's filesystem for a tools.yaml file",
       "By calling a hard-coded `/openapi.json` HTTP endpoint",
-      "Tools must be declared statically in the client's config, servers cannot advertise them"
+      "Tools must be declared statically in the client's config, servers cannot advertise them",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Discovery happens at runtime via the `tools/list` request, which returns tool name, description, inputSchema, and optional annotations. There is no tools.yaml or OpenAPI requirement, and clients do not need to know tools ahead of time.",
-    source: "anthropic docs · modelcontextprotocol.io tools"
+    source: "anthropic docs · modelcontextprotocol.io tools",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/tools",
   },
   {
     tag: "basics",
@@ -649,11 +718,13 @@ const MCP_BASICS = [
       "Tools are model-invoked functions that perform actions; Resources are addressable data the client can read for context without calling a function",
       "Tools are synchronous and Resources are asynchronous",
       "Tools require OAuth and Resources do not",
-      "Resources are deprecated in the 2025-06-18 spec"
+      "Resources are deprecated in the 2025-06-18 spec",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Tools represent actions or computations the model decides to call; Resources are passive data (files, schemas, catalogs) referenced by URI and read for context. Sync vs async, OAuth, and deprecation are not the distinguishing axes.",
-    source: "paullarionov Q · MCP chapter 4.5"
+    source: "paullarionov Q · MCP chapter 4.5",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/tools",
   },
   {
     tag: "basics",
@@ -662,11 +733,11 @@ const MCP_BASICS = [
       "The official `mcp` Python SDK from the modelcontextprotocol organization on GitHub",
       "LangChain's tool-calling abstraction",
       "FastAPI without any MCP-specific library",
-      "OpenAI's function-calling SDK"
+      "OpenAI's function-calling SDK",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> The modelcontextprotocol org publishes first-party SDKs in TypeScript, Python, Java, Kotlin, C#, Swift, Rust, and Ruby. LangChain, raw FastAPI, and the OpenAI SDK are not MCP implementations.",
-    source: "anthropic docs · modelcontextprotocol.io sdks"
+    source: "anthropic docs · modelcontextprotocol.io sdks",
   }
 ];
 
@@ -682,11 +753,13 @@ const MCP_SCENARIOS = [
       "Run `claude mcp list` and `/mcp` to see the connection state, then check the server's stderr for the actual error (missing env var, bad command path, or auth failure)",
       "Delete `~/.claude.json` to reset all state",
       "Re-install Claude Code from scratch",
-      "Switch the transport to WebSocket"
+      "Switch the transport to WebSocket",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Almost all MCP startup failures are visible in the server's stderr surfaced by `/mcp` (missing API key env var, bad `command` path, OAuth 401, or 5xx during initial HTTP connect). Wiping config or reinstalling is destructive and unnecessary, and WebSocket is not an MCP transport.",
-    source: "anthropic docs · code.claude.com mcp troubleshooting"
+    source: "anthropic docs · code.claude.com mcp troubleshooting",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "scenarios",
@@ -695,11 +768,13 @@ const MCP_SCENARIOS = [
       "Expose a narrowly scoped Tool (for example `search_customer_by_id`) so each invocation goes through human approval and access control, instead of dumping rows as a Resource the model reads freely",
       "Expose the whole table as a Resource so the model always has it in context",
       "Expose it as both, with identical capabilities",
-      "Skip MCP entirely and paste rows into the system prompt"
+      "Skip MCP entirely and paste rows into the system prompt",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Tools require explicit per-call approval and let you constrain inputs (`isError`, rate limiting, parameter validation). Resources are eagerly read for context and are wrong for sensitive PII. Dual exposure doubles the attack surface, and pasting into the prompt skips all controls.",
-    source: "anthropic docs · modelcontextprotocol.io security"
+    source: "anthropic docs · modelcontextprotocol.io security",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/tools",
   },
   {
     tag: "scenarios",
@@ -708,11 +783,13 @@ const MCP_SCENARIOS = [
       "Rename the tool to something specific to your server (for example `search_jira_tickets`) and sharpen the description so the model picks it when relevant",
       "Disable Claude Code's built-in tools globally",
       "Submit a PR to Anthropic to rename their built-in",
-      "Wrap the tool in a Resource instead"
+      "Wrap the tool in a Resource instead",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Tool selection is description-driven. Generic names that collide with built-ins lose. A specific name plus a description that says when to use it is the standard fix. Disabling built-ins, upstream PRs, and converting to a Resource all miss the actual problem.",
-    source: "anthropic docs · code.claude.com mcp tool naming"
+    source: "anthropic docs · code.claude.com mcp tool naming",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "scenarios",
@@ -721,11 +798,13 @@ const MCP_SCENARIOS = [
       "Return a normal JSON-RPC result with `isError: true` and a structured `content` payload describing the error category and whether it is retryable",
       "Throw an unhandled exception and crash the server process",
       "Return a JSON-RPC `error` object with code -32603, since any failure is a protocol error",
-      "Return success with the string \"ERROR\" inside content"
+      "Return success with the string \"ERROR\" inside content",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> The spec splits errors into two channels: JSON-RPC protocol errors (unknown method, bad params) and tool-execution errors reported in the result with `isError: true`. Transient API failures are execution errors, so they belong in the result. Crashing or pretending it succeeded both break the agent loop.",
-    source: "paullarionov Q · MCP chapter 4.4"
+    source: "paullarionov Q · MCP chapter 4.4",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/tools",
   },
   {
     tag: "scenarios",
@@ -734,11 +813,13 @@ const MCP_SCENARIOS = [
       "It marks the server as needing authentication and surfaces the OAuth flow in `/mcp` so the user can sign in",
       "It silently retries forever with exponential backoff",
       "It removes the server from `.mcp.json` automatically",
-      "It falls back to anonymous access and continues without auth"
+      "It falls back to anonymous access and continues without auth",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> A 401 or 403 from a remote MCP server triggers the OAuth 2.0 flow surfaced via `/mcp`. Claude Code does not silently retry forever, never edits `.mcp.json` on the user's behalf in response to auth errors, and does not fall back to anonymous.",
-    source: "anthropic docs · code.claude.com mcp authentication"
+    source: "anthropic docs · code.claude.com mcp authentication",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "scenarios",
@@ -747,11 +828,13 @@ const MCP_SCENARIOS = [
       "Project scope, stored in `.mcp.json` at the project root and committed to version control",
       "Local scope in `~/.claude.json`, copy-pasted into a Slack channel",
       "User scope, then ask each developer to recreate the config",
-      "Enterprise managed config, which is the only way to share MCP servers"
+      "Enterprise managed config, which is the only way to share MCP servers",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Project scope writes to `.mcp.json` at the project root, which is designed to be checked in. Local and user scopes live in `~/.claude.json` and are per-user. Enterprise managed config exists but is overkill for normal team sharing.",
-    source: "anthropic docs · code.claude.com mcp scopes"
+    source: "anthropic docs · code.claude.com mcp scopes",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "scenarios",
@@ -760,11 +843,13 @@ const MCP_SCENARIOS = [
       "The token resolves from the developer's environment at startup, so the secret is never committed to git but the config still works for everyone",
       "Environment variable expansion makes the tool calls run faster",
       "JSON does not support string literals, so `${...}` is required",
-      "It forces the server to use OAuth instead of a token"
+      "It forces the server to use OAuth instead of a token",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> `${VAR}` and `${VAR:-default}` expansion in `.mcp.json` lets teams share config while each developer supplies their own secret via their shell environment. The other options are wrong: it does not change runtime perf, JSON supports literals, and expansion has nothing to do with OAuth.",
-    source: "anthropic docs · code.claude.com mcp env expansion"
+    source: "anthropic docs · code.claude.com mcp env expansion",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "scenarios",
@@ -773,11 +858,13 @@ const MCP_SCENARIOS = [
       "Read `CLAUDE_PROJECT_DIR` from the server process environment, or call the MCP `roots/list` request",
       "Hard-code an absolute path and require every developer to use the same machine layout",
       "Use `process.cwd()` and trust that Claude Code always launches from the project root",
-      "Walk up the filesystem looking for a `.git` directory on every tool call"
+      "Walk up the filesystem looking for a `.git` directory on every tool call",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Claude Code sets `CLAUDE_PROJECT_DIR` in the spawned server's environment, and the server can also call `roots/list` to ask the client. Hard-coding paths is non-portable, `process.cwd()` is unreliable, and a git-walk is a hack that breaks in non-git projects.",
-    source: "anthropic docs · code.claude.com mcp stdio servers"
+    source: "anthropic docs · code.claude.com mcp stdio servers",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "scenarios",
@@ -786,11 +873,11 @@ const MCP_SCENARIOS = [
       "A skill, because skills are markdown instructions that compose existing tools and are simpler to ship than a long-running JSON-RPC server",
       "An MCP server, because skills cannot call any tools",
       "Both at the same time, always",
-      "Neither, just put it in the system prompt"
+      "Neither, just put it in the system prompt",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Skills are the lighter-weight choice when the work is composing existing tools and following a procedure. MCP servers are the right call when you need to expose new capabilities (a database, an internal API, a custom data source) that the agent does not otherwise have.",
-    source: "anthropic docs · skills vs mcp guidance"
+    source: "anthropic docs · skills vs mcp guidance",
   },
   {
     tag: "scenarios",
@@ -799,11 +886,13 @@ const MCP_SCENARIOS = [
       "It warns once output exceeds 10,000 tokens and enforces a default 25,000 token ceiling, which can be raised via `MAX_MCP_OUTPUT_TOKENS`",
       "It silently truncates to 4,000 tokens with no warning",
       "It rejects the tool call before it runs",
-      "It splits the output across multiple turns automatically"
+      "It splits the output across multiple turns automatically",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Claude Code warns at 10,000 tokens and caps at 25,000 by default, raised by `MAX_MCP_OUTPUT_TOKENS`. Servers can also annotate a specific tool with `anthropic/maxResultSizeChars` (capped at 500,000 chars). Silent truncation, pre-rejection, and auto-splitting are not how it works.",
-    source: "anthropic docs · code.claude.com mcp output limits"
+    source: "anthropic docs · code.claude.com mcp output limits",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "scenarios",
@@ -812,11 +901,13 @@ const MCP_SCENARIOS = [
       "`--callback-port`, optionally combined with `--client-id` and `--client-secret` for servers without dynamic client registration",
       "`--oauth-port`, which only works for stdio servers",
       "There is no way to fix the port, it is always random",
-      "You must use the deprecated SSE transport"
+      "You must use the deprecated SSE transport",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> `claude mcp add --callback-port 8080 ...` pins the callback. It can be combined with `--client-id` and `--client-secret` for servers that do not support Dynamic Client Registration. The other options are inventions.",
-    source: "anthropic docs · code.claude.com mcp oauth"
+    source: "anthropic docs · code.claude.com mcp oauth",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "scenarios",
@@ -825,11 +916,13 @@ const MCP_SCENARIOS = [
       "The one from the highest-precedence scope wins (local, then project, then user), and the entry is used whole without merging fields",
       "Fields are merged across all three scopes, with later scopes overriding earlier ones",
       "The user scope always wins because it is global",
-      "Claude Code refuses to start and asks the user to resolve the conflict"
+      "Claude Code refuses to start and asks the user to resolve the conflict",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> The precedence chain is local, then project, then user, then plugin, then claude.ai connector. The winning entry is used whole. There is no field-level merging, user scope does not always win, and Claude Code does not block startup on duplicates.",
-    source: "anthropic docs · code.claude.com mcp scope precedence"
+    source: "anthropic docs · code.claude.com mcp scope precedence",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   }
 ];
 
@@ -845,11 +938,13 @@ const MCP_ANATOMY = [
       "The tool does not modify its environment, so the client may be more permissive about auto-approving it",
       "The tool's output is read-only and cannot be displayed to the user",
       "The tool requires read-only filesystem access at the OS level",
-      "The tool cannot return `isError: true`"
+      "The tool cannot return `isError: true`",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> `readOnlyHint` signals that the tool is non-mutating, which clients can use to soften approval prompts. Annotations are hints, not enforcement, and the spec warns clients to treat them as untrusted unless the server is trusted.",
-    source: "anthropic docs · modelcontextprotocol.io tool annotations"
+    source: "anthropic docs · modelcontextprotocol.io tool annotations",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/tools",
   },
   {
     tag: "anatomy",
@@ -858,11 +953,13 @@ const MCP_ANATOMY = [
       "It defaults to `true`, so clients assume a tool may make destructive changes unless the server explicitly opts out by setting it to `false`",
       "It defaults to `false`, since most tools are read-only",
       "It is required, so there is no default",
-      "It defaults to `null` and is ignored by clients"
+      "It defaults to `null` and is ignored by clients",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> `destructiveHint` defaults to `true` so that, in the absence of information, the client errs on the safe side and treats the tool as potentially destructive. A server has to actively claim non-destructiveness. The other annotations follow similar safe-default logic (`readOnlyHint` defaults to `false`, `openWorldHint` to `true`).",
-    source: "anthropic docs · modelcontextprotocol.io tool annotations"
+    source: "anthropic docs · modelcontextprotocol.io tool annotations",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/tools",
   },
   {
     tag: "anatomy",
@@ -871,11 +968,13 @@ const MCP_ANATOMY = [
       "The tool interacts with a closed, well-defined system (for example a local SQLite file), not an open external world like the public internet",
       "The tool can never be called more than once per session",
       "The tool's output schema is locked and cannot change",
-      "The tool will not appear in `tools/list` results"
+      "The tool will not appear in `tools/list` results",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> `openWorldHint` describes whether the tool reaches into an open external world (web, third-party APIs) versus a closed local system. It defaults to `true`. It has nothing to do with call frequency, schema mutability, or list visibility.",
-    source: "anthropic docs · modelcontextprotocol.io tool annotations"
+    source: "anthropic docs · modelcontextprotocol.io tool annotations",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/tools",
   },
   {
     tag: "anatomy",
@@ -884,11 +983,13 @@ const MCP_ANATOMY = [
       "Its tool set has changed dynamically, and the client should call `tools/list` again to refresh",
       "The server is shutting down and the client should disconnect",
       "A specific tool returned an error",
-      "The client's permissions have been revoked"
+      "The client's permissions have been revoked",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Servers that declared `listChanged: true` in their capabilities can push this notification when tools are added, removed, or changed. The client then re-runs `tools/list`. It is not a shutdown, an error channel, or a permission event.",
-    source: "anthropic docs · modelcontextprotocol.io tools list_changed"
+    source: "anthropic docs · modelcontextprotocol.io tools list_changed",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/tools",
   },
   {
     tag: "anatomy",
@@ -897,11 +998,13 @@ const MCP_ANATOMY = [
       "It declares the JSON Schema of `structuredContent` the tool will return, so clients can validate and LLMs can rely on a typed shape",
       "It controls the maximum size of the tool output in bytes",
       "It defines the markdown rendering style for the tool's text output",
-      "It overrides the input schema when the input is empty"
+      "It overrides the input schema when the input is empty",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> `outputSchema` is a JSON Schema for the `structuredContent` field on results. When present, servers MUST produce conforming output and clients SHOULD validate. It does not control size, rendering, or input handling.",
-    source: "anthropic docs · modelcontextprotocol.io structured output"
+    source: "anthropic docs · modelcontextprotocol.io structured output",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/tools",
   },
   {
     tag: "anatomy",
@@ -910,11 +1013,13 @@ const MCP_ANATOMY = [
       "A server-initiated request asking the user (via the client) for additional structured input mid-task, for example credentials or a confirmation",
       "A server-initiated LLM completion call routed through the client (that is sampling)",
       "A way for the client to elicit the server's source code for inspection",
-      "A debug mode that prints every JSON-RPC frame"
+      "A debug mode that prints every JSON-RPC frame",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Elicitation lets a server ask the user for input through the client's UI (form mode or URL mode). The completion-call mechanism is sampling, not elicitation. The other two options are not real MCP concepts.",
-    source: "anthropic docs · modelcontextprotocol.io elicitation"
+    source: "anthropic docs · modelcontextprotocol.io elicitation",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/architecture",
   },
   {
     tag: "anatomy",
@@ -923,11 +1028,13 @@ const MCP_ANATOMY = [
       "Request an LLM completion from the client (so the server can run agentic logic without bundling its own model or API key)",
       "Randomly sample which tool calls to execute and which to drop",
       "Sample telemetry events for observability",
-      "Lower the temperature of every tool call"
+      "Lower the temperature of every tool call",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Sampling is a client-offered capability that lets a server ask the host to run an LLM call on its behalf. The user controls whether sampling happens at all and what the server sees. The other options are unrelated.",
-    source: "anthropic docs · modelcontextprotocol.io sampling"
+    source: "anthropic docs · modelcontextprotocol.io sampling",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/docs/concepts/architecture",
   },
   {
     tag: "anatomy",
@@ -936,11 +1043,13 @@ const MCP_ANATOMY = [
       "URI or filesystem boundaries the client exposes to the server so the server knows which directories or scopes it may operate in",
       "Root certificates used to verify HTTPS connections to remote servers",
       "The top-level tools that appear first in `tools/list`",
-      "A list of root users on the host machine"
+      "A list of root users on the host machine",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> Roots are a client capability: the client tells the server which directories or URI roots are in scope. In Claude Code, the project root is exposed this way and also surfaced via `CLAUDE_PROJECT_DIR`. The other interpretations are wrong.",
-    source: "anthropic docs · modelcontextprotocol.io roots"
+    source: "anthropic docs · modelcontextprotocol.io roots",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/specification/2025-06-18",
   },
   {
     tag: "anatomy",
@@ -949,11 +1058,13 @@ const MCP_ANATOMY = [
       "A namespaced extension point for implementation-specific metadata (for example `anthropic/maxResultSizeChars` or `anthropic/alwaysLoad`) that does not belong in the core schema",
       "A required field that holds the tool's input schema",
       "A field reserved for the user's personal notes about each tool",
-      "A deprecated alias for `annotations`"
+      "A deprecated alias for `annotations`",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> `_meta` is the spec's escape hatch for vendor-specific extensions, conventionally namespaced (for example `anthropic/...`). Input schema lives in `inputSchema`, not `_meta`. It is not for user notes and it is not an alias for `annotations`.",
-    source: "anthropic docs · modelcontextprotocol.io _meta field"
+    source: "anthropic docs · modelcontextprotocol.io _meta field",
+    verified: "anthropic",
+    docsLink: "https://code.claude.com/docs/en/mcp",
   },
   {
     tag: "anatomy",
@@ -962,11 +1073,13 @@ const MCP_ANATOMY = [
       "By dated revisions (for example `2025-06-18`), negotiated between client and server during initialize",
       "Using semantic versioning (1.0.0, 1.1.0, 2.0.0)",
       "It is unversioned and always backward-incompatible",
-      "Each transport has its own independent version number"
+      "Each transport has its own independent version number",
     ],
     answer: 0,
     explain: "<strong>Why A:</strong> MCP uses dated spec revisions like `2025-06-18`, and the protocol version is negotiated at initialize time so clients and servers on different revisions can interoperate where possible. It is not semver, not unversioned, and not per-transport.",
-    source: "anthropic docs · modelcontextprotocol.io specification versioning"
+    source: "anthropic docs · modelcontextprotocol.io specification versioning",
+    verified: "anthropic",
+    docsLink: "https://modelcontextprotocol.io/specification/2025-06-18",
   }
 ];
 
@@ -1033,6 +1146,7 @@ function renderQuestion() {
     <div class="qmeta">
       <span>Question ${i + 1} of ${QUESTIONS.length}</span>
       <span class="tag ${tagClass}">${tagLabel}</span>
+      ${item.verified ? `<span class="src-badge verified-${item.verified}">${item.verified === 'anthropic-corrected' ? 'anthropic *' : item.verified === 'debated' ? 'community-debated' : item.verified === 'paul' ? 'paullarionov' : item.verified}</span>` : ''} /* render: src-badge */
     </div>
     <div class="qtext">${item.q}</div>
     <div class="opts">
@@ -1052,6 +1166,7 @@ function renderQuestion() {
       <div class="explain show ${answers[i] === item.answer ? 'right' : 'miss'}">
         <div class="verdict">why</div>
         ${item.explain}
+        ${item.docsLink ? `<a class="docs-link" href="${item.docsLink}" target="_blank" rel="noopener">${item.docsLink}</a>` : ''} /* render: docs-link */
         <div class="src">source · ${item.source}</div>
       </div>` : '<div class="explain"></div>'}
     <div class="controls">
