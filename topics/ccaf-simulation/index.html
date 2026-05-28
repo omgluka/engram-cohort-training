@@ -2748,7 +2748,7 @@ function startMode(modeKey) {
   } else {
     state.mode = 'practice';
     const scenario = modeKey.replace('practice-', '');
-    state.questions = src[scenario] || [];
+    state.questions = shuffle(src[scenario] || []);
   }
   state.current = 0;
   state.answers = new Array(state.questions.length).fill(null);

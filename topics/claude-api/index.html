@@ -1048,9 +1048,9 @@ function shuffle(arr) {
 }
 
 function startSet(mode) {
-  if (mode === 'tools') QUESTIONS = TOOLS;
-  else if (mode === 'api') QUESTIONS = API;
-  else if (mode === 'batch') QUESTIONS = BATCH;
+  if (mode === 'tools') QUESTIONS = shuffle(TOOLS);
+  else if (mode === 'api') QUESTIONS = shuffle(API);
+  else if (mode === 'batch') QUESTIONS = shuffle(BATCH);
   else QUESTIONS = shuffle(TOOLS.concat(API).concat(BATCH));
   current = 0;
   answers = new Array(QUESTIONS.length).fill(null);

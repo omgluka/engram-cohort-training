@@ -1281,9 +1281,9 @@ function shuffle(arr) {
 }
 
 function startSet(mode) {
-  if (mode === 'config') QUESTIONS = CC_CONFIG;
-  else if (mode === 'workflows') QUESTIONS = CC_WORKFLOWS;
-  else if (mode === 'advanced') QUESTIONS = CC_ADVANCED;
+  if (mode === 'config') QUESTIONS = shuffle(CC_CONFIG);
+  else if (mode === 'workflows') QUESTIONS = shuffle(CC_WORKFLOWS);
+  else if (mode === 'advanced') QUESTIONS = shuffle(CC_ADVANCED);
   else QUESTIONS = shuffle(CC_CONFIG.concat(CC_WORKFLOWS).concat(CC_ADVANCED));
   current = 0;
   answers = new Array(QUESTIONS.length).fill(null);

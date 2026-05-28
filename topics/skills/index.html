@@ -1048,9 +1048,9 @@ function shuffle(arr) {
 }
 
 function startSet(mode) {
-  if (mode === 'basics') QUESTIONS = BASICS;
-  else if (mode === 'scenarios') QUESTIONS = SCENARIOS;
-  else if (mode === 'anatomy') QUESTIONS = ANATOMY;
+  if (mode === 'basics') QUESTIONS = shuffle(BASICS);
+  else if (mode === 'scenarios') QUESTIONS = shuffle(SCENARIOS);
+  else if (mode === 'anatomy') QUESTIONS = shuffle(ANATOMY);
   else QUESTIONS = shuffle(BASICS.concat(SCENARIOS).concat(ANATOMY));
   current = 0;
   answers = new Array(QUESTIONS.length).fill(null);

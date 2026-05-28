@@ -1144,9 +1144,9 @@ function shuffle(arr) {
 }
 
 function startSet(mode) {
-  if (mode === 'basics') QUESTIONS = MCP_BASICS;
-  else if (mode === 'scenarios') QUESTIONS = MCP_SCENARIOS;
-  else if (mode === 'anatomy') QUESTIONS = MCP_ANATOMY;
+  if (mode === 'basics') QUESTIONS = shuffle(MCP_BASICS);
+  else if (mode === 'scenarios') QUESTIONS = shuffle(MCP_SCENARIOS);
+  else if (mode === 'anatomy') QUESTIONS = shuffle(MCP_ANATOMY);
   else QUESTIONS = shuffle(MCP_BASICS.concat(MCP_SCENARIOS).concat(MCP_ANATOMY));
   current = 0;
   answers = new Array(QUESTIONS.length).fill(null);
