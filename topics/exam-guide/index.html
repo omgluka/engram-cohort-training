@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Engram &middot; CCAF Exam Guide</title>
+
+<!--
+  CCAF Exam Guide
+  Domain structure, weightings, and study order for the Claude Certified Architect
+  (Foundations) exam. Structure credited to @hooeem's public study guide; factual
+  exam content restated in our own words. Full instructor prompts live in the source
+  article, linked below, rather than reproduced here.
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Doto:wght@900&family=Geist:wght@300..700&family=Geist+Mono:wght@300..600&display=swap" rel="stylesheet" />
+<link href="https://api.fontshare.com/v2/css?f[]=clash-display@700,600&display=swap" rel="stylesheet" />
+
+<style>
+  :root {
+    --paper:  #F6F4EF;
+    --ink:    #0A0A0A;
+    --orange: #E8623C;
+    --rule:   1.5px;
+    --display-machine:   'Doto', monospace;
+    --display-editorial: 'Clash Display', 'Geist', sans-serif;
+    --mono:              'Geist Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+    --sans:              'Geist', 'Inter', system-ui, sans-serif;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { background: var(--paper); color: var(--ink); }
+  body {
+    font-family: var(--sans);
+    font-weight: 400;
+    line-height: 1.5;
+    min-height: 100vh;
+    padding: 56px 64px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 980px; margin: 0 auto; }
+
+  header {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding-bottom: 36px;
+    border-bottom: var(--rule) solid var(--ink);
+    margin-bottom: 48px;
+  }
+  .eyebrow {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 18px;
+  }
+  .kiss { line-height: 0.78; }
+  .kiss .m {
+    font-family: var(--display-machine);
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    font-size: 56px;
+    display: block;
+  }
+  .kiss .e {
+    font-family: var(--display-editorial);
+    font-weight: 700;
+    letter-spacing: -0.045em;
+    font-size: 96px;
+    display: block;
+  }
+  .kiss .e .o { color: var(--orange); }
+  .meta {
+    text-align: right;
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    line-height: 1.7;
+    opacity: 0.75;
+  }
+  .meta .o { color: var(--orange); }
+  .meta strong { font-weight: 500; opacity: 1; color: var(--ink); }
+
+  .back {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    color: var(--ink);
+    text-decoration: none;
+    display: inline-block;
+    margin-bottom: 32px;
+  }
+  .back:hover { color: var(--orange); opacity: 1; }
+
+  .lede {
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: 20px;
+    line-height: 1.55;
+    max-width: 760px;
+    margin-bottom: 16px;
+  }
+  .lede strong { font-weight: 500; }
+
+  .facts {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 18px;
+    margin: 40px 0 56px;
+  }
+  .fact {
+    border: 1.5px solid var(--ink);
+    padding: 22px 24px;
+  }
+  .fact .k {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 10px;
+  }
+  .fact .v {
+    font-family: var(--display-editorial);
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+  }
+  .fact .v .o { color: var(--orange); }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1.5px solid var(--ink);
+  }
+
+  .domain {
+    border-top: 1.5px solid rgba(10,10,10,0.18);
+    padding: 32px 0;
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 32px;
+  }
+  .domain:first-of-type { border-top: none; }
+  .domain .num {
+    font-family: var(--display-editorial);
+    font-weight: 700;
+    font-size: 64px;
+    letter-spacing: -0.04em;
+    line-height: 0.8;
+    color: var(--orange);
+  }
+  .domain .weight {
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.06em;
+    opacity: 0.6;
+    margin-top: 10px;
+  }
+  .domain .body h3 {
+    font-family: var(--display-editorial);
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+  }
+  .domain .body p {
+    font-weight: 300;
+    font-size: 16px;
+    line-height: 1.55;
+    margin-bottom: 14px;
+    max-width: 680px;
+  }
+  .domain .body ul {
+    list-style: none;
+    margin: 0 0 8px;
+    max-width: 680px;
+  }
+  .domain .body li {
+    padding-left: 22px;
+    position: relative;
+    font-size: 15px;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+  .domain .body li::before {
+    content: '\2192';
+    position: absolute;
+    left: 0;
+    color: var(--orange);
+  }
+  .domain .body code {
+    font-family: var(--mono);
+    font-size: 0.85em;
+    background: rgba(10,10,10,0.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  .domain .body .link {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.04em;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--orange);
+    padding-bottom: 2px;
+  }
+  .domain .body .link:hover { color: var(--orange); }
+
+  .traps {
+    border: 1.5px solid var(--orange);
+    background: #FBEEE9;
+    padding: 28px 32px;
+    margin: 48px 0;
+  }
+  .traps h3 {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 16px;
+  }
+  .traps ul { list-style: none; }
+  .traps li {
+    padding-left: 24px;
+    position: relative;
+    font-size: 15px;
+    line-height: 1.55;
+    margin-bottom: 12px;
+  }
+  .traps li::before {
+    content: '\2717';
+    position: absolute;
+    left: 0;
+    color: var(--orange);
+    font-weight: 600;
+  }
+
+  .credit {
+    border: 1.5px solid var(--ink);
+    padding: 28px 32px;
+    margin: 48px 0;
+    background: var(--paper);
+  }
+  .credit h3 {
+    font-family: var(--mono);
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    opacity: 0.55;
+    margin-bottom: 14px;
+  }
+  .credit p { font-weight: 300; font-size: 15.5px; line-height: 1.6; max-width: 720px; }
+  .credit a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--orange);
+    padding-bottom: 1px;
+  }
+  .credit a:hover { color: var(--orange); }
+
+  footer {
+    margin-top: 56px;
+    padding-top: 24px;
+    border-top: 1.5px solid var(--ink);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    opacity: 0.65;
+  }
+  .mark-engram svg { display: block; height: 20px; }
+
+  @media (max-width: 760px) {
+    body { padding: 32px 20px; }
+    .kiss .m { font-size: 36px; }
+    .kiss .e { font-size: 60px; }
+    .facts { grid-template-columns: 1fr; }
+    .domain { grid-template-columns: 1fr; gap: 12px; }
+    .domain .num { font-size: 48px; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <a href="../../index.html" class="back">&larr; all workshops</a>
+
+  <header>
+    <div>
+      <div class="eyebrow">engram &middot; cohort training &middot; exam guide</div>
+      <div class="kiss">
+        <span class="m">ccaf</span>
+        <span class="e">domains<span class="o">.</span></span>
+      </div>
+    </div>
+    <div class="meta">
+      <strong>5 domains</strong> &middot; <span class="o">720 / 1000 to pass</span><br/>
+      scenario-based multiple choice<br/>
+      study by weighting
+    </div>
+  </header>
+
+  <p class="lede">The Claude Certified Architect (Foundations) exam is scenario-based multiple choice across <strong>five weighted domains</strong>. It rewards deterministic solutions over probabilistic ones when stakes are high, proportionate fixes over over-engineering, and tracing failures to their root cause. This page maps the domains and points each one at the questions in our banks.</p>
+
+  <div class="facts">
+    <div class="fact">
+      <div class="k">pass mark</div>
+      <div class="v">720<span class="o"> / 1000</span></div>
+    </div>
+    <div class="fact">
+      <div class="k">format</div>
+      <div class="v">Scenario MCQ<span class="o">.</span></div>
+    </div>
+    <div class="fact">
+      <div class="k">our bank</div>
+      <div class="v">254 q<span class="o">.</span></div>
+    </div>
+  </div>
+
+  <div class="section-label">the five domains, by weight</div>
+
+  <div class="domain">
+    <div>
+      <div class="num">1</div>
+      <div class="weight">27% &middot; heaviest</div>
+    </div>
+    <div class="body">
+      <h3>Agentic Architecture &amp; Orchestration</h3>
+      <p>The agentic loop is driven by <code>stop_reason</code>: <code>tool_use</code> means run the tool, append results, call again; <code>end_turn</code> means done. Multi-agent topology is hub-and-spoke: all communication flows through the coordinator, and subagents never share memory, so every piece of context must be passed explicitly in the prompt.</p>
+      <ul>
+        <li>Spawn subagents with the <code>Task</code> tool; the coordinator's <code>allowedTools</code> must include <code>Task</code>. Emit parallel <code>Task</code> calls in one response for speed.</li>
+        <li>When stakes are financial, security, or compliance, enforce tool ordering programmatically with hooks and prerequisite gates, not prompt instructions.</li>
+        <li>Trace missing-subtopic failures to the coordinator's task decomposition, not downstream agents.</li>
+      </ul>
+      <a class="link" href="../ccaf-simulation/index.html">drill: research + support scenarios &rarr;</a>
+    </div>
+  </div>
+
+  <div class="domain">
+    <div>
+      <div class="num">2</div>
+      <div class="weight">18%</div>
+    </div>
+    <div class="body">
+      <h3>Tool Design &amp; MCP Integration</h3>
+      <p>Tool descriptions are the primary mechanism Claude uses for tool selection. The first fix for misrouting is better descriptions, not few-shot examples, a routing classifier, or tool consolidation. Scope each subagent to about 4 to 5 role-relevant tools.</p>
+      <ul>
+        <li>Know <code>tool_choice</code> cold: <code>auto</code> (may return text), <code>any</code> (must call one), forced (must call a named tool).</li>
+        <li>MCP <code>isError</code> with four categories: transient, validation, business, permission. An access failure is not a valid empty result.</li>
+        <li>Project <code>.mcp.json</code> is shared and version-controlled with <code>${ENV}</code> expansion; user config is personal. Grep searches contents, Glob matches paths.</li>
+      </ul>
+      <a class="link" href="../mcp/index.html">drill: MCP workshop &rarr;</a>
+    </div>
+  </div>
+
+  <div class="domain">
+    <div>
+      <div class="num">3</div>
+      <div class="weight">20%</div>
+    </div>
+    <div class="body">
+      <h3>Claude Code Configuration &amp; Workflows</h3>
+      <p>The CLAUDE.md hierarchy has three levels: user (personal, not shared), project (version-controlled, shared), and directory. The favorite trap is a teammate missing instructions because they live in user-level config. Path-specific rules in <code>.claude/rules/</code> with glob frontmatter apply across the whole codebase where directory-level files cannot.</p>
+      <ul>
+        <li>Skill frontmatter: <code>context: fork</code> isolates verbose output, <code>allowed-tools</code> restricts tools, <code>argument-hint</code> prompts for parameters.</li>
+        <li>Plan mode for large, multi-file, architectural work; direct execution for clear single-scope changes.</li>
+        <li>CI/CD: <code>-p</code> for non-interactive mode (or the job hangs), <code>--output-format json</code> with <code>--json-schema</code> for parseable findings, an independent instance for review.</li>
+      </ul>
+      <a class="link" href="../claude-code/index.html">drill: Claude Code workshop &rarr;</a>
+    </div>
+  </div>
+
+  <div class="domain">
+    <div>
+      <div class="num">4</div>
+      <div class="weight">20%</div>
+    </div>
+    <div class="body">
+      <h3>Prompt Engineering &amp; Structured Output</h3>
+      <p>Be explicit. Vague instructions like "be conservative" do not work; define exactly which cases to report versus skip with concrete examples. Few-shot examples (2 to 4, each showing reasoning) are the highest-leverage consistency technique.</p>
+      <ul>
+        <li><code>tool_use</code> with JSON schemas eliminates syntax errors but not semantic errors. Nullable fields prevent fabrication.</li>
+        <li>Validation-retry works for format and structure errors, not for information genuinely absent from the source.</li>
+        <li>Message Batches API: 50% savings, up to 24h, no latency SLA, no multi-turn tool calling. Batch overnight work, keep blocking checks synchronous.</li>
+      </ul>
+      <a class="link" href="../claude-api/index.html">drill: Claude API workshop &rarr;</a>
+    </div>
+  </div>
+
+  <div class="domain">
+    <div>
+      <div class="num">5</div>
+      <div class="weight">15%</div>
+    </div>
+    <div class="body">
+      <h3>Context Management &amp; Reliability</h3>
+      <p>Progressive summarization destroys transactional data. Keep a persistent "case facts" block in every prompt and never summarize it. Models miss content buried in the middle of long inputs, so place key summaries at the start.</p>
+      <ul>
+        <li>Valid escalation triggers: explicit human request (honor immediately), policy gaps, inability to progress. Sentiment and self-reported confidence are unreliable triggers.</li>
+        <li>Error propagation: return structured context (failure type, attempted query, partial results, alternatives). Never silently suppress or kill the whole workflow.</li>
+        <li>Aggregate accuracy hides per-type failures. Validate by document type and field, calibrate confidence on labeled sets, and carry provenance through synthesis.</li>
+      </ul>
+      <a class="link" href="../ccaf-simulation/index.html">drill: extraction + support scenarios &rarr;</a>
+    </div>
+  </div>
+
+  <div class="traps">
+    <h3>Reject on sight</h3>
+    <ul>
+      <li>Parsing natural language to decide when an agent loop should stop. Use <code>stop_reason</code>.</li>
+      <li>Arbitrary iteration caps as the primary stopping mechanism.</li>
+      <li>Checking for assistant text as a completion signal (text can accompany <code>tool_use</code>).</li>
+      <li>Assuming subagents share memory with the coordinator. They do not.</li>
+      <li>Prompt-only enforcement for financial, security, or compliance-critical logic. Use hooks and gates.</li>
+      <li>Few-shot examples, routing classifiers, or tool consolidation as the first fix for tool misrouting. Fix the descriptions first.</li>
+    </ul>
+  </div>
+
+  <div class="credit">
+    <h3>Source &amp; credit</h3>
+    <p>The domain structure, weightings, and study framing on this page are credited to <a href="https://x.com/hooeem/status/2033198345045336559" target="_blank" rel="noopener">@hooeem's public CCAF study guide</a>. The factual exam content is restated in our own words for cohort use. The author's full per-domain instructor prompts (written to paste into Claude) are his original work, read them in the source article. Domain weightings cross-checked against our 254-question bank, which is sourced from <a href="https://github.com/paullarionov/claude-certified-architect" target="_blank" rel="noopener">paullarionov</a>, the CyberSkill public mock, and anthropic docs.</p>
+  </div>
+
+  <footer>
+    <div>engram &middot; agentic media. &middot; 2026</div>
+    <div class="mark-engram">
+      <svg viewBox="0 0 242.82 100" aria-label="Engram">
+        <rect x="0" y="0" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="0" y="35.075" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="0" y="70.15" width="118.5" height="29.85" fill="#0A0A0A"/>
+        <rect x="124.12" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+        <rect x="165.77" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+        <rect x="207.42" y="0" width="35.4" height="100" fill="#0A0A0A"/>
+      </svg>
+    </div>
+  </footer>
+
+</div>
+</body>
+</html>

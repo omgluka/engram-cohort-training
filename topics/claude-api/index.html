@@ -590,6 +590,7 @@ const TOOLS = [
     explain: "When critical business logic requires a specific tool sequence, software provides deterministic guarantees that prompt-based approaches (C, D) cannot. B addresses availability, not tool ordering.",
     source: "guide_en.MD Q1",
     verified: "paul",
+    domain: 1,
   },
   {
     tag: "tools",
@@ -604,6 +605,7 @@ const TOOLS = [
     explain: "Renaming the web-search tool to <code>extract_web_results</code> and updating its description to explicitly reference web search and URLs directly removes the root cause by eliminating semantic overlap between the two tool names and descriptions. This makes each tool's purpose unambiguous, enabling the coordinator to reliably distinguish document analysis from web search.",
     source: "guide_en.MD Q7 (practice)",
     verified: "paul",
+    domain: 2,
   },
   {
     tag: "tools",
@@ -618,6 +620,7 @@ const TOOLS = [
     explain: "Replacing a general-purpose tool with a document-specific tool that validates URLs against document formats fixes the root cause by constraining capability at the interface level. This follows the principle of least privilege, making undesired search behavior impossible rather than merely discouraged.",
     source: "guide_en.MD Q10 (practice)",
     verified: "paul",
+    domain: 2,
   },
   {
     tag: "tools",
@@ -633,6 +636,7 @@ const TOOLS = [
     source: "guide_en.MD Q16",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/sdk",
+    domain: 4,
   },
   {
     tag: "tools",
@@ -647,6 +651,7 @@ const TOOLS = [
     explain: "A programmatic precondition provides a deterministic guarantee that required sequencing is followed. It's the most effective approach because it eliminates the possibility of skipping verification, regardless of LLM behavior.",
     source: "guide_en.MD Q51",
     verified: "paul",
+    domain: 2,
   },
   {
     tag: "tools",
@@ -661,6 +666,7 @@ const TOOLS = [
     explain: "Asking the user for an additional identifier is the most reliable way to resolve ambiguity because the user has definitive knowledge of their identity. One extra conversational turn is a small price to pay to eliminate a 15% error rate caused by choosing the wrong account.",
     source: "guide_en.MD Q55",
     verified: "paul",
+    domain: 2,
   },
   {
     tag: "tools",
@@ -675,6 +681,7 @@ const TOOLS = [
     explain: "Expanding tool descriptions with input formats, example queries, edge cases, and clear boundaries directly fixes the root cause: minimal descriptions that don't give the LLM enough information to distinguish similar tools. It's a low-effort, high-impact first step that improves the primary mechanism the LLM uses for tool selection.",
     source: "guide_en.MD Q57",
     verified: "paul",
+    domain: 2,
   },
   {
     tag: "tools",
@@ -689,6 +696,7 @@ const TOOLS = [
     explain: "A PostToolUse hook provides a centralized, deterministic point to intercept and normalize all tool outputs, including third-party MCP server data, before the agent processes them. It's more maintainable because transformations live in code and apply uniformly, rather than relying on LLM interpretation.",
     source: "guide_en.MD Q59",
     verified: "paul",
+    domain: 2,
   },
   {
     tag: "tools",
@@ -703,6 +711,7 @@ const TOOLS = [
     explain: "The two-tool token-binding approach makes it architecturally impossible to execute without a prior preview: the execute tool literally requires a token that only the preview tool can generate. This is the only approach that enforces the constraint at the code level rather than relying on LLM compliance with instructions (D), timing heuristics (C), or orchestration infrastructure (A).",
     source: "guide_en.MD Q61",
     verified: "paul",
+    domain: 2,
   },
   {
     tag: "tools",
@@ -717,6 +726,7 @@ const TOOLS = [
     explain: "Handling retries at the tool level for transient errors is the correct abstraction boundary: the tool has definitive knowledge of the error type and can implement deterministic retry logic without relying on the agent to interpret a flag (A) or follow prompt-level instructions (B). Uniform backoff (D) wastes time on syntax errors that will never succeed.",
     source: "guide_en.MD Q62",
     verified: "paul",
+    domain: 2,
   }
 ];
 
@@ -738,6 +748,7 @@ const API = [
     explain: "Summarization inherently loses precise details. Extracting transactional facts into a structured 'case facts' block outside the summarized history preserves critical information so it's reliably available in every prompt regardless of how many turns have been summarized.",
     source: "guide_en.MD Q54",
     verified: "paul",
+    domain: 5,
   },
   {
     tag: "api",
@@ -752,6 +763,7 @@ const API = [
     explain: "The systematic keyword-driven pattern (78% vs 93%) strongly indicates explicit routing logic in the system prompt reacting to the word 'account' and steering the agent toward customer-related tools. Since tool descriptions are already clear, the discrepancy points to prompt-level instructions creating unintended behavioral steering.",
     source: "guide_en.MD Q56",
     verified: "paul",
+    domain: 2,
   },
   {
     tag: "api",
@@ -767,6 +779,7 @@ const API = [
     source: "guide_en.MD Q64",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/api/messages",
+    domain: 5,
   },
   {
     tag: "api",
@@ -782,6 +795,7 @@ const API = [
     source: "guide_en.MD Q67",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/api/messages",
+    domain: 1,
   },
   {
     tag: "api",
@@ -797,6 +811,7 @@ const API = [
     source: "guide_en.MD Q71",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/api/messages",
+    domain: 1,
   },
   {
     tag: "api",
@@ -812,6 +827,7 @@ const API = [
     source: "guide_en.MD Q72",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/api/messages",
+    domain: 1,
   },
   {
     tag: "api",
@@ -826,6 +842,7 @@ const API = [
     explain: "Prefixing the status update to the next user message injects real-time context at a natural conversation boundary without disrupting the flow. Modifying the system prompt (B) requires rebuilding the session or is architecturally cumbersome. A synthetic user message (D) can break the natural dialogue flow and confuse attribution. Forcing a tool call each turn (A) is wasteful when events are rare.",
     source: "guide_en.MD Q73",
     verified: "paul",
+    domain: 5,
   },
   {
     tag: "api",
@@ -840,6 +857,7 @@ const API = [
     explain: "As assistant responses accumulate in the conversation history, the proportion of text reflecting the system prompt's behavioral constraints decreases relative to the growing body of assistant-generated content. The model increasingly pattern-matches to its own prior outputs rather than the system prompt, compounding drift even at short token lengths. The system prompt is included in every API call (D is false as a standalone explanation), and model attention degradation (A) doesn't operate at 2,500 tokens.",
     source: "guide_en.MD Q75",
     verified: "paul",
+    domain: 1,
   }
 ];
 
@@ -861,6 +879,7 @@ const BATCH = [
     explain: "Structured error context gives the coordinator what it needs to decide whether to retry with a modified query, try an alternative approach, or continue with partial results. B hides context behind a generic status. C masks failure as success. D aborts the entire workflow unnecessarily.",
     source: "guide_en.MD Q8",
     verified: "paul",
+    domain: 1,
   },
   {
     tag: "batch",
@@ -876,6 +895,7 @@ const BATCH = [
     source: "guide_en.MD Q11",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
+    domain: 4,
   },
   {
     tag: "batch",
@@ -890,6 +910,7 @@ const BATCH = [
     explain: "A limited-scope fact-verification tool lets the synthesis agent handle 85% of simple checks directly, eliminating most loops, while preserving the coordinator delegation path for the 15% of complex verifications. This applies least privilege while significantly reducing latency.",
     source: "guide_en.MD Q15 (practice)",
     verified: "paul",
+    domain: 1,
   },
   {
     tag: "batch",
@@ -905,6 +926,7 @@ const BATCH = [
     source: "guide_en.MD Q18",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
+    domain: 4,
   },
   {
     tag: "batch",
@@ -920,6 +942,7 @@ const BATCH = [
     source: "guide_en.MD Q19",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
+    domain: 4,
   },
   {
     tag: "batch",
@@ -935,6 +958,7 @@ const BATCH = [
     source: "guide_en.MD Q21",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/build-with-claude/batch-processing",
+    domain: 4,
   },
   {
     tag: "batch",
@@ -949,6 +973,7 @@ const BATCH = [
     explain: "Few-shot examples that demonstrate correct reasoning and tool sequencing for multi-issue requests are most effective because the agent already performs well on single issues. What it needs is guidance on the pattern for decomposing and routing multiple issues and keeping parameters separated.",
     source: "guide_en.MD Q47",
     verified: "paul",
+    domain: 4,
   },
   {
     tag: "batch",
@@ -963,6 +988,7 @@ const BATCH = [
     explain: "Decomposing into separate issues and investigating in parallel with shared customer context fixes both key problems: it eliminates redundant data retrieval by reusing shared context across issues and reduces total tool-call loops by parallelizing investigation before synthesizing a single resolution.",
     source: "guide_en.MD Q48",
     verified: "paul",
+    domain: 4,
   },
   {
     tag: "batch",
@@ -977,6 +1003,7 @@ const BATCH = [
     explain: "Prompting Claude to bundle related tool requests into a single turn leverages its native ability to request multiple tools at once. It directly fixes the sequential-call pattern with minimal architectural change.",
     source: "guide_en.MD Q53",
     verified: "paul",
+    domain: 4,
   },
   {
     tag: "batch",
@@ -992,6 +1019,7 @@ const BATCH = [
     source: "guide_en.MD Q58",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/api/messages",
+    domain: 1,
   }
 ];
 

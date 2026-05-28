@@ -590,6 +590,7 @@ const CC_CONFIG = [
     source: "paullarionov Q1",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/memory",
+    domain: 3,
   },
   {
     tag: "config",
@@ -605,6 +606,7 @@ const CC_CONFIG = [
     source: "paullarionov Q2",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/memory",
+    domain: 3,
   },
   {
     tag: "config",
@@ -620,6 +622,7 @@ const CC_CONFIG = [
     source: "paullarionov Q3",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/memory",
+    domain: 2,
   },
   {
     tag: "config",
@@ -635,6 +638,7 @@ const CC_CONFIG = [
     source: "paullarionov Q4",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/slash-commands",
+    domain: 3,
   },
   {
     tag: "config",
@@ -650,6 +654,7 @@ const CC_CONFIG = [
     source: "paullarionov Q5",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/skills",
+    domain: 3,
   },
   {
     tag: "config",
@@ -665,6 +670,7 @@ const CC_CONFIG = [
     source: "anthropic docs · claude code settings",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/settings",
+    domain: 3,
   },
   {
     tag: "config",
@@ -680,6 +686,7 @@ const CC_CONFIG = [
     source: "anthropic docs · claude code settings",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/settings",
+    domain: 3,
   },
   {
     tag: "config",
@@ -695,6 +702,7 @@ const CC_CONFIG = [
     source: "anthropic docs · claude code settings",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/settings",
+    domain: 3,
   },
   {
     tag: "config",
@@ -710,6 +718,7 @@ const CC_CONFIG = [
     source: "anthropic docs · claude code mcp",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/mcp",
+    domain: 2,
   },
   {
     tag: "config",
@@ -725,6 +734,7 @@ const CC_CONFIG = [
     source: "anthropic docs · claude code skills",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/skills",
+    domain: 3,
   },
   {
     tag: "config",
@@ -740,6 +750,7 @@ const CC_CONFIG = [
     source: "anthropic docs · claude code slash commands",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/skills",
+    domain: 3,
   },
   {
     tag: "config",
@@ -755,6 +766,7 @@ const CC_CONFIG = [
     source: "anthropic docs · claude code slash commands",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/skills",
+    domain: 3,
   },
   {
     tag: "config",
@@ -770,6 +782,7 @@ const CC_CONFIG = [
     source: "anthropic docs · claude code settings",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/settings",
+    domain: 3,
   },
   {
     tag: "config",
@@ -785,6 +798,7 @@ const CC_CONFIG = [
     source: "anthropic docs · claude code hooks",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/hooks",
+    domain: 3,
   }
 ];
 
@@ -806,6 +820,7 @@ const CC_WORKFLOWS = [
     explain: "<strong>Why A:</strong> Plan mode is the right tool when the task is large and there are multiple viable approaches. Claude explores, reads, and proposes a plan you can approve before any edits land. Jumping into edits invites rework. Headless mode is for CI and non-interactive scripting. `/compact` is for context management, not planning.",
     source: "paullarionov Q6",
     verified: "paul",
+    domain: 3,
   },
   {
     tag: "workflow",
@@ -821,6 +836,7 @@ const CC_WORKFLOWS = [
     source: "paullarionov Q7",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/sdk",
+    domain: 3,
   },
   {
     tag: "workflow",
@@ -836,6 +852,7 @@ const CC_WORKFLOWS = [
     source: "paullarionov Q8",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/sdk",
+    domain: 3,
   },
   {
     tag: "workflow",
@@ -851,6 +868,7 @@ const CC_WORKFLOWS = [
     source: "anthropic docs · claude code sdk",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/sdk",
+    domain: 3,
   },
   {
     tag: "workflow",
@@ -865,6 +883,7 @@ const CC_WORKFLOWS = [
     explain: "<strong>Why B:</strong> Reviewing in the same session means the model retains the reasoning it used to write the code, which leads to shallow self-confirmation. An independent reviewer (a fresh session or a subagent without the generation history) is more likely to find subtle bugs. None of the other answers describe real constraints.",
     source: "paullarionov Q9",
     verified: "paul",
+    domain: 1,
   },
   {
     tag: "workflow",
@@ -879,6 +898,7 @@ const CC_WORKFLOWS = [
     explain: "<strong>Why A:</strong> `/compact` summarizes the conversation so far to reduce token usage. Project-root CLAUDE.md is re-injected after compaction, but specific values can be lost during summarization, which is the documented risk. None of the other answers describe what `/compact` does.",
     source: "paullarionov Q10",
     verified: "paul",
+    domain: 5,
   },
   {
     tag: "workflow",
@@ -893,6 +913,7 @@ const CC_WORKFLOWS = [
     explain: "<strong>Why D:</strong> Glob is the built-in tool for finding files by name pattern. It is faster and more correct than spawning `find`, especially on Windows. Grep searches contents, not paths. Read is for opening known files. Best practice is to prefer Glob over shell-based file search.",
     source: "paullarionov Q11",
     verified: "paul",
+    domain: 2,
   },
   {
     tag: "workflow",
@@ -907,6 +928,7 @@ const CC_WORKFLOWS = [
     explain: "<strong>Why C:</strong> Grep is the built-in content-search tool, built on ripgrep, optimized for correct permissions and access. It is the right choice for finding function calls, imports, error messages, etc. Glob matches file names, not contents. Shelling out to grep is slower and less consistent.",
     source: "paullarionov Q12",
     verified: "paul",
+    domain: 2,
   },
   {
     tag: "workflow",
@@ -921,6 +943,7 @@ const CC_WORKFLOWS = [
     explain: "<strong>Why C:</strong> When Edit's `old_string` is non-unique, the documented fallback is Read then Write. You can also widen the `old_string` to include enough surrounding context to make it unique, or use `replace_all` if every match should change. There is no `force` flag and no `line` parameter on Edit.",
     source: "paullarionov Q14",
     verified: "paul",
+    domain: 3,
   },
   {
     tag: "workflow",
@@ -935,6 +958,7 @@ const CC_WORKFLOWS = [
     explain: "<strong>Why A:</strong> Grep narrows the location, Read loads enough context to write a unique anchor, and Edit makes a surgical change. Rewriting a 3000-line file with Write risks losing unrelated content and burns tokens. `sed` on Windows is unreliable. Regenerating from scratch is reckless.",
     source: "paullarionov Q15",
     verified: "paul",
+    domain: 2,
   },
   {
     tag: "workflow",
@@ -950,6 +974,7 @@ const CC_WORKFLOWS = [
     source: "anthropic docs · claude code sub-agents",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/sub-agents",
+    domain: 5,
   },
   {
     tag: "workflow",
@@ -964,6 +989,7 @@ const CC_WORKFLOWS = [
     explain: "<strong>Why B:</strong> Independent tool calls should be issued in parallel in a single block. This is faster and uses fewer turns. Sequential is appropriate only when later calls depend on earlier results. `cat` loses line numbers and image handling, and Read does not accept multiple paths.",
     source: "anthropic docs · claude code overview",
     verified: "paul",
+    domain: 3,
   },
   {
     tag: "workflow",
@@ -979,6 +1005,7 @@ const CC_WORKFLOWS = [
     source: "anthropic docs · claude code memory",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/memory",
+    domain: 5,
   },
   {
     tag: "workflow",
@@ -994,6 +1021,7 @@ const CC_WORKFLOWS = [
     source: "anthropic docs · claude code github actions",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/github-actions",
+    domain: 3,
   }
 ];
 
@@ -1016,6 +1044,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code hooks",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/hooks",
+    domain: 1,
   },
   {
     tag: "advanced",
@@ -1031,6 +1060,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code hooks",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/hooks",
+    domain: 1,
   },
   {
     tag: "advanced",
@@ -1046,6 +1076,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code hooks",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/hooks",
+    domain: 4,
   },
   {
     tag: "advanced",
@@ -1061,6 +1092,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code hooks",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/hooks",
+    domain: 2,
   },
   {
     tag: "advanced",
@@ -1076,6 +1108,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code sub-agents",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/sub-agents",
+    domain: 1,
   },
   {
     tag: "advanced",
@@ -1091,6 +1124,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code sub-agents",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/sub-agents",
+    domain: 2,
   },
   {
     tag: "advanced",
@@ -1106,6 +1140,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code sub-agents",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/sub-agents",
+    domain: 3,
   },
   {
     tag: "advanced",
@@ -1121,6 +1156,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code skills",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/skills",
+    domain: 3,
   },
   {
     tag: "advanced",
@@ -1136,6 +1172,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code mcp",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/mcp",
+    domain: 2,
   },
   {
     tag: "advanced",
@@ -1151,6 +1188,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code mcp",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/mcp",
+    domain: 1,
   },
   {
     tag: "advanced",
@@ -1166,6 +1204,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code overview",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/overview",
+    domain: 1,
   },
   {
     tag: "advanced",
@@ -1181,6 +1220,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code sdk",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/agent-sdk/overview",
+    domain: 1,
   },
   {
     tag: "advanced",
@@ -1196,6 +1236,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code memory",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/memory",
+    domain: 3,
   },
   {
     tag: "advanced",
@@ -1211,6 +1252,7 @@ const CC_ADVANCED = [
     source: "anthropic docs · claude code settings",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/settings",
+    domain: 1,
   }
 ];
 

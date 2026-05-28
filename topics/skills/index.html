@@ -563,6 +563,7 @@ const BASICS = [
     explain: "Skills are authored as SKILL.md files with YAML frontmatter. The name and description fields are required — the description is what Claude uses to decide when the skill applies.",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+    domain: 3,
   },
   {
     tag: "basics",
@@ -577,6 +578,7 @@ const BASICS = [
     explain: "The description is the trigger signal. A specific description (with concrete keywords and use cases) leads to accurate triggering; a vague one means the skill either never fires or fires when it shouldn't.",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+    domain: 3,
   },
   {
     tag: "basics",
@@ -591,6 +593,7 @@ const BASICS = [
     explain: "Skills can be user-scoped, project-scoped, or come from plugins. Project skills are great for codebase-specific workflows; user skills travel across projects.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/skills",
+    domain: 3,
   },
   {
     tag: "basics",
@@ -605,6 +608,7 @@ const BASICS = [
     explain: "The key distinction is who invokes them. Claude decides to invoke a skill when its description matches the task; the user explicitly invokes a slash command. A skill can also be exposed as a slash command, but the trigger model is different.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/skills",
+    domain: 3,
   },
   {
     tag: "basics",
@@ -619,6 +623,7 @@ const BASICS = [
     explain: "Good descriptions are specific: they name the technology, the concrete actions the skill performs, and the trigger conditions ('Use when...'). Vague descriptions like 'helps with database stuff' won't reliably trigger.",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+    domain: 3,
   },
   {
     tag: "basics",
@@ -633,6 +638,7 @@ const BASICS = [
     explain: "Progressive disclosure keeps the context window cheap. Claude sees a list of available skills (names + descriptions) but only pulls in the full SKILL.md content when it decides to run the skill. This is why concise descriptions and well-organized skill bodies matter.",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+    domain: 5,
   },
   {
     tag: "basics",
@@ -647,6 +653,7 @@ const BASICS = [
     explain: "A skill is a folder. SKILL.md is the entrypoint, but it can reference supporting files (reference docs, scripts, templates) by relative path. Those files are loaded only when the skill is invoked, keeping context lean.",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+    domain: 3,
   },
   {
     tag: "basics",
@@ -660,6 +667,7 @@ const BASICS = [
     answer: 1,
     explain: "Skills are for reusable, generalizable capabilities. A one-off question is just a prompt — wrapping it in a skill adds overhead without benefit. Skills shine when the same workflow or knowledge will be needed repeatedly.",
     verified: "paul",
+    domain: 3,
   },
   {
     tag: "basics",
@@ -674,6 +682,7 @@ const BASICS = [
     explain: "When a skill over-triggers, sharpen the description with explicit positive and negative signals. Naming what should NOT trigger the skill (other SDKs, unrelated filenames) is one of the most effective ways to fix misfires.",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+    domain: 3,
   },
   {
     tag: "basics",
@@ -688,6 +697,7 @@ const BASICS = [
     explain: "Skills extend the current Claude's behavior in-context. Subagents are independent Claude instances you delegate to — useful for isolating heavy research, parallelizing work, or protecting the main context. They complement each other.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/sub-agents",
+    domain: 1,
   }
 ];
 
@@ -708,6 +718,7 @@ const SCENARIOS = [
     answer: 2,
     explain: "Always-on context is a trap: large bodies loaded every turn degrade attention to any one item. Focused sub-skills load only when relevant and each stays short enough that Claude follows it carefully. 'Be thorough' is wishful tuning, not a structural fix.",
     verified: "paul",
+    domain: 3,
   },
   {
     tag: "scenario",
@@ -721,6 +732,7 @@ const SCENARIOS = [
     answer: 2,
     explain: "Length alone doesn't help; 'carefully and correctly' is noise. Renaming doesn't change triggering (descriptions do). 'Priority' isn't a real frontmatter field. The robust fix is disambiguation: anchor to the domain AND name lookalike phrases that should NOT trigger.",
     verified: "paul",
+    domain: 3,
   },
   {
     tag: "scenario",
@@ -735,6 +747,7 @@ const SCENARIOS = [
     explain: "Skills shape probability; hooks enforce determinism. No amount of emphatic language changes that skills are advisory. 'Always X when Y' is a PostToolUse hook on Edit/Write, not a skill. Pick the right primitive for the requirement.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/hooks",
+    domain: 1,
   },
   {
     tag: "scenario",
@@ -749,6 +762,7 @@ const SCENARIOS = [
     explain: "Deleting loses real information; user scope is irrelevant to load size. When a skill triggers, its full SKILL.md is read — so a 1,200-line body always loads in full. Bulk reference belongs in sibling files Claude reads only when asked. Progressive disclosure at the file level.",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+    domain: 3,
   },
   {
     tag: "scenario",
@@ -762,6 +776,7 @@ const SCENARIOS = [
     answer: 1,
     explain: "When a specific skill loses to a general one, the issue is rarely the specific skill being too quiet — it's the general skill being too loud. SKIP/exclusion clauses on the general skill are how you carve out specialized territory. Padding is fragile; scope and merging don't address trigger logic.",
     verified: "paul",
+    domain: 3,
   },
   {
     tag: "scenario",
@@ -776,6 +791,7 @@ const SCENARIOS = [
     explain: "The trap is using a skill as a dumping ground. Skills are most powerful when narrow: trigger surface and body proportional to one task. A 200-page omni-skill loses progressive disclosure once invoked. Decompose by topic, or use a thin index that points to per-topic files.",
     verified: "anthropic",
     docsLink: "https://platform.claude.com/docs/en/agents-and-tools/agent-skills/overview",
+    domain: 3,
   },
   {
     tag: "scenario",
@@ -789,6 +805,7 @@ const SCENARIOS = [
     answer: 3,
     explain: "Skill triggering is probabilistic; description tuning reduces but doesn't eliminate false positives. 'Never unless the user asks' is a determinism guarantee — match it to a slash command, which is user-invoked by definition. Same logic as skills-vs-hooks, applied in reverse.",
     verified: "paul",
+    domain: 3,
   },
   {
     tag: "scenario",
@@ -803,6 +820,7 @@ const SCENARIOS = [
     explain: "When file content and version are identical, the remaining variable is discovery. Same-named skills can exist at user, project, and plugin scope; the one Claude actually sees can differ per machine. Diagnose by listing what's discovered, not by re-reading the file.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/skills",
+    domain: 3,
   },
   {
     tag: "scenario",
@@ -817,6 +835,7 @@ const SCENARIOS = [
     explain: "Same architectural test as the linter scenario, higher stakes. 'Every time' = deterministic requirement = hook territory. A skill saying 'always confirm' is correct guidance but no guarantee. For destructive prod actions: skill orchestrates, hook enforces.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/hooks",
+    domain: 3,
   },
   {
     tag: "scenario",
@@ -830,6 +849,7 @@ const SCENARIOS = [
     answer: 2,
     explain: "The misconception is that triggering matches keywords. It doesn't — Claude reads descriptions semantically, so piling on near-synonyms expands what's inferred as 'in scope' and increases false positives. A tight description plus explicit out-of-scope examples is more selective than an exhaustive synonym list.",
     verified: "paul",
+    domain: 3,
   }
 ];
 
@@ -850,6 +870,7 @@ const ANATOMY = [
     answer: 3,
     explain: "CLAUDE.md is for always-loaded standards. Skills are for on-demand workflows. Keep universal coding standards and testing conventions in CLAUDE.md; move PR review, deploy, and migration into skills triggered on demand.",
     verified: "paul",
+    domain: 3,
   },
   {
     tag: "anatomy",
@@ -864,6 +885,7 @@ const ANATOMY = [
     explain: "`context: fork` runs the skill in an isolated subagent so its verbose output stays out of the main session. Only the summary returns to the parent context.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/skills",
+    domain: 3,
   },
   {
     tag: "anatomy",
@@ -878,6 +900,7 @@ const ANATOMY = [
     explain: "Create the personal version at `~/.claude/skills/commit/SKILL.md` with the same name — user-scope shadows project-scope on the developer's machine without affecting teammates.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/settings",
+    domain: 3,
   },
   {
     tag: "anatomy",
@@ -892,6 +915,7 @@ const ANATOMY = [
     explain: "User-level CLAUDE.md isn't shared with the team. Guidance everyone should follow belongs in project-level `.claude/CLAUDE.md` so it ships with the repo.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/memory",
+    domain: 3,
   },
   {
     tag: "anatomy",
@@ -905,6 +929,7 @@ const ANATOMY = [
     answer: 1,
     explain: "Skill = on-demand for a specific task. Endpoint examples only matter when creating new endpoints — that's a skill invoked on demand, not always-on CLAUDE.md content.",
     verified: "paul",
+    domain: 3,
   },
   {
     tag: "anatomy",
@@ -919,6 +944,7 @@ const ANATOMY = [
     explain: "`argument-hint` prompts for the missing name; `context: fork` isolates from prior conversation pollution; `allowed-tools` restricts to safe file operations only. All three frontmatter fields address one problem each.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/skills",
+    domain: 3,
   },
   {
     tag: "anatomy",
@@ -933,6 +959,7 @@ const ANATOMY = [
     explain: "`.claude/rules/` with glob patterns is the supported way to apply conventions conditionally based on file paths. A React rule applies to `*.tsx`; an API rule applies to `api/**`; the test rule applies to `*.test.*` regardless of directory.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/memory",
+    domain: 2,
   },
   {
     tag: "anatomy",
@@ -947,6 +974,7 @@ const ANATOMY = [
     explain: "Project-level commands live in `.claude/commands/` and ship with the repo, so every developer gets them on clone or pull.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/slash-commands",
+    domain: 3,
   },
   {
     tag: "anatomy",
@@ -961,6 +989,7 @@ const ANATOMY = [
     explain: "`.claude/rules/` is the supported home for topical instruction modules — separate files per topic, each with frontmatter for scoping.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/memory",
+    domain: 3,
   },
   {
     tag: "anatomy",
@@ -975,6 +1004,7 @@ const ANATOMY = [
     explain: "`context: fork` isolates the exploration into a subagent. The exploration discussion stays in the fork; only the final recommendation returns to the parent session, so it doesn't contaminate later implementation work.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/skills",
+    domain: 3,
   },
   {
     tag: "anatomy",
@@ -989,6 +1019,7 @@ const ANATOMY = [
     explain: "The Explore subagent isolates verbose discovery output. Phase 1's hundreds of call sites stay in the subagent; only the pattern summary returns to the main session, preserving context window for the collaborative design and implementation phases.",
     verified: "anthropic",
     docsLink: "https://code.claude.com/docs/en/sub-agents",
+    domain: 5,
   }
 ];
 
