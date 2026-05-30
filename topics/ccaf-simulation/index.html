@@ -3017,6 +3017,31 @@ picker.querySelectorAll('.pick-card').forEach(el => {
 });
 document.querySelector('.exam-start').addEventListener('click', () => startMode('exam'));
 
+/* HASH ROUTING
+   Lets the exam-guide deep-link straight into a scenario.
+   Supported hashes (case-insensitive):
+     #research, #code, #support, #extract         -> Paul source (default)
+     #research-paul, #code-paul, etc.             -> Paul source (explicit)
+     #research-cyber, #code-cyber, etc.           -> CyberSkill source
+     #exam, #exam-paul, #exam-cyber               -> timed exam mode
+   Falls back silently to the source picker if the hash is unrecognized. */
+(function handleHashRoute() {
+  const raw = (window.location.hash || '').replace(/^#/, '').toLowerCase();
+  if (!raw) return;
+  const validScenarios = ['research', 'code', 'support', 'extract'];
+  const parts = raw.split('-');
+  const scenario = parts[0];
+  const sourceHint = parts[1]; // 'paul' | 'cyber' | undefined
+  if (scenario !== 'exam' && !validScenarios.includes(scenario)) return;
+  const src = sourceHint === 'cyber' ? 'cyber' : 'paul';
+  chooseSource(src);
+  if (scenario === 'exam') {
+    startMode('exam');
+  } else {
+    startMode('practice-' + scenario);
+  }
+})();
+
 document.addEventListener('keydown', e => {
   if (card.classList.contains('hidden')) return;
   if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
